@@ -39,15 +39,7 @@ class ViewListener implements ListenerAggregateInterface
       if(isset($qsCfg->tplMap)){
          View::setTplMap($qsCfg->tplMap->toArray());
       }
-      //寻找模板方案
-      $appCaller = $di->get('AppCaller');
-      $view->setTplProject(Kernel\get_tpl_project());
-      if(\Cntysoft\UI_MODE_CUSTOMIZE == Kernel\get_ui_mode()){
-         $view->setTplRootDir(StdDir::getChurchTemplatesDir(Kernel\get_church_id()));
-      }else{
-         $view->setTplRootDir(CNTY_TEMPLATE_DIR);
-      }
-
+      //模板根目录移到子类中
       $view->setDI($di);
       $di->setShared('view', $view);
    }
