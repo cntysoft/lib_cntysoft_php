@@ -22,7 +22,7 @@ use Cntysoft\Framework\Core\Domain\Binder;
 /**
  * 系统一些小东西初始化监听类
  */
-class BootstrapListener implements ListenerAggregateInterface
+abstract class BootstrapListener implements ListenerAggregateInterface
 {
    /**
     * @inheritdoc
@@ -46,7 +46,6 @@ class BootstrapListener implements ListenerAggregateInterface
       $this->registerSysRouteHandler($application);
       $this->registerDispatcherHandler($application);
       $this->registerVenderFrameworkHandler();
-      $this->setupChurchId($application);
    }
 
    /**
@@ -83,26 +82,37 @@ class BootstrapListener implements ListenerAggregateInterface
        * 后期有程序来管理这些
        */
       $cfg = ConfigProxy::getGlobalConfig();
-      $router->add('/'.$cfg->sysEntryPoint, array(
+      $router->add('/'.$cfg->platformEntryPoint, array(
          'module'     => 'Sys',
          'controller' => 'Index',
          'action'     => 'platform'
       ));
-      //添加教堂管理入口
-      $router->add('/'.$cfg->churchEntryPoint, array(
-         'module'     => 'Sys',
-         'controller' => 'Index',
-         'action'     => 'church'
-      ));
-      //测试Sencha CMD
-      $router->add('/Sencha', array(
-         'module'     => 'Sys',
-         'controller' => 'Index',
-         'action'     => 'Sencha'
-      ));
+
+
+//      //添加教堂管理入口
+//      $router->add('/'.$cfg->churchEntryPoint, array(
+//         'module'     => 'Sys',
+//         'controller' => 'Index',
+//         'action'     => 'church'
+//      ));
+//      //测试Sencha CMD
+//      $router->add('/Sencha', array(
+//         'module'     => 'Sys',
+//         'controller' => 'Index',
+//         'action'     => 'Sencha'
+//      ));
+      $this->configRouter($router, $cfg);
       $router->setDI($di);
       $di->setShared('router', $router);
    }
+
+   /**
+    * 设置路由相关钩子函数
+    *
+    * @param \Phalcon\Mvc\Router $router
+    * @param \Phalcon\Config $config
+    */
+   abstract protected function configRouter($router,$config);
 
    /**
     * 主要是识别域名或者二级域名然后寻找到教堂对应的教堂id
@@ -111,7 +121,6 @@ class BootstrapListener implements ListenerAggregateInterface
     */
    protected function setupChurchId(\Cntysoft\Phalcon\Mvc\Application $application)
    {
-
       $request = $application->getDI()->get('request');
       $domain = $request->getServerName();
       $parts = explode('.', $domain);
