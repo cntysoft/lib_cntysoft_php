@@ -21,7 +21,7 @@ use Cntysoft\Framework\Core\Domain\Binder;
 /**
  * 系统一些小东西初始化监听类
  */
-abstract class BootstrapListener implements ListenerAggregateInterface
+class BootstrapListener implements ListenerAggregateInterface
 {
    /**
     * @inheritdoc
@@ -111,7 +111,8 @@ abstract class BootstrapListener implements ListenerAggregateInterface
     * @param \Phalcon\Mvc\Router $router
     * @param \Phalcon\Config $config
     */
-   abstract protected function configRouter($router,$config);
+   protected function configRouter($router,$config)
+   {}
 
 // 放在子类
 
