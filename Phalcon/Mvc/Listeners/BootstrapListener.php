@@ -17,7 +17,6 @@ use Cntysoft\Kernel\StdErrorType;
 use Phalcon\Events\Manager as EventsManager;
 use Phalcon\Mvc\Dispatcher\Exception as DispatchException;
 use Cntysoft\Framework\Qs\View;
-use App\Platform\ChurchManager\Repository;
 use Cntysoft\Framework\Core\Domain\Binder;
 /**
  * 系统一些小东西初始化监听类
@@ -114,46 +113,48 @@ abstract class BootstrapListener implements ListenerAggregateInterface
     */
    abstract protected function configRouter($router,$config);
 
+// 放在子类
+
    /**
-    * 主要是识别域名或者二级域名然后寻找到教堂对应的教堂id
-    *
-    * @param \Cntysoft\Phalcon\Mvc\Application $application
-    */
-   protected function setupChurchId(\Cntysoft\Phalcon\Mvc\Application $application)
-   {
-      $request = $application->getDI()->get('request');
-      $domain = $request->getServerName();
-      $parts = explode('.', $domain);
-      $isOk = true;
-      $last = count($parts) - 1;
-      $churchId = -1;
-      if ($last > 0) {
-         if ($parts[$last - 1].'.'.$parts[$last] !== PLATFORM_DOMAIN) {
-            //有绑定的域名
-            $churchId = Binder::transform($domain);
-         } else {
-            //二级域名
-            $repositoy = new Repository();
-            $churchId = $repositoy->getChurchIdByKey($parts[0]);
-         }
-         $isOk = $churchId <= 0 ? false : true;
-      }else{
-         $isOk = false;
-      }
-      if('localhost' == $domain && SYS_MODE == SYS_M_DEBUG){
-         $isOk = true;
-         $churchId = 1;
-      }
-      if (!$isOk) {
-         if (SYS_MODE == SYS_M_DEBUG) {
-            die('教堂不存在');
-         } else {
-            //重定向到一个页面不存在的页面
-            header('location:/Pages/Exception/churchNotExist');
-         }
-      }
-      Kernel\get_church_id($churchId);
-   }
+//    * 主要是识别域名或者二级域名然后寻找到教堂对应的教堂id
+//    *
+//    * @param \Cntysoft\Phalcon\Mvc\Application $application
+//    */
+//   protected function setupChurchId(\Cntysoft\Phalcon\Mvc\Application $application)
+//   {
+//      $request = $application->getDI()->get('request');
+//      $domain = $request->getServerName();
+//      $parts = explode('.', $domain);
+//      $isOk = true;
+//      $last = count($parts) - 1;
+//      $churchId = -1;
+//      if ($last > 0) {
+//         if ($parts[$last - 1].'.'.$parts[$last] !== PLATFORM_DOMAIN) {
+//            //有绑定的域名
+//            $churchId = Binder::transform($domain);
+//         } else {
+//            //二级域名
+//            $repositoy = new Repository();
+//            $churchId = $repositoy->getChurchIdByKey($parts[0]);
+//         }
+//         $isOk = $churchId <= 0 ? false : true;
+//      }else{
+//         $isOk = false;
+//      }
+//      if('localhost' == $domain && SYS_MODE == SYS_M_DEBUG){
+//         $isOk = true;
+//         $churchId = 1;
+//      }
+//      if (!$isOk) {
+//         if (SYS_MODE == SYS_M_DEBUG) {
+//            die('教堂不存在');
+//         } else {
+//            //重定向到一个页面不存在的页面
+//            header('location:/Pages/Exception/churchNotExist');
+//         }
+//      }
+//      Kernel\get_church_id($churchId);
+//   }
 
    /**
     * 初始化系统派发器
