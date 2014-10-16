@@ -199,7 +199,7 @@ function make_cache_object($dir = null, $lifetime = 3600)
     ));
     $cacheDir = CNTY_DATA_DIR.DS.'Cache';
     if ($dir) {
-        $cacheDir .= DS.$dir.DS.  get_church_id();
+        $cacheDir .= DS.$dir;
     }
     if (!file_exists($cacheDir)) {
         Filesystem::createDir($cacheDir, 0755, true);
