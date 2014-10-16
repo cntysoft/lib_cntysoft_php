@@ -16,17 +16,6 @@ use Cntysoft\Framework\Core\FileRef\Manager as FileRefManager;
  */
 class ServiceListener implements ListenerAggregateInterface
 {
-   /**
-    * 需要初始化的服务对象列表
-    *
-    * @var array $services
-    */
-   protected $services = array(
-      'AppCaller',
-      'SessionManager',
-      'CookieManager',
-      'FileRefManager'
-   );
 
    /**
     * @inheritdoc
@@ -45,7 +34,8 @@ class ServiceListener implements ListenerAggregateInterface
    public function boot($event, $application)
    {
       $di = $application->getDI();
-      foreach ($this->services as $service) {
+      $services = $this->getServiceNames();
+      foreach ($services as $service) {
          $method = 'setup'.$service;
          $this->{$method}($di);
       }
@@ -91,19 +81,16 @@ class ServiceListener implements ListenerAggregateInterface
          return new \Cntysoft\Kernel\CookieManager($config->cookie->toArray());
       });
    }
-
    /**
-    * @param \Phalcon\DI $di
+    * @return array
     */
-   protected function setupFileRefManager($di)
+   protected function getServiceNames()
    {
-      $di->setShared('FileRefManager', function() {
-         $listener = new FileRefManagerListener();
-         $events = new EventsManager();
-         $listener->attach($events);
-         $manager = new FileRefManager();
-         $manager->setEventsManager($events);
-         return $manager;
-      });
+      return array(
+         'SessionManager',
+         'CookieManager',
+         'AppCaller'
+      );
    }
+
 }

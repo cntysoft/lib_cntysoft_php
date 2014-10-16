@@ -185,6 +185,29 @@ function filter_root_dir($path)
     return str_replace(CNTY_ROOT_DIR, '', $path);
 }
 
+/**
+ * 暂时只支持文件缓存
+ * 
+ * @param string $dir 子缓存目录 CNTY_DATA_DIR.DS.'Cache' 开始
+ * @param int $lifetime
+ * @return \Phalcon\Cache\Backend\File
+ */
+function make_cache_object($dir = null, $lifetime = 3600)
+{
+    $frontCache = new \Phalcon\Cache\Frontend\Data(array(
+       "lifetime" => $lifetime
+    ));
+    $cacheDir = CNTY_DATA_DIR.DS.'Cache';
+    if ($dir) {
+        $cacheDir .= DS.$dir;
+    }
+    if (!file_exists($cacheDir)) {
+        Filesystem::createDir($cacheDir, 0755, true);
+    }
+    return new \Phalcon\Cache\Backend\File($frontCache, array(
+       "cacheDir" => $cacheDir.DS
+    ));
+}
 
 /**
  * 快速调用对象里面的方法
