@@ -272,19 +272,7 @@ function get_common_cache_dir()
    return real_path(StdDir::getCacheDir().DS.'Common');
 }
 
-/**
- * 这个函数写法有点特殊
- *
- * @param int $id
- */
-function get_church_id($id = null)
-{
-   static $christId = null;
-   if (null == $christId && is_int($id) && $id > 0) {
-      $christId = $id;
-   }
-   return $christId;
-}
+
 
 /**
  * 清空一个数据表
@@ -297,34 +285,3 @@ function truncate_table($table)
    $db->execute(sprintf('TRUNCATE TABLE `%s`', $table));
 }
 
-/**
- * 获取系统ui模式
- *
- * @return int
- */
-function get_ui_mode()
-{
-   static $mode = null;
-   if (null === $mode) {
-      $cfg = get_global_di()->get('AppCaller')->call('Christ', 'SysSetting', 'Config', 'getSiteConfig', array(
-         get_church_id()
-      ));
-      $mode = (int) $cfg['uiMode'];
-   }
-   return $mode;
-}
-
-/**
- * 获取系统当前的模板方案
- *
- * @return int
- */
-function get_tpl_project()
-{
-   static $project = null;
-   if(null == $project){
-      $map = get_global_di()->get('AppCaller')->call('Christ', 'SysSetting', 'Config', 'getSiteConfig', array(get_church_id()));
-      $project = isset($map['TplProject']) ? (int) $map['TplProject'] : 1;
-   }
-   return $project;
-}

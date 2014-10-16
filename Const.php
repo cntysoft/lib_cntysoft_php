@@ -8,8 +8,6 @@
  */
 namespace Cntysoft;
 
-define('PLATFORM_DOMAIN', 'jidujiaohui.cn');
-
 //定义一些重要的物理路经
 define('CNTY_UI_DIR', CNTY_ROOT_DIR.DS.'Ui');
 define('CNTY_TEMPLATE_DIR', CNTY_UI_DIR.DS.'Templates');
