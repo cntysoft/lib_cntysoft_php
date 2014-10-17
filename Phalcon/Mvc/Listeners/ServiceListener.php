@@ -9,8 +9,6 @@
 namespace Cntysoft\Phalcon\Mvc\Listeners;
 use Cntysoft\Phalcon\Events\ListenerAggregateInterface;
 use Cntysoft\Kernel\ConfigProxy;
-use Phalcon\Events\Manager as EventsManager;
-use Cntysoft\Framework\Core\FileRef\Manager as FileRefManager;
 /**
  * 系统一些小东西初始化监听类
  */

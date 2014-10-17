@@ -1,12 +1,12 @@
 <?php
 /**
- * Cntysoft Cloud Software Team
+ * Cntysoft OpenEngine
  * 
- * @author SOFTBOY <cntysoft@163.com>
+ * @author CNTYFENG <cntyfeng@163.com>
  * @copyright  Copyright (c) 2010-2011 Cntysoft Technologies China Inc. <http://www.cntysoft.com>
  * @license    http://www.cntysoft.com/license/new-bsd     New BSD License
  */
- namespace Cntysoft\Framework\Core\FileRef;
+namespace Cntysoft\Framework\Net;
 
- class Exception extends \Exception
- {}
+class Exception extends \Exception
+{}
