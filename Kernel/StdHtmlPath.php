@@ -30,9 +30,18 @@ abstract class StdHtmlPath
     *
     * @return string
     */
-   public static function getJsPath()
+   public static function getMobileJsPath()
    {
-      return '/Ui/JsLibrary';
+      return self::getSkinPath().'/Mobile/Js';
+   }
+    /**
+    * 获取标准的Js路径
+    *
+    * @return string
+    */
+   public static function getPcJsPath()
+   {
+      return self::getSkinPath().'/Pc/Js';
    }
 
    /**
@@ -40,11 +49,20 @@ abstract class StdHtmlPath
     *
     * @return string
     */
-   public static function getImagePath()
+   public static function getPcImagePath()
    {
-      return '/Ui/Images';
+      return self::getSkinPath().'/Pc/Images';
    }
-
+   
+   /**
+    * 获取图片路径
+    *
+    * @return string
+    */
+   public static function getMobileImagePath()
+   {
+      return self::getSkinPath().'/Mobile/Images';
+   }
    /**
     * 获取皮肤路径
     *
@@ -52,7 +70,7 @@ abstract class StdHtmlPath
     */
    public static function getSkinPath()
    {
-      return '/Ui/Skins';
+      return '/Ui/Skins/'. \Cntysoft\Kernel\get_church_id();
    }
 
    /**
@@ -62,7 +80,7 @@ abstract class StdHtmlPath
     */
    public static function getTemplatesPath()
    {
-      return '/Ui/Templates';
+      return '/Ui/Templates/'. \Cntysoft\Kernel\get_church_id();
    }
 
    /**
