@@ -40,7 +40,7 @@ class Upload
         $this->tmpDir = StdDir::getTmpDir() . DS . 'WebUploader';
         //处理下上传目标文件夹
         if (isset($option['uploadDir'])) {
-            $option['uploadDir'] = Kernel\real_path(CNTY_ROOT_DIR . DS . $option['uploadDir']);
+            $option['uploadDir'] = Kernel\real_path($option['uploadDir']);
         }
         $this->options = new UploadOption($option);
         //调整依赖关系
