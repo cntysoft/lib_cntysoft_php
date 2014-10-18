@@ -1,9 +1,8 @@
 <?php
 /**
- * Cntysoft OpenEngine
- * 
+ * Cntysoft Cloud Software Team
+ *
  * @author SOFTBOY <cntysoft@163.com>
- * @author changwang <chenyongwang1104@163.com>
  * @copyright  Copyright (c) 2010-2011 Cntysoft Technologies China Inc. <http://www.cntysoft.com>
  * @license    http://www.cntysoft.com/license/new-bsd     New BSD License
  */
@@ -62,12 +61,16 @@ class FileRefDownload
             $attachmentFilename = Manager::getAttachmentFilename($url->getPath());
             curl_setopt($this->curl, CURLOPT_URL, $fileUrl);
             $fd = Filesystem::fopen($attachmentFilename, 'wb');
+            curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($this->curl, CURLOPT_FILE, $fd);
             set_time_limit(0);
             if (!curl_exec($this->curl)) {
+                curl_close($this->curl);
                 $errorType = ErrorType::getInstance();
                 Kernel\throw_exception(new Exception(
                         $errorType->msg('E_CURL_ERROR', curl_error($this->curl)), $errorType->code('E_CURL_ERROR')), $errorType);
+            }else {
+                curl_close($this->curl);
             }
             $fileinfo = stat($attachmentFilename);
             $refInfo = array(
@@ -75,7 +78,7 @@ class FileRefDownload
                'filesize' => $fileinfo['size'],
                'attachment' => str_replace(CNTY_ROOT_DIR, '', $attachmentFilename)
             );
-            $rid = $this->refManager->addTempFileRef($refInfo);
+            $rid = $this->refManager->addTempFileRef(null, $refInfo);
             $refInfo['rid'] = $rid;
             $refInfo['targetFile'] = $attachmentFilename;
             Filesystem::fclose($fd);
