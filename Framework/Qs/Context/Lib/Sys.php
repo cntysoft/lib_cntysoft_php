@@ -61,7 +61,7 @@ class Sys
         return self::loadCss($filename, '/Modules/User/Ui/Css');
     }
     
-    public static function loadPcImage($file, $type = 'Pc')
+    public static function loadImage($file, $type = 'Pc')
     {
         if('Pc' === $type){
             return StdHtmlPath::getPcImagePath() . DS . $file[0]; 

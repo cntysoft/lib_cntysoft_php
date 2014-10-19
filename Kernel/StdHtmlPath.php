@@ -26,7 +26,7 @@ abstract class StdHtmlPath
    }
 
    /**
-    * 获取标准的Js路径
+    * 获取Mobile标准的Js路径
     *
     * @return string
     */
@@ -35,7 +35,7 @@ abstract class StdHtmlPath
       return self::getSkinPath().'/Mobile/Js';
    }
     /**
-    * 获取标准的Js路径
+    * 获取Pc标准的Js路径
     *
     * @return string
     */
@@ -43,7 +43,16 @@ abstract class StdHtmlPath
    {
       return self::getSkinPath().'/Pc/Js';
    }
-
+   
+   /**
+    * 获取标准的Js路径
+    *
+    * @return string
+    */
+   public static function getJsPath()
+   {
+      return '/JsLibrary';
+   }
    /**
     * 获取图片路径
     *
