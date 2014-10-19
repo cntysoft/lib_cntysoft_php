@@ -243,7 +243,6 @@ class Server
    protected function loadCallHandler($name)
    {
       $class = $this->scriptNs.'\\'.$name;
-      var_dump($class);
       return $this->scriptBroker->get($class);
    }
 

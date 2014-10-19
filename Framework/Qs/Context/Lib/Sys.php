@@ -23,7 +23,7 @@ class Sys
      */
     public static function loadJs($file, $basepath = null)
     {
-        $basepath = $basepath ? $basepath : StdHtmlPath::getJsPath();
+        $basepath = $basepath ? $basepath : StdHtmlPath::getSkinPath();
         return Utils::generateJsScriptTag($basepath, $file);
     }
 
@@ -59,6 +59,15 @@ class Sys
     public static function loadUcCss($filename)
     {
         return self::loadCss($filename, '/Modules/User/Ui/Css');
+    }
+    
+    public static function loadImage($file, $type = 'Pc')
+    {
+        if('Pc' === $type){
+            return StdHtmlPath::getPcImagePath() . DS . $file[0]; 
+        }else{
+            return StdHtmlPath::getMobileImagePath() . DS . $file[0];
+        }
     }
     /**
      * 加载Css文件
