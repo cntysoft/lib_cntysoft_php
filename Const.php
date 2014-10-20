@@ -60,7 +60,7 @@ const T_F_GROUP = 2;
 const T_WEBOS = 4;
 
 //标准异常上下文
-const STD_EXCEPTION_CONTEXT = 'Cntysoft.Kernel.StdErrorType';
+const STD_EXCEPTION_CONTEXT = 'Cntysoft/Kernel/StdErrorType';
 
 //一些数据类型定义
 const INTEGER = 'integer';
