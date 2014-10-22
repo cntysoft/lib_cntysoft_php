@@ -336,7 +336,7 @@ class CookieManager
 
    /**
     * @param array $config
-    * @return \Cntysoft\KernelCookieManager
+    * @return \Cntysoft\Kernel\CookieManager
     */
    public function setConfigFromArray(array $config)
    {
