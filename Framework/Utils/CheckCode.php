@@ -129,6 +129,7 @@ class CheckCode
      */
     public function draw()
     {
+
         // 图片宽(px)
         $this->imageL || $this->imageL = $this->length * $this->fontSize * 1.5 + $this->length * $this->fontSize / 2;
         // 图片高(px)
@@ -182,7 +183,6 @@ class CheckCode
         $code = strtoupper(implode('', $code));
         //保存验证码到Session
         $this->setupSession($code);
-
 
         header('Cache-Control: private, max-age=0, no-store, no-cache, must-revalidate');
         header('Cache-Control: post-check=0, pre-check=0', false);
@@ -303,6 +303,7 @@ class CheckCode
     private function setupSession($code) 
     {
         $sessionMgr = Kernel\get_global_di()->getShared('SessionManager');
+
         $sessionMgr->setExpirationSeconds($this->expire, array(
            $this->sessionKey
         ));

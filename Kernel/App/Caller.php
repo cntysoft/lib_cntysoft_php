@@ -87,7 +87,7 @@ class Caller
             $cls = '\\'.implode('\\', array('App', $module, $name, 'AjaxHandler', $cls));
             if (!class_exists($cls)) {
                 Kernel\throw_exception(new Exception(
-                        Kernel\StdErrorType::msg('E_APP_NOT_EXIST', str_replace('\\', '.', $cls)), Kernel\StdErrorType::code('E_APP_NOT_EXIST')
+                        Kernel\StdErrorType::msg('E_APP_NOT_EXIST',$cls), Kernel\StdErrorType::code('E_APP_NOT_EXIST')
                         ), \Cntysoft\STD_EXCEPTION_CONTEXT);
             }
             $ajaxHandler = new $cls();

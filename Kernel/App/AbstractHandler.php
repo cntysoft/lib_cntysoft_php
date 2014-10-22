@@ -44,7 +44,7 @@ abstract class AbstractHandler
     */
    public function getErrorTypeContext()
    {
-      return get_class($this);
+      return str_replace('\\', '/', get_class($this));
    }
    /**
     * @return \Cntysoft\Stdlib\ErrorType
