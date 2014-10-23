@@ -175,7 +175,7 @@ class Model extends AbstractModel
     */
    public static function generateRangeCond($key, array $range)
    {
-      return sprintf('%s in ("%s")', $key, implode('", "', $range));
+      return sprintf("%s in ('%s')", $key, implode("', '", $range));
    }
 
 }
