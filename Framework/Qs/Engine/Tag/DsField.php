@@ -30,7 +30,7 @@ class DsField extends AbstractTag
             if (!isset($pool[$group])) {
                 throw new Exception('datasource '.$group.' is not exist');
             }
-            if(!isset($pool[$group][$key])){
+            if(!array_key_exists($key, $pool[$group])){
                 throw new Exception('datasource field '.$key. ' is not exist');
             }
             if($eval) {
