@@ -43,7 +43,17 @@ abstract class StdHtmlPath
    {
       return self::getSkinPath().'/Pc/Js';
    }
-   
+
+   /**
+    * 前台共用Js路径
+    *
+    * @return string
+    */
+   public static function getFrontJsLibPath()
+   {
+      return self::getUiPath() . '/JsLib';
+   }
+
    /**
     * 获取标准的Js路径
     *
