@@ -13,7 +13,6 @@ use Cntysoft\Kernel\StdDir;
 use Cntysoft\Kernel\StdErrorType;
 use Cntysoft\Framework\Net\Exception;
 use Cntysoft\Stdlib\Filesystem;
-
 /**
  * 文件上传处理类配置对象
  */
@@ -91,9 +90,9 @@ class Upload extends AbstractOption
     public function __construct(array $options = array())
     {
         $netConfig = ConfigProxy::getFrameworkConfig('Net', ConfigProxy::C_TYPE_FRAMEWORK_SYS);
-        $swfConfig = isset($netConfig->swfuploader) ? $netConfig->swfuploader->toArray(): array();
+        $swfConfig = isset($netConfig->swfuploader) ? $netConfig->swfuploader->toArray() : array();
         $options += $swfConfig;
-        self::$allowDirs[] = CNTY_DATA_DIR . DS . 'App' . DS . 'Cms' . DS . 'ContentModelManager' . DS . 'Image';
+//        self::$allowDirs[] = CNTY_DATA_DIR . DS . 'App' . DS . 'Cms' . DS . 'ContentModelManager' . DS . 'Image';
         $options['totalChunk'] = $options['total_chunk'];
         unset($options['total_chunk']);
         parent::__construct($options);
@@ -133,9 +132,9 @@ class Upload extends AbstractOption
 //        } else {
 //            $path = $this->uploadDir;
 //        }
-        if(null == $this->uploadDir) {
+        if (null == $this->uploadDir) {
             throw new Exception(
-                StdErrorType::msg('E_UPLOAD_PATH_EMPTY'), StdErrorType::code('E_UPLOAD_PATH_EMPTY')
+            StdErrorType::msg('E_UPLOAD_PATH_EMPTY'), StdErrorType::code('E_UPLOAD_PATH_EMPTY')
             );
         }
         $path = $this->uploadDir;
@@ -257,6 +256,20 @@ class Upload extends AbstractOption
     public static function getAllowDirs()
     {
         return self::$allowDirs;
+    }
+
+    /**
+     * 添加允许路径
+     * 
+     * @param type $dir
+     */
+    public static function addAllowDirs($dir)
+    {
+        if (!is_array($dir)) {
+            $dir = (array) $dir;
+        }
+
+        self::$allowDirs = array_merge(self::$allowDirs, $dir);
     }
 
 }
