@@ -8,7 +8,7 @@
  */
 namespace Cntysoft\Framework\ApiServer;
 
-class SysUserApiAuthorizer
+class UserApiAuthorizer
 {
-    const CODE_M_CLS = 'App\Christ\SysUser\Model\ApiAuthorizeCode';
+    const CODE_M_CLS = 'App\Christ\User\Model\ApiAuthorizeCode';
 }
