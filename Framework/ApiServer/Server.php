@@ -84,7 +84,7 @@ class Server
          //判断函数存在不
          if (!method_exists($handler, $fn)) {
             throw new Exception(
-               Kernel\StdErrorType::msg('E_API_HANDLER_NOT_EXIST', $fn), Kernel\StdErrorType::code('E_API_HANDLER_NOT_EXIST'));
+               Kernel\StdErrorType::msg('E_API_SYS_HANDLER_NOT_EXIST', $fn), Kernel\StdErrorType::code('E_API_SYS_HANDLER_NOT_EXIST'));
          }
          $invokeKey = $name.'.'.$method;
 //            //判断是否在白名单里面
