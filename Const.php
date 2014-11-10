@@ -13,14 +13,12 @@ define('CNTY_UI_DIR', CNTY_ROOT_DIR.DS.'Ui');
 define('CNTY_TEMPLATE_DIR', CNTY_UI_DIR.DS.'Templates');
 define('CNTY_TAG_DIR', CNTY_ROOT_DIR.DS.'TagLibrary');
 define('CNTY_JS_LIB_DIR', CNTY_ROOT_DIR.DS.'JsLibrary');
-define('CNTY_JS_CHRIST_DIR', CNTY_ROOT_DIR.DS.'Christ');
 define('CNTY_JS_SYS_DIR', CNTY_ROOT_DIR.DS.'SysManager');
 define('CNTY_SKIN_DIR', CNTY_UI_DIR.DS.'Skins');
 define('CNTY_IMAGE_DIR', CNTY_UI_DIR.DS.'Images');
 define('CNTY_DATA_DIR', CNTY_ROOT_DIR.DS.'Data');
 define('CNTY_CACHE_DIR', CNTY_DATA_DIR.DS.'Cache');
 define('CNTY_UPLOAD_DIR', CNTY_DATA_DIR.DS.'UploadFiles');
-define('CNTY_CHRIST_DIR', CNTY_ROOT_DIR.DS.'ChristManager');
 
 //自定义名称
 const LINUX = 'Linux';
@@ -40,9 +38,6 @@ const API_CALL_EXP_KEY = 'ApiCallException';
 const SESSION_NS = 'CNTYSOFT_S_NS';
 const SYS_AUTH_CODE_KEY = 'SYS_AUTH_CODE_KEY';
 
-const CHRIST_S_KEY_CHK_CODE = 'christ_s_key_chk_code';
-//一些标准的SESSION KEY
-const CHRIST_S_KEY_SYS_USER_INFO = 'christ_key_user_info';
 
 const PLATFORM_S_KEY_CHK_CODE = 'platform_s_key_chk_code';
 const PLATFORM_S_KEY_SYS_USER_INFO = 'platform_key_user_info';

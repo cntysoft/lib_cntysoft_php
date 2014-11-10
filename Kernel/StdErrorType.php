@@ -75,7 +75,7 @@ class StdErrorType
       'E_API_INVOKE_NEED_LOGIN' => array(53, 'api invoke need login'),
       'E_APP_MODULE_CANOT_EMPTY'               => array(54, 'App module can not be empty'),
       'E_HTML_IS_NOT_BUILD' => array(55, 'target html file : %s is not exist, maybe not be generated'),
-      'E_UPLOAD_PATH_EMPTY' => array(57, 'upload path empty'),
+      
       'E_API_INVOKE_LEAK_SECURITY' => array(58, 'Api invoke leak security infomation')
    );
 

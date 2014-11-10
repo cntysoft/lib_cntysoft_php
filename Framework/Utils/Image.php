@@ -34,12 +34,12 @@ class Image
     protected static $config = null;
     /**
      * 用来保存作为水印的图片或文字的对象
-     * @var PHPImageWorkshop\ImageWorkshop
+     * @var \PHPImageWorkshop\ImageWorkshop
      */
     protected static $iwsWaterMark = null;
     /**
      * 需要被处理的图片
-     * @var PHPImageWorkshop\ImageWorkshop
+     * @var \PHPImageWorkshop\ImageWorkshop
      */
     protected $iwsImage = null;
     /**

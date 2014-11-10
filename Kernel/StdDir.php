@@ -14,39 +14,6 @@ namespace Cntysoft\Kernel;
 abstract class StdDir
 {
 
-// 放到继承里面去
-   /**
-//    * 获取教堂自己的UI文件夹路径
-//    *
-//    * @return string
-//    */
-//   public static function getChurchUiDir()
-//   {
-//      return CNTY_ROOT_DIR.DS.'ChurchUi';
-//   }
-//
-//   /**
-//    * 获取教堂私有的模板路径
-//    *
-//    * @param int $churchId
-//    * @return string
-//    */
-//   public static function getChurchTemplatesDir($churchId)
-//   {
-//      return self::getChurchUiDir().DS.$churchId.DS.'Templates';
-//   }
-//
-//   /**
-//    * 获取教堂私有的的皮肤路径
-//    *
-//    * @param int $churchId
-//    * @return string
-//    */
-//   public static function getChurchSkinDir($churchId)
-//   {
-//      return self::getChurchUiDir().DS.$churchId.DS.'Skins';
-//   }
-
    /**
     * 获取系统缓存路径
     *
