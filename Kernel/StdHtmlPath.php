@@ -89,7 +89,7 @@ abstract class StdHtmlPath
     */
    public static function getSkinPath()
    {
-      return '/Ui/Skins/'. \Cntysoft\Kernel\get_church_id();
+      return '/Ui/Skins/'. \Cntysoft\Kernel\get_site_id();
    }
 
    /**
@@ -99,7 +99,7 @@ abstract class StdHtmlPath
     */
    public static function getTemplatesPath()
    {
-      return '/Ui/Templates/'. \Cntysoft\Kernel\get_church_id();
+      return '/Ui/Templates/'. \Cntysoft\Kernel\get_site_id();
    }
 
    /**

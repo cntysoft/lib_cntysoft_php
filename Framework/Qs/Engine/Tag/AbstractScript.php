@@ -41,9 +41,9 @@ abstract class AbstractScript
     /**
      * 教堂ID
      * 
-     * @var int $churchId
+     * @var int $siteId
      */
-    protected $churchId = null;
+    protected $siteId = null;
     /**
      * @param array $params
      * @param \Cntysoft\Framework\Qs\Engine $engine
@@ -54,7 +54,7 @@ abstract class AbstractScript
         $this->engine = $engine;
         $this->di = Kernel\get_global_di();
         $this->appCaller = $this->di->get('AppCaller');
-        $this->churchId = Kernel\get_church_id();
+        $this->siteId = Kernel\get_site_id();
     }
 
     /**

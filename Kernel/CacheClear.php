@@ -20,13 +20,13 @@ final class CacheClear
    /**
     * 清除App缓存文件
     *
-    * @param int $churchId           
+    * @param int $siteId
     * @param string $module           
     * @param string $name           
     */
-   public static function clearAppCache($churchId, $module, $name)
+   public static function clearAppCache($siteId, $module, $name)
    {
-      $dir = implode(DS, array(StdDir::getCacheDir(), $module, $name, $churchId));
+      $dir = implode(DS, array(StdDir::getCacheDir(), $module, $name, $siteId));
       if(file_exists($dir)){
          Filesystem::deleteDirRecusive($dir);
       }
