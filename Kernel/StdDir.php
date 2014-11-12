@@ -165,16 +165,6 @@ abstract class StdDir
    }
 
    /**
-    * 获取系统文件上传的目录
-    *
-    * @return string
-    */
-   public static function getUploadDir()
-   {
-      return CNTY_DATA_DIR.DS.'UploadFiles';
-   }
-
-   /**
     * 获取Framework的数据文件夹
     *
     * @param string $name

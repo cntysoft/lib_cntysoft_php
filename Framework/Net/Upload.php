@@ -114,7 +114,7 @@ class Upload
       }
       $eventMgr = $this->getEventMgr();
       $eventMgr->collectResponses(true);
-      $response = $eventMgr->fire('upload:AfterSaveUploadFiles', $this, $savedFiles);
+      $response = $eventMgr->fire('upload:afterSaveUploadFiles', $this, $savedFiles);
       $ret = array();
       foreach($response as $files){
          $ret = array_merge($ret, $files);
