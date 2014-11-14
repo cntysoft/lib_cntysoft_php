@@ -106,7 +106,7 @@ abstract class Upload
          $savedFiles[] = $image->generateThumbnail($targetDir, $nailName . '_nail');
       }
 
-      $ret = $this->afterSaveUploadFilesHandler($this, $savedFiles);
+      $ret = $this->afterSaveUploadFilesHandler($savedFiles);
 
       return $ret;
    }
@@ -241,7 +241,7 @@ abstract class Upload
     * 钩子函数，方便处理一些事情
     *
     * @param $savedFiles
-    * @return mixed
+    * @return array
     */
-   abstract protected function afterSaveUploadFilesHandler($uploader, $savedFiles);
+   abstract protected function afterSaveUploadFilesHandler($savedFiles);
 }
