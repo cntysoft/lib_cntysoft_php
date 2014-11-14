@@ -12,18 +12,13 @@ use Cntysoft\Kernel\StdDir;
 use Cntysoft\Kernel;
 use Cntysoft\Stdlib\Filesystem;
 use Cntysoft\Framework\Utils\Image;
-use Phalcon\Events\Manager as EventsManager;
 
 /**
  * 平台的上传处理类，使用百度上传器的处理方法
  * 当前的文件大小限制没有很好的实现
  */
-class Upload
+abstract class Upload
 {
-   /**
-    * @var \Phalcon\Events\Manager $eventMgr
-    */
-   protected $eventMgr;
    /**
     * @var \Cntysoft\Framework\Net\Options\Upload $options
     */
@@ -92,8 +87,6 @@ class Upload
             $errorType->msg('E_UPLOAD_FILE_NOT_EXIST', $sourceFile), $errorType->code('E_UPLOAD_FILE_NOT_EXIST')), $errorType);
       }
       $this->checkFileExists($targetFile);
-      $eventMgr = $this->getEventMgr();
-      $eventMgr->fire('upload:beforeSaveUploadFile', $this, $sourceFile, $targetFile);
       //判断上传的文件是否是图片
       $fileType = $uploadFile->getType();
       $isImage = (0 === strpos($fileType, 'image')) ? true : false;
@@ -112,13 +105,8 @@ class Upload
          $nailName = array_shift($filename);
          $savedFiles[] = $image->generateThumbnail($targetDir, $nailName . '_nail');
       }
-      $eventMgr = $this->getEventMgr();
-      $eventMgr->collectResponses(true);
-      $response = $eventMgr->fire('upload:afterSaveUploadFiles', $this, $savedFiles);
-      $ret = array();
-      foreach($response as $files){
-         $ret = array_merge($ret, $files);
-      }
+
+      $ret = $this->afterSaveUploadFilesHandler($this, $savedFiles);
 
       return $ret;
    }
@@ -250,13 +238,10 @@ class Upload
    }
 
    /**
-    * @return \Phalcon\Events\Manager
+    * 钩子函数，方便处理一些事情
+    *
+    * @param $savedFiles
+    * @return mixed
     */
-   public function getEventMgr()
-   {
-      if(!$this->eventMgr){
-         $this->eventMgr = new EventsManager();
-      }
-      return $this->eventMgr;
-   }
+   abstract protected function afterSaveUploadFilesHandler($uploader, $savedFiles);
 }
