@@ -30,6 +30,7 @@ class ErrorType extends BaseErrorType
        'E_TAG_DEF_FILE_NOT_EXIST' => array(10014, 'the define of the tag is not exit'),
        'E_TAG_EXIST' => array(10015, 'tag %s is exit'),
        'E_TAG_CATEGORY_NOT_EXIST' => array(10016, 'tag category is not exit'),
-       'E_TAG_CLASS_EXIT' => array(10017, 'class %s is exit')
+       'E_TAG_CLASS_EXIT' => array(10017, 'class %s is exit'),
+       'E_TAG_DIR_FINDER_NOT_SET' => array(10018, 'tag dir finder is not set')
     );
  }
