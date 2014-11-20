@@ -17,5 +17,17 @@ interface TagResolverInterface
     */
    public function getTagBaseDir();
 
-   public function getTagClsName();
+   /**
+    * 获取标签的基本名称空间
+    *
+    * @return string
+    */
+   public function getTagLabelBaseNs();
+
+   /**
+    * 获取数据源标签的基本名称空间
+    *
+    * @return string
+    */
+   public function getTagDsBaseNs();
 }

@@ -9,6 +9,8 @@
 namespace Cntysoft\Framework\Qs;
 use Cntysoft\Stdlib\Filesystem;
 use Cntysoft\Kernel;
+use Zend\Code\Generator\FileGenerator;
+use Zend\Code\Generator\ClassGenerator;
 /**
  * 标签的相关操作类
  */
@@ -34,8 +36,8 @@ class TagRefl
    const TAG_UI_JS_DIR_NAME = 'Js';
    const TAG_LIB_DIR_NAME = 'Lib';
    const TAG_LANG_DIR_NAME = 'Lang';
-   const TAG_BASE_LABEL_NS = 'TagLibrary\Label';
-   const TAG_BASE_DS_NS = 'TagLibrary\Ds';
+   const TAG_BASE_LABEL_NS = 'TagLibrary\%s\Label';
+   const TAG_BASE_DS_NS = 'TagLibrary\%s\Ds';
    const TAG_BASE_BUILDIN_NS = 'Qs\Lib';
    const FILE_MODE = 0777; /* rwxrwxrwx */
    /**
@@ -233,7 +235,8 @@ class TagRefl
     */
    protected static function updateTagMeta($tagType, $sourceClassify, $sourceTagName, array $meta)
    {
-      $base = CNTY_TAG_DIR.DS.$tagType;
+      $tagResolver = View::getTagResolver();
+      $base = $tagResolver->getTagBaseDir().DS.$tagType;
       $sourceTagPath = $base.DS.$sourceClassify.DS.$sourceTagName;
       $targetTagPath = $base.DS.$meta['category'].DS.$meta['id'];
       //在分类不一样的时候进行检查
@@ -305,7 +308,9 @@ class TagRefl
       }
       //判断标签是否存在
       self::checkTagExist(self::T_LABLE, $meta['category'], $meta['id'], false);
-      $baseDir = CNTY_TAG_DIR.DS.self::T_LABLE.DS.$meta['category'];
+      $resolver = View::getTagResolver();
+
+      $baseDir = $resolver->getTagBaseDir().DS.self::T_LABLE.DS.$meta['category'];
       //创建栏目结构
       $dir = $baseDir.DS.$meta['id'];
       try {
@@ -314,8 +319,6 @@ class TagRefl
          if(!$meta['static']){
             self::createLabelSubDirs($dir);
             self::generateScriptClass($meta, $dir, self::T_LABLE);
-            //Filesystem::touch($dir.DS.self::TAG_AJAX_SCRIPT_FILE);
-            //Filesystem::touch($dir.DS.self::LABEL_DEFAULT_TPL_NAME.self::TAG_AJAX_TPL_FILE_EXT);
          }
          //创建标签模板文件
          Filesystem::touch($dir.DS.self::LABEL_DEFAULT_TPL_NAME.self::TAG_TPL_FILE_EXT);
@@ -398,10 +401,11 @@ class TagRefl
    {
       self::checkTagExist($tagType, $classify, $tagName, true);
       $meta = self::getTagMeta($tagType, $classify, $tagName);
+      $tagResolver = View::getTagResolver();
       if(self::T_DS == $tagType){
-         $baseNs = self::TAG_BASE_DS_NS;
+         $baseNs = $tagResolver->getTagDsBaseNs();
       }else if(self::T_LABLE == $tagType){
-         $baseNs = self::TAG_BASE_LABEL_NS;
+         $baseNs = $tagResolver->getTagLabelBaseNs();
       }
       return $baseNs.'\\'.$meta['namespace'].'\\'.$meta['class'];
    }
@@ -526,28 +530,24 @@ class TagRefl
    {
       $classname = $meta['class'];
       $ns = $meta['namespace'];
-      $separator = DS;
+      $tagResolver = View::getTagResolver();
       if(self::T_LABLE === $flag){
-         $tagBaseNs = self::TAG_BASE_LABEL_NS;
+         $tagBaseNs = $tagResolver->getTagLabelBaseNs();
          $tagBaseClass = self::TAG_LABLE_BASE_CLASS;
          $tagBaseClassWithNs = self::TAG_LABEL_BASE_CLASS_WITH_NS;
       }elseif(self::T_DS === $flag){
-         $tagBaseNs = self::TAG_BASE_DS_NS;
+         $tagBaseNs = $tagResolver->getTagDsBaseNs();
          $tagBaseClass = self::TAG_DS_BASE_CLASS;
          $tagBaseClassWithNs = self::TAG_DS_BASE_CLASS_WITH_NS;
       }
-
-      $content = <<<classContent
-<?php
-    namespace $tagBaseNs$separator$ns;
-    use $tagBaseClassWithNs;
-    
-    class $classname extends $tagBaseClass
-    {
-        
-    }
-classContent;
-      Filesystem::filePutContents($baseDir.DS.self::TAG_SCRIPT_FILE, $content);
+      $tagBaseNs = sprintf($tagBaseNs, 'S'.Kernel\get_site_id().'\\P'.Kernel\get_tpl_project());
+      $fileGen = new FileGenerator();
+      $clsGen = new ClassGenerator($classname);
+      $clsGen->addUse($tagBaseClassWithNs);
+      $clsGen->setExtendedClass($tagBaseClass);
+      $clsGen->setNamespaceName($tagBaseNs);
+      $fileGen->setClass($clsGen);
+      Filesystem::filePutContents($baseDir.DS.self::TAG_SCRIPT_FILE, $fileGen->generate());
    }
 
    /**
