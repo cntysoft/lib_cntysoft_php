@@ -80,12 +80,6 @@ class BootstrapListener implements ListenerAggregateInterface
        * 后期有程序来管理这些
        */
       $cfg = ConfigProxy::getGlobalConfig();
-      $router->add('/'.$cfg->platformEntryPoint, array(
-         'module'     => 'Sys',
-         'controller' => 'Index',
-         'action'     => 'platform'
-      ));
-
       $this->configRouter($router, $cfg);
       $router->setDI($di);
       $di->setShared('router', $router);
