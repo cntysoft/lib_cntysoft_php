@@ -105,7 +105,7 @@ class StdErrorType
     *
     * @param string $type
     * @return int
-    * @throws Exception\RuntimeException
+    * @throws Exception
     */
    public static function code($type)
    {
