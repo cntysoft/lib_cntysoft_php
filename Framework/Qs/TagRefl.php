@@ -540,7 +540,6 @@ class TagRefl
          $tagBaseClass = self::TAG_DS_BASE_CLASS;
          $tagBaseClassWithNs = self::TAG_DS_BASE_CLASS_WITH_NS;
       }
-      $tagBaseNs = sprintf($tagBaseNs, 'S'.Kernel\get_site_id().'\\P'.Kernel\get_tpl_project());
       $fileGen = new FileGenerator();
       $clsGen = new ClassGenerator($classname);
       $clsGen->addUse($tagBaseClassWithNs);
