@@ -30,7 +30,6 @@ class BootstrapListener implements ListenerAggregateInterface
       $events->attach('application:boot', $this);
       $events->attach('application:beforeStartModule', $this);
       $events->attach('application:afterStartModule', $this);
-      $events->attach('application:boot', $this);
    }
 
    /**
@@ -85,7 +84,6 @@ class BootstrapListener implements ListenerAggregateInterface
          'controller' => 'Index',
          'action'     => 'platform'
       ));
-
       $this->configRouter($router, $cfg);
       $router->setDI($di);
       $di->setShared('router', $router);
