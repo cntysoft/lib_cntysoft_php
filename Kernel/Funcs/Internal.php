@@ -170,22 +170,32 @@ function get_model_require_fields($model, array $skip = array())
    $requires = $requires[3];
    $ret = array();
    foreach ($requires as $require) {
-      if (! in_array($require, $skip)) {
+      if (!in_array($require, $skip)) {
          $ret[] = $require;
       }
    }
    return $ret;
 }
-
 /**
  * 获取随机的字符串
- *
+ * @param int       $length  要生成的随机字符串长度
+ * @param boolean $specialSymbol
  * @return string
  */
-function get_random_str()
+function get_random_str($length = 5, $specialSymbol = false)
 {
-   $di = get_global_di();
-   return $di->getShared('security')->hash(rand(0, 1));
+   $arr = array('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', "~@#$%^&*(){}[]|");
+   if($specialSymbol){
+      $string = implode('', $arr);
+   }else{
+      $string = $arr[0];
+   }
+   $count = strlen($string) - 1;
+   $ret = '';
+   for ($i = 0; $i < $length; $i++) {
+      $ret .= $string[rand(0, $count)];
+   }
+   return $ret;
 }
 
 /**
