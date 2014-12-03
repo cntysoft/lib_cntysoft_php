@@ -70,19 +70,7 @@ class SiteConfig
      */
     public static function bootstrapPath()
     {
-        return self::jsPath().'/Bootstrap';
-    }
-    
-    /**
-     * 获取webOs路经
-     *
-     * 调用方式
-     * <code>Qs::SiteConfig('christPath');</code>
-     * @return string
-     */
-    public static function christPath()
-    {
-        return '/Christ';
+       return self::jsPath() . '/Bootstrap';
     }
 
     /**
