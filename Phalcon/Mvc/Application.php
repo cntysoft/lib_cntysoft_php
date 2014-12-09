@@ -9,7 +9,7 @@
 namespace Cntysoft\Phalcon\Mvc;
 use Phalcon\Events\Manager as EventManager;
 use Cntysoft\Kernel\ConfigProxy;
-use Phalcon\Db\Adapter\Pdo\Mysql;
+
 use Cntysoft\Phalcon\Mvc\Listeners;
 /**
  * MVC应用程序类定义，扩展Phalcon程序类，加入自己一些逻辑
@@ -43,15 +43,31 @@ class Application extends \Phalcon\Mvc\Application
          define('SYS_MODE', $mode);
       }
       self::$globalDi = $dependencyInjector;
-
       parent::__construct($dependencyInjector);
-      //初始化数据库连接信息
-      $this->initDbConnection();
-      $this->setupSysModules();
       $this->loadCoreFiles();
+      $this->beforeInitialized();
+      //初始化数据库连接信息
       $this->initApplicationEventManager();
       $this->bindListeners();
+      $this->setupSysModules();
+      $this->beforeDbConnInitialized();
+      $this->initDbConnection();
+      $this->afterDbConnInitialized();
+   }
+   protected function beforeInitialized()
+   {}
+   /**
+    * 在系统初始化之后的钩子函数
+    */
+   protected function afterDbConnInitialized()
+   {
+   }
 
+   /**
+    * 在系统初始化之后的钩子函数
+    */
+   protected function beforeDbConnInitialized()
+   {
    }
 
    /**
@@ -112,16 +128,10 @@ class Application extends \Phalcon\Mvc\Application
    }
 
    /**
-    * 初始化数据库链接
+    * 初始化数据库链接钩子函数
     */
    protected function initDbConnection()
    {
-      //到时候可以在这里统计一个页面的查询次数
-      $this->di->setShared('db', function() {
-         $globalConfig = ConfigProxy::getGlobalConfig();
-         $db = new Mysql($globalConfig->db->toArray());
-         return $db;
-      });
    }
 
 }

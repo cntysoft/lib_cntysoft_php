@@ -33,7 +33,6 @@ abstract class AbstractHandler
    public function __construct()
    {
       $this->di = Kernel\get_global_di();
-      $this->appCaller = $this->di->get('AppCaller');
    }
 
 
@@ -108,5 +107,16 @@ abstract class AbstractHandler
          'total' => count($ret),
          'items' => $ret
       );
+   }
+
+   /**
+    * @return \Cntysoft\Kernel\App\Caller
+    */
+   protected function getAppCaller()
+   {
+      if(null == $this->appCaller){
+         $this->appCaller =  $this->di->get('AppCaller');
+      }
+      return $this->appCaller;
    }
 }
