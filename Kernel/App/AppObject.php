@@ -27,7 +27,7 @@ class AppObject
    /**
     * APP权限树文件名称
     */
-   const ACL_FILE_NAME = 'PermissionTree.php';
+   const PERM_RES_FILE_NAME = 'PermResourceTree.php';
 
    /**
     * 请求API函数授权码文件
@@ -119,6 +119,15 @@ class AppObject
       return $this->getSelfDir().DS.self::MODEL_DIR;
    }
 
+   /**
+    * 获取权限资源文件名
+    *
+    * @return string
+    */
+   public function getPermResFilename()
+   {
+      return self::getDataDir().DS.self::ACL_FILE_NAME;
+   }
    /**
     * 获取系统APP键值
     *
