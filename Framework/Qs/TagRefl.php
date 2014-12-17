@@ -97,20 +97,22 @@ class TagRefl
             $tagPath = Kernel\real_path($path.DS.$tagType);
             $category = '';
             Filesystem::traverseFs($tagPath, 2, function($fileinfo, $depth)use(&$cur, &$category, $selfCls, $errorType) {
-               if (0 == $depth) {
-                  //分类
-                  $category = $fileinfo->getFilename();
-                  $cur[$category] = array();
-               } elseif (1 == $depth) {
-                  //判断定义文件是否存在
-                  $tagDefFile = $fileinfo->getPathname().DS.$selfCls::TAG_DEF_FILE;
-                  if (!file_exists($tagDefFile)) {
-                     Kernel\throw_exception(new Exception(
-                        $errorType->msg('E_TAG_DEF_FILE_NOT_EXIST'),
-                        $errorType->code('E_TAG_DEF_FILE_NOT_EXIST')
-                     ), $errorType);
+               if($fileinfo->isDir()) {
+                  if (0 == $depth) {
+                     //分类
+                     $category = $fileinfo->getFilename();
+                     $cur[$category] = array();
+                  } elseif (1 == $depth) {
+                     //判断定义文件是否存在
+                     $tagDefFile = $fileinfo->getPathname().DS.$selfCls::TAG_DEF_FILE;
+                     if (!file_exists($tagDefFile)) {
+                        Kernel\throw_exception(new Exception(
+                           $errorType->msg('E_TAG_DEF_FILE_NOT_EXIST'),
+                           $errorType->code('E_TAG_DEF_FILE_NOT_EXIST')
+                        ), $errorType);
+                     }
+                     $cur[$category][$fileinfo->getFilename()] = @include $tagDefFile;
                   }
-                  $cur[$category][$fileinfo->getFilename()] = @include $tagDefFile;
                }
             });
          }
