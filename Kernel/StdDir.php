@@ -201,8 +201,7 @@ abstract class StdDir
    /**
     * 获取APP数据目录
     *
-    * @param
-    *           string$module
+    * @param string$module
     * @param string $name
     * @return string
     */

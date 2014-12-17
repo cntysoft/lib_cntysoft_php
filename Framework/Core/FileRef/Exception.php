@@ -6,3 +6,7 @@
  * @copyright  Copyright (c) 2010-2011 Cntysoft Technologies China Inc. <http://www.cntysoft.com>
  * @license    http://www.cntysoft.com/license/new-bsd     New BSD License
  */
+ namespace Cntysoft\Framework\Core\FileRef;
+
+ class Exception extends \Exception
+ {}

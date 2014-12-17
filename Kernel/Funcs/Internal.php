@@ -293,4 +293,3 @@ function truncate_table($table)
    $db = get_db_adapter();
    $db->execute(sprintf('TRUNCATE TABLE `%s`', $table));
 }
-
