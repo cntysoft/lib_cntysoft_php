@@ -9,7 +9,7 @@
 namespace Cntysoft\Kernel;
 
 use Phalcon\Http\Response;
-
+use Cntysoft\Phalcon\Mvc\Application;
 /**
  * 抛出异常
  *
@@ -292,4 +292,17 @@ function truncate_table($table)
 {
    $db = get_db_adapter();
    $db->execute(sprintf('TRUNCATE TABLE `%s`', $table));
+}
+
+/**
+ * 这两个函数主要是为了在platform管理的时候调用APP进行一些区分
+ */
+function enter_platform_flow()
+{
+   Application::$requestFlowType = \Cntysoft\REQUEST_FLOW_PLATFORM;
+}
+
+function exit_platform_flow()
+{
+   Application::$requestFlowType = \Cntysoft\REQUEST_FLOW_NORMAL;
 }
