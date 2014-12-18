@@ -227,7 +227,7 @@ abstract class Upload
     */
    protected function getTargetFileName($uploadFile)
    {
-      $uploadDir = CNTY_ROOT_DIR.$this->options->getUploadDir();
+      $uploadDir = CNTY_ROOT_DIR . DS . $this->options->getUploadDir();
       //首先探测是否上传的时候指定的目标的文件夹名称
       $uploadFilename = $this->options->getTargetName();
       if (!$uploadFilename) {
