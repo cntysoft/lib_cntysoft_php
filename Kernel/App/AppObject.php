@@ -10,6 +10,7 @@ namespace Cntysoft\Kernel\App;
 use Cntysoft\Stdlib\ErrorType;
 use Cntysoft\Kernel\StdErrorType;
 use Cntysoft\Kernel;
+use Cntysoft\Stdlib\Filesystem;
 /**
  * APP描述对象
  */
@@ -80,6 +81,24 @@ class AppObject
          ));
       }
       return $this->selfDir;
+   }
+
+   /**
+    * 获取全局系统文件夹目录
+    *
+    * @return string
+    */
+   public function getGlobalDataDirForSelf()
+   {
+      if($this->module == 'Platform'){
+         $dir = CNTY_DATA_DIR.DS.$this->module.DS.$this->name;
+      }else{
+         $dir = CNTY_DATA_DIR.DS.$this->module.DS.$this->name.DS.Kernel\get_site_id();
+      }
+      if(!file_exists($dir)){
+         Filesystem::createDir($dir, 0755, true);
+      }
+      return $dir;
    }
 
    /**
