@@ -7,15 +7,19 @@
  * @license    http://www.cntysoft.com/license/new-bsd     New BSD License
  */
 namespace Cntysoft\Kernel\App;
+use Cntysoft\Framework\ApiServer\Exception;
 use Cntysoft\Stdlib\ErrorType;
 use Cntysoft\Kernel\StdErrorType;
 use Cntysoft\Kernel;
+use Cntysoft\Kernel\StdDir;
 use Cntysoft\Stdlib\Filesystem;
 /**
  * APP描述对象
  */
 class AppObject
 {
+   const APP_TYPE_BUILDIN = 0;
+   const APP_TYPE_EXT = 1;
    /**
     * APP数据模型目录
     */
@@ -36,10 +40,14 @@ class AppObject
    const AJAX_HANDLER_AUTHORIZE_CODE_FILENAME = 'AjaxApiAuthorizeCode.php';
 
    /**
+    * 应用元信息文件名称
+    */
+   const APP_META_FILENAME = 'Meta.php';
+
+   /**
     * APP异常信息定义文件名称
     */
    const ERROR_TYPE_FILE_NAME = 'ErrorType.php';
-
 
    protected $module;
    protected $name;
@@ -176,6 +184,26 @@ class AppObject
    }
 
    /**
+    * 获取应用元信息
+    *
+    * @param $moduleKey
+    * @param $appKey
+    * @return array
+    */
+   public static function getAppMetaInfo($moduleKey, $appKey)
+   {
+      $appDataDir = StdDir::getAppDataDir($moduleKey, $appKey);
+      $filename = $appDataDir .DS.self::APP_META_FILENAME;
+      if(!file_exists($filename)){
+         Kernel\throw_exception(new Exception(
+            StdErrorType::msg('E_APP_META_FILE_NOT_EXIST'),
+            StdErrorType::code('E_APP_META_FILE_NOT_EXIST')
+         ));
+      }
+      return include $filename;
+   }
+
+   /**
     * 获取APP的错误信息管理器
     *
     * @return \Cntysoft\Stdlib\ErrorType
@@ -202,4 +230,5 @@ class AppObject
    {
       return $this->module.DS.$this->name;
    }
+
 }
