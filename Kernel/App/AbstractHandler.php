@@ -77,6 +77,15 @@ abstract class AbstractHandler
       }
    }
 
+   protected function throwPermissionDeny($msg, array $extra = array())
+   {
+      if(!empty($extra)){
+         \Cntysoft\Kernel\g_data(\Cntysoft\API_CALL_EXP_KEY, $extra);
+      }
+      Kernel\throw_exception(new Exception(
+         StdErrorType::msg('E_API_PERMISSION_DENY', $msg), StdErrorType::code('E_API_PERMISSION_DENY')), \Cntysoft\STD_EXCEPTION_CONTEXT);
+   }
+
    /**
     * @return \Cntysoft\Kernel\App\AppObject
     */
