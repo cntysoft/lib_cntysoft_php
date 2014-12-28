@@ -68,7 +68,6 @@ abstract class AbstractScript
    public function __construct()
    {
       $this->di = Kernel\get_global_di();
-      $this->appCaller = $this->di->get('AppCaller');
    }
    /**
     * 是否为派发器
@@ -165,6 +164,17 @@ abstract class AbstractScript
       $orderBy = array_key_exists('orderBy', $params) ? $params['orderBy'] : array();
       $limit = array_key_exists('limit', $params) ? $params['limit'] : null;
       $offset = array_key_exists('start', $params) ? $params['start'] : null;
+   }
+
+   /**
+    * @return \Cntysoft\Kernel\App\Caller
+    */
+   protected function getAppCaller()
+   {
+      if(null == $this->appCaller){
+         $this->appCaller =  $this->di->get('AppCaller');
+      }
+      return $this->appCaller;
    }
 
    /**
