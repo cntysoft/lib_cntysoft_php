@@ -80,7 +80,7 @@ abstract class Upload
    public function saveUploadFile($uploadFile)
    {
       $sourceFile = $uploadFile->getTempName();
-      $targetFile = $this->getTargetFileName($uploadFile);
+      $targetFile = Kernel\real_path($this->getTargetFileName($uploadFile));
       if (!file_exists($sourceFile) || $sourceFile == $targetFile) {
          $errorType = ErrorType::getInstance();
          Kernel\throw_exception(new Exception(
@@ -232,6 +232,9 @@ abstract class Upload
       $uploadFilename = $this->options->getTargetName();
       if (!$uploadFilename) {
          $uploadFilename = Kernel\real_path($uploadFile->getName()); //这个地方要将前台JS发来的文件名进行编码转换，中文文件名的文件上传问题解决
+      }
+      if(strpos($uploadFilename, '/')){
+         $uploadFilename = substr($uploadFilename, 1);
       }
       //这里可能有文件名称不存在的情况吗？
       return $uploadDir . DS . $uploadFilename;
