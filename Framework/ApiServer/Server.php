@@ -255,7 +255,7 @@ class Server
       //这两个键值必须存在
       $this->whiteList = array(
          \Cntysoft\API_CALL_APP => array(
-            'Christ.User.Perm/login',
+            'Sys.User.Perm/login',
             'Sys.User.Perm/logout',
             'Sys.User.Perm/loginByCookie'
          ),

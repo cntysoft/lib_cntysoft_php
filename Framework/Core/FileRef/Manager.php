@@ -10,7 +10,7 @@ namespace Cntysoft\Framework\Core\FileRef;
 use Cntysoft\Kernel;
 use Cntysoft\Framework\Core\ErrorType as CoreErrorType;
 use Cntysoft\Stdlib\Filesystem;
-use Christ\Kernel\StdDir;
+use Gzy\Kernel\StdDir;
 use Cntysoft\Framework\Core\FileRef\Model\Entry as EntryModel;
 use Cntysoft\Framework\Core\FileRef\Model\Unused as UnusedModel;
 use Phalcon\Events\EventsAwareInterface;
