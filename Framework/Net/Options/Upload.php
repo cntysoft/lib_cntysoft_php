@@ -163,6 +163,7 @@ class Upload extends AbstractOption
    {
       $isOk = false;
       foreach ($this->allowedDirs as $dir) {
+         $dir = Kernel\real_path($dir);
          if ($dir == substr($uploadDir, 0, strlen($dir))) {
             $isOk = true;
             break;
