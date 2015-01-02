@@ -629,7 +629,6 @@ function get_file_ext($filename)
  */
 function generate_password($password)
 {
-    
     $encrypt = get_global_di()->getShared('security');
     return $encrypt->hash(hash('sha256', $password));
 }

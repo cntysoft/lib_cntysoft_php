@@ -68,7 +68,7 @@ class ErrorType
      * 
      * @param string $type
      * @return int
-     * @throws Exception\RuntimeException
+     * @throws Exception
      */
     public function code($type)
     {
