@@ -141,7 +141,7 @@ class Upload extends AbstractOption
          } else {
             $path .= DS . date('Y' . DS . 'm' . DS . 'd');
          }
-         $realPath = CNTY_ROOT_DIR.DS.$path;
+         $realPath = CNTY_ROOT_DIR.$path;
          if (!file_exists($realPath)) {
             Filesystem::createDir($realPath, 0755, true);
          }
@@ -163,6 +163,7 @@ class Upload extends AbstractOption
    {
       $isOk = false;
       foreach ($this->allowedDirs as $dir) {
+         $dir = Kernel\real_path($dir);
          if ($dir == substr($uploadDir, 0, strlen($dir))) {
             $isOk = true;
             break;
