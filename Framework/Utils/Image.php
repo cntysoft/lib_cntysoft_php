@@ -31,7 +31,7 @@ class Image
      * 关于缩略图和水印的相关配置选项
      * @var array
      */
-    protected static $config = null;
+    protected $config = null;
     /**
      * 用来保存作为水印的图片或文字的对象
      * @var \PHPImageWorkshop\ImageWorkshop
@@ -59,7 +59,7 @@ class Image
      * @param array $imagePath
      * @throws Exception
      */
-    public function __construct(array $imagePath)
+    public function __construct(array $imagePath, $options = array())
     {
         $this->checkRequireFields($imagePath, array('imageFromPath'));
         if (@!($imageSizeInfos = getimagesize($imagePath['imageFromPath']))) {
@@ -93,8 +93,25 @@ class Image
         }
 
         $this->iwsImage = new ImageWorkshop($image);
+		$this->config = ConfigProxy::getFrameworkConfig('ThumbWaterMark', ConfigProxy::C_TYPE_FRAMEWORK_VENDER)->toArray();
+		 $this->setOptions($this->config, $options);
     }
 
+	/**
+	 * 获取需要处理的图片的对象
+	 *
+	 * @return \PHPImageWorkshop\ImageWorkshop
+	 */
+	public function getIwsImage()
+	{
+		return $this->iwsImage;
+	}
+    
+    public function getIwsImageType()
+    {
+        return $this->iwsImageType;
+    }
+    
     /**
      * 生成缩略图
      *
@@ -106,7 +123,7 @@ class Image
      */
     public function generateThumbnail($path, $name, $position = 'LT', $quality = 75)
     {
-        $config = $this->getConfig()->toArray();
+        $config = $this->config;
         $this->checkRequireFields($config, array('thumb'));
         $this->checkRequireFields($config['thumb'], array('width', 'height', 'method', 'backgroundColor'));
         $configWidth = $config['thumb']['width'];
@@ -116,8 +133,8 @@ class Image
         $name = $name . $this->iwsImageType;
 
         if (self::IMAGE_ZERO == $configWidth && self::IMAGE_ZERO == $configHeight) {
-            $this->iwsImage->save($path, $name, true, null, $quality);
-            return;
+            $filename = $this->iwsImage->save($path, $name, true, null, $quality);
+            return $filename;
         }
         switch ($method) {
             case self::THUMB_METHOD_ONE:
@@ -177,7 +194,7 @@ class Image
      */
     public function playWaterMark($path, $name, $rotate = 0, $quality = 75)
     {
-        $config = $this->getConfig();
+        $config = $this->config;
         $this->checkRequireFields($config, array('waterMark'));
         $this->checkRequireFields($config['waterMark'], array('type', 'minWidth', 'minHeight'));
         $type = $config['waterMark']['type'];
@@ -258,7 +275,7 @@ class Image
     protected function getIwsWaterMark()
     {
         if(null == self::$iwsWaterMark){
-            $config = $this->getConfig();
+            $config = $this->config;
             $this->checkRequireFields($config, array('waterMark'));
             if(self::WATER_MARK_IMAGE == $config['waterMark']['type']){
                 $this->checkRequireFields($config['waterMark'], array('pic'));
@@ -287,17 +304,20 @@ class Image
         return CNTY_DATA_DIR . DS . 'Framework/WaterMark/Font';
     }
 
-    /**
-     * 获取缩略图和水印的配置选项
-     * @return array
-     */
-    protected function getConfig()
-    {
-        if(null == self::$config){
-            self::$config = ConfigProxy::getFrameworkConfig('ThumbWaterMark', ConfigProxy::C_TYPE_FRAMEWORK_VENDER);
-        }
-        return self::$config;
-    }
+	public function setOptions(array &$config, array $options)
+	{
+		foreach($config as $key => &$value) {
+			if (array_key_exists($key, $options) && is_array($value)) {
+				$this->setOptions($value, $options[$key]);
+			} else {
+				if (array_key_exists($key, $options)) {
+					$value = $options[$key];
+				}
+			}
+		}
+		unset($value);
+		return $config;
+	}
     /**
      * 检查是否具有必要的参数
      *
