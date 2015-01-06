@@ -93,19 +93,35 @@ abstract class Upload
       //这里的返回值可能是数组，当上传的文件是图片的时候，就会生成缩略图，会有两张
       $savedFiles = array($this->moveUploadFile($sourceFile, $targetFile));
       $enableNail = $this->options->getEnableNail();
+      if($isImage){
+          $image = new Image(array(
+            'imageFromPath' => $savedFiles[0]
+         ), array(
+                 'thumb' =>
+                      array (
+                            'width' => '0',
+                            'height' => '0'
+                      ),
+            ));
+         $type = $image->getIwsImageType();
+      }
       if ($isImage && $enableNail) { //如果不是图片的话，或者没有设置生成缩略图的话，直接返回
          $savedFilename = $savedFiles[0];
-         $image = new Image(array(
-            'imageFromPath' => $savedFilename
-         ));
          //目标上传文件夹
          $targetDir = Filesystem::dirname($savedFilename);
          $filename = Filesystem::basename($savedFilename);
          $filename = explode('.', $filename);
          $nailName = array_shift($filename);
-         $savedFiles[] = $image->generateThumbnail($targetDir, $nailName . '_nail');
+         $imageNail = new Image(array(
+            'imageFromPath' => $savedFilename
+         ));
+         $savedFiles[] = $imageNail->generateThumbnail($targetDir, $nailName . '_nail');
+         unset($imageNail);
+         if(strstr($type, 'jpg')){
+             $image->generateThumbnail($targetDir, $nailName, 'LT', 10);
+         }
       }
-
+      unset($image);
       $ret = $this->afterSaveUploadFilesHandler($savedFiles);
 
       return $ret;
