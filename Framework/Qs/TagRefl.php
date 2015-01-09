@@ -164,7 +164,8 @@ class TagRefl
    {
       self::checkTagTypes($tagType);
       //删除不需要判断， 不存在什么伤害都没有
-      $target = Kernel\real_path(CNTY_TAG_DIR.DS.$tagType.DS.$classify. DS .$tagName);
+      $tagResolver = View::getTagResolver();
+      $target = Kernel\real_path($tagResolver->getTagBaseDir().DS.$tagType.DS.$classify.DS.$tagName);
       if(file_exists($target)){
          Filesystem::deleteDirRecusive($target);
       }
@@ -178,7 +179,8 @@ class TagRefl
    {
       self::checkTagTypes($tagType);
       //删除不需要判断， 不存在什么伤害都没有
-      $target = CNTY_TAG_DIR.DS.$tagType.DS.$classify;
+      $tagResolver = View::getTagResolver();
+      $target = Kernel\real_path($tagResolver->getTagBaseDir().DS.$tagType.DS.$classify);
       if(file_exists($target)){
          Filesystem::deleteDirRecusive($target);
       }
@@ -261,7 +263,8 @@ class TagRefl
    {
       self::checkTagExist($tagType, $classify, $tagName, true);
       //保证标签文件夹名称唯一
-      $source = CNTY_TAG_DIR.DS.$tagType.DS.$classify.DS.$tagName;
+      $tagResolver = View::getTagResolver();
+      $source = Kernel\real_path($tagResolver->getTagBaseDir().DS.$tagType.DS.$classify.DS.$tagName);
       Filesystem::copyDir($source, Filesystem::dirname($source));
       $meta = self::getTagMeta($tagType, $classify, $tagName);
       //这里好使用 '_副本'是与Filesystem中的copyDir生成新目录名方法相对应的
@@ -279,7 +282,7 @@ class TagRefl
    {
       $tagResolver = View::getTagResolver();
       $baseDir = $tagResolver->getTagBaseDir();
-      if('' === $newClassify){
+      if('' === $classify){
          $source = $baseDir.DS.$tagType.DS.$newClassify;
          Filesystem::createDir($source);
       }else{
@@ -319,7 +322,7 @@ class TagRefl
          Filesystem::createDir($dir, self::FILE_MODE);
          self::writeMetaInfo($meta, $dir);
          if(!$meta['static']){
-            self::createLabelSubDirs($dir);
+//            self::createLabelSubDirs($dir);
             self::generateScriptClass($meta, $dir, self::T_LABLE);
          }
          //创建标签模板文件
@@ -343,7 +346,8 @@ class TagRefl
       Kernel\ensure_array_has_fields($meta, array('id', 'category', 'class', 'namespace'));
       //判断标签是否存在
       self::checkTagExist(self::T_DS, $meta['category'], $meta['id'], false);
-      $baseDir = CNTY_TAG_DIR.DS.self::T_DS.DS.$meta['category'];
+      $resolver = View::getTagResolver();
+      $baseDir = $resolver->getTagBaseDir().DS.self::T_DS.DS.$meta['category'];
       //创建栏目结构
       $dir = $baseDir.DS.$meta['id'];
 
