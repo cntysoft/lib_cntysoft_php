@@ -15,6 +15,7 @@ class ErrorType extends BaseErrorType
       'E_REQUEST_ERROR' => array(10002, 'request error '),
       'E_APPLY_SETTING_ERROR' => array(10003, 'apply setting error : %s'),
       'E_SDK_CONFIG_NOT_EXIST' => array(10004, 'sdk appid or appkey not exist'),
-      'E_API_INVOKE_ERROR' => array(10005, 'api invoke error : %s')
+      'E_API_INVOKE_ERROR' => array(10005, 'api invoke error : %s'),
+      'E_ACCESS_TOKEN_EXPIRED' => array(10006, 'access token expired')
    );
 }
