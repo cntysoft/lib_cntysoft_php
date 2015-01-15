@@ -209,4 +209,23 @@ abstract class StdDir
    {
       return self::getAppRootDir($module, $name).DS.'Data';
    }
+
+   /**
+    * 获取系统私有空间文件夹
+    *
+    * @return string
+    */
+   public static function getPrivateSpaceDir()
+   {
+      return CNTY_ROOT_DIR.DS.'PrivateSpace';
+   }
+   /**
+    * 获取系统上传路径
+    *
+    * @return string
+    */
+   public static function getStdUploadDir()
+   {
+      return self::getPrivateSpaceDir();
+   }
 }
