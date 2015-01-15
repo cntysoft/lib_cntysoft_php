@@ -285,7 +285,7 @@ class Manager implements EventsAwareInterface
      * @param string $filename 
      * @return string
      */
-    public static function getAttachmentFilename($filename)
+    public function getAttachmentFilename($filename)
     {
         $siteId = Kernel\get_site_id();
         if (PHP_OS == \Cntysoft\WINDOWS) {
