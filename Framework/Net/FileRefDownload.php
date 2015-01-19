@@ -53,7 +53,7 @@ abstract class FileRefDownload
       $orgTime = ini_get('max_execution_time');
       try {
          $url = new HttpUrl($fileUrl);
-         $attachmentFilename = $this->getSavedFilename($siteId, $url->getPath());
+         $attachmentFilename = $this->getSavedFilename($url->getPath());
          curl_setopt($this->curl, CURLOPT_URL, $fileUrl);
          $fd = Filesystem::fopen($attachmentFilename, 'wb');
          curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, 1);
@@ -74,7 +74,7 @@ abstract class FileRefDownload
             'attachment' => str_replace(CNTY_ROOT_DIR, '', $attachmentFilename),
             'targetFile' => $attachmentFilename
          );
-         $refInfo = $this->afterFileSavedHandler($siteId, $refInfo);
+         $refInfo = $this->afterFileSavedHandler($refInfo);
 
          Filesystem::fclose($fd);
          set_time_limit($orgTime);
@@ -97,7 +97,7 @@ abstract class FileRefDownload
     * @param string $filename 相对文件路径
     * @return string
     */
-   abstract protected function getSavedFilename($siteId, $filename);
+   abstract protected function getSavedFilename($filename);
 
    /**
     * 文件保存之后调用的回调函数
@@ -106,7 +106,7 @@ abstract class FileRefDownload
     * @param array $refInfo
     * @return array
     */
-   abstract protected function afterFileSavedHandler($siteId, array $refInfo);
+   abstract protected function afterFileSavedHandler(array $refInfo);
    public function __destruct()
    {
       if (is_resource($this->curl)) {

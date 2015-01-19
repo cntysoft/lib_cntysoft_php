@@ -10,7 +10,7 @@ namespace Cntysoft\Framework\Core\FileRef;
 use Cntysoft\Kernel;
 use Cntysoft\Framework\Core\ErrorType as CoreErrorType;
 use Cntysoft\Stdlib\Filesystem;
-use Gzy\Kernel\StdDir;
+use Cntysoft\Kernel\StdDir;
 use Cntysoft\Framework\Core\FileRef\Model\Entry as EntryModel;
 use Cntysoft\Framework\Core\FileRef\Model\Unused as UnusedModel;
 use Phalcon\Events\EventsAwareInterface;
@@ -287,11 +287,11 @@ class Manager implements EventsAwareInterface
      */
     public function getAttachmentFilename($filename)
     {
-        $attachment = \Cntysoft\UPLOAD_ATTACHMENT;
+        $siteId = Kernel\get_site_id();
         if (PHP_OS == \Cntysoft\WINDOWS) {
-            $dirname = StdDir::getChurchUploadDir().DS.$attachment.DS.date('Y'.DS.DS.'m'.DS.DS.'d');
+            $dirname = StdDir::getStdUploadDir().DS.$siteId.DS.date('Y'.DS.DS.'m'.DS.DS.'d');
         } else {
-            $dirname = StdDir::getChurchUploadDir().DS.$attachment.DS.date('Y'.DS.'m'.DS.'d');
+            $dirname = StdDir::getStdUploadDir().DS.$siteId.DS.date('Y'.DS.'m'.DS.'d');
         }
         if (!file_exists($dirname)) {
             Filesystem::createDir($dirname, 0755, true);
