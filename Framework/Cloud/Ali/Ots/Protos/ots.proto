@@ -1,0 +1,152 @@
+package Cntysoft.Framework.Cloud.Ali.Ots.Msg;
+message CapacityUnit
+{
+    optional int32 read = 1;
+    optional int32 write = 2;
+}
+message Column
+{
+    required string name = 1;
+    required ColumnValue value = 2;
+}
+message ColumnSchema
+{
+   required string name = 1;
+   required ColumnType type = 2;
+}
+enum ColumnType
+{
+   INF_MIN = 0;
+   INF_MAX = 1;
+   INTEGER = 2;
+   STRING = 3;
+   BOOLEAN = 4;
+   DOUBLE = 5;
+   BINARY = 6;
+}
+message ColumnUpdate
+{
+   required OperationType type = 1;
+   required string name = 2;
+   optional ColumnValue value = 3;
+}
+message ColumnValue
+{
+   required ColumnType type = 1;
+   optional int64 v_int = 2;
+   optional string v_string = 3;
+   optional bool v_bool = 4;
+   optional double v_double = 5;
+   optional bytes v_binary = 6;
+}
+message Condition
+{
+   required RowExistenceExpectation row_existence = 1;
+}
+message ConsumedCapacity
+{
+   required CapacityUnit capacity_unit = 1;
+}
+message DeleteRowInBatchWriteRowRequest
+{
+   required Condition condition = 1;
+   repeated Column primary_key = 2;
+}
+enum Direction
+{
+    FORWARD = 0;
+    BACKWARD = 1;
+}
+message Error
+{
+   required string code = 1;
+   optional string message = 2;
+}
+enum OperationType
+{
+   PUT = 1;
+   DELETE = 2;
+}
+message PutRowInBatchWriteRowRequest
+{
+   required Condition condition = 1;
+   repeated Column primary_key = 2;
+   repeated Column attribute_columns = 3;
+}
+message ReservedThroughput
+{
+   required CapacityUnit capacity_unit = 1;
+}
+message ReservedThroughputDetails
+{
+   required CapacityUnit capacity_unit = 1;
+   required int64 last_increase_time = 2;
+   optional int64 last_decrease_time = 3;
+   required int32 number_of_decreases_today = 4;
+}
+message Row
+{
+   repeated Column primary_key_columns = 1;
+   repeated Column attribute_columns = 2;
+}
+enum RowExistenceExpectation
+{
+   IGNORE = 0;
+   EXPECT_EXIST = 1;
+   EXPECT_NOT_EXIST = 2;
+}
+message RowInBatchGetRowRequest
+{
+   repeated Column primary_key = 1;
+}
+message RowInBatchGetRowResponse
+{
+   required bool is_ok = 1 [default = true];
+   optional Error error = 2;
+   optional ConsumedCapacity consumed = 3;
+   optional Row row = 4;
+}
+message RowInBatchWriteRowResponse
+{
+   required bool is_ok = 1 [default = true];
+   optional Error error = 2;
+   optional ConsumedCapacity consumed = 3;
+}
+message TableInBatchGetRowRequest
+{
+   required string table_name = 1;
+   repeated RowInBatchGetRowRequest rows = 2;
+   repeated string columns_to_get = 3;
+}
+message TableInBatchGetRowResponse
+{
+   required string table_name = 1;
+   repeated RowInBatchGetRowResponse rows = 2;
+}
+message TableInBatchWriteRowRequest
+{
+   required string table_name = 1;
+}
+message TableInBatchWriteRowResponse
+{
+   required string table_name = 1;
+   repeated RowInBatchWriteRowResponse put_rows = 2;
+   repeated RowInBatchWriteRowResponse update_rows = 3;
+   repeated RowInBatchWriteRowResponse delete_rows = 4;
+}
+message TableMeta
+{
+   required string table_name = 1;
+   repeated ColumnSchema primary_key = 2;
+}
+message UpdateRowInBatchWriteRowRequest
+{
+   required Condition condition = 1;
+   repeated Column primary_key = 2;
+   repeated ColumnUpdate attribute_columns = 3;
+}
+message CreateTableRequest
+{
+   required TableMeta table_meta = 1;
+   required ReservedThroughput reserved_throughput = 2;
+}

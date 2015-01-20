@@ -11,9 +11,6 @@ use Cntysoft\Framework\Qs\Engine\Exception;
 use Zend\Http\Client as HttpClient;
 use Zend\Http\Headers as HttpHeaders;
 use Cntysoft\Kernel\ConfigProxy;
-use DrSlump\Protobuf\Message;
-use DrSlump\Protobuf;
-use Cntysoft\Framework\Cloud\Ali\Ots\ApiMessage;
 use Cntysoft\Kernel;
 
 /**
@@ -23,9 +20,9 @@ class Client
 {
    const INTERNAL_API = 'http://gzy-ots.cn-hangzhou.ots-internal.aliyuncs.com';
    const PUB_API = 'http://gzy-ots.cn-hangzhou.ots.aliyuncs.com';
-
+   const MSG_CLS_FILENAME = __DIR__.DS.'Msg'.DS.'pb_proto_ots.php';
    const API_LIST_TABLE = 'ListTable';
-
+   const API_CREATE_TABLE = 'CreateTable';
 
    protected $useInternalApi = false;
    protected $accessKey;
@@ -59,21 +56,53 @@ class Client
       return $responseBuf->table_names;
    }
 
-   
+   /**
+    * primaryKeys参数的结构
+    * <code>
+    *  array(
+    *    'name' => 'name',
+    *     'type' => 'type'
+    * );
+    * </code>
+    * @param string $tableName
+    * @param array $primaryKeys
+    * @param int $readCapacityUnit
+    * @param int $writeCapacityUnit
+    */
+   public function createTable($tableName, array $primaryKeys, $readCapacityUnit = 2, $writeCapacityUnit = 2)
+   {
+      $tableMeta = new Msg\TableMeta();
+      $tableMeta->setTableName($tableName);
+      foreach($primaryKeys as $primaryKey){
+         $keyMsg = new Msg\ColumnSchema();
+         $keyMsg->setName($primaryKey['name']);
+         $keyMsg->setType($primaryKey['type']);
+         $tableMeta->appendPrimaryKey($keyMsg);
+      }
+      $capacityUnit = new Msg\CapacityUnit();
+      $capacityUnit->setRead((int) $readCapacityUnit);
+      $capacityUnit->setWrite((int) $writeCapacityUnit);
+      $reservedThroughput = new Msg\ReservedThroughput();
+      $reservedThroughput->setCapacityUnit($capacityUnit);
+      $createTableRequest = new Msg\CreateTableRequest();
+      $createTableRequest->setTableMeta($tableMeta);
+      $createTableRequest->setReservedThroughput($reservedThroughput);
+      $response = $this->requestOtsApi(self::API_CREATE_TABLE, $createTableRequest);
+   }
 
    /**
     * @param string $api
-    * @param Message $message
+    * @param \ProtobufMessage $message
     * @return \Zend\Http\Response
     * @throws \Exception
     */
-   protected function requestOtsApi($api, Message $message)
+   protected function requestOtsApi($api, \ProtobufMessage $message)
    {
       $httpClient = $this->getHttpClient();
       //计算几项值
       $request = $httpClient->getRequest();
       $headers = $request->getHeaders();
-      $body = $message->serialize();
+      $body = $message->serializeToString();
       $request->setContent($body);
       $headers->addHeaderLine('x-ots-contentmd5', base64_encode(md5($body, true)));
       $signatureHeaderNames = array(
@@ -123,6 +152,7 @@ class Client
          ));
          $this->client->setHeaders($headers);
          $this->client->setMethod('POST');
+         $this->client->setEncType('application/x-www-form-urlencoded');
       }
       return $this->client;
    }
@@ -139,5 +169,10 @@ class Client
       if (null == $this->accessKeySecret) {
          $this->accessKeySecret = $cfg->ali->ots->accessKeySecret;
       }
+   }
+
+   public static function loadMsgCls()
+   {
+      include self::MSG_CLS_FILENAME;
    }
 }

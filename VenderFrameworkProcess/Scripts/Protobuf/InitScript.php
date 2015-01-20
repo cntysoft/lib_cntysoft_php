@@ -34,7 +34,7 @@ class InitScript extends AbstractInitScript
 
    protected function setupProtobuf()
    {
-      \DrSlump\Protobuf::setDefaultCodec(new \DrSlump\Protobuf\Codec\Json());
+      \DrSlump\Protobuf::setDefaultCodec(new \DrSlump\Protobuf\Codec\Binary());
       \DrSlump\Protobuf::registerCodec('Binary', new \DrSlump\Protobuf\Codec\Binary());
    }
 }
