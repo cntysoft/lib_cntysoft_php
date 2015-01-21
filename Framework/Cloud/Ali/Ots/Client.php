@@ -25,6 +25,8 @@ class Client
    const API_LIST_TABLE = 'ListTable';
    const API_CREATE_TABLE = 'CreateTable';
    const API_DELETE_TABLE = 'DeleteTable';
+   const API_UPDATE_TABLE = 'UpdateTable';
+   const API_DESCRIBE_TABLE = 'DescribeTable';
 
    protected $useInternalApi = false;
    protected $accessKey;
@@ -97,7 +99,31 @@ class Client
    }
 
    /**
-    * 删除指定的数据表
+    * 更新指定表的读服务能力单元或写服务能力单元设置,新设定将于更新成功一分钟内生效。
+    *
+    * @param $tableName
+    * @param $readCapacityUnit
+    * @param $writeCapacityUnit
+    * @return Msg\UpdateTableResponse
+    */
+   public function updateTable($tableName, $readCapacityUnit, $writeCapacityUnit)
+   {
+      $requestMsg = new Msg\UpdateTableRequest();
+      $requestMsg->setTableName($tableName);
+      $capacityUnit = new Msg\CapacityUnit();
+      $capacityUnit->setRead((int) $readCapacityUnit);
+      $capacityUnit->setWrite((int) $writeCapacityUnit);
+      $reservedThroughput = new Msg\ReservedThroughput();
+      $reservedThroughput->setCapacityUnit($capacityUnit);
+      $requestMsg->setReservedThroughput($reservedThroughput);
+      $response = $this->requestOtsApi(self::API_UPDATE_TABLE, $requestMsg);
+      $buf = new Msg\UpdateTableResponse();
+      $buf->parseFromString($response->getBody());
+      return $buf;
+   }
+
+   /**
+    * 删除本实例下指定的表。
     *
     * @param $tableName
     * @return Msg\DeleteTableResponse
@@ -108,6 +134,22 @@ class Client
       $requestMsg->setTableName($tableName);
       $response = $this->requestOtsApi(self::API_DELETE_TABLE, $requestMsg);
       $buf = new Msg\DeleteTableResponse();
+      $buf->parseFromString($response->getBody());
+      return $buf;
+   }
+
+   /**
+    * 查询指定表的结构信息和预留读写吞吐量设置信息。
+    *
+    * @param $tableName
+    * @return Msg\DescribeTableResponse
+    */
+   public function DescribeTable($tableName)
+   {
+      $requestMsg = new Msg\DescribeTableRequest();
+      $requestMsg->setTableName($tableName);
+      $response = $this->requestOtsApi(self::API_DESCRIBE_TABLE, $requestMsg);
+      $buf = new Msg\DescribeTableResponse();
       $buf->parseFromString($response->getBody());
       return $buf;
    }
