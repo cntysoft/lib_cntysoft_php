@@ -27,6 +27,13 @@ class Client
    const API_DELETE_TABLE = 'DeleteTable';
    const API_UPDATE_TABLE = 'UpdateTable';
    const API_DESCRIBE_TABLE = 'DescribeTable';
+   const API_GET_ROW = 'GetRow';
+   const API_PUT_ROW = 'PutRow';
+   const API_UPDATE_ROW = 'UpdateRow';
+   const API_DELETE_ROW = 'DeleteRow';
+   const API_GET_RANGE = 'GetRange';
+   const API_BATCH_GET_ROW = 'BatchGetRow';
+   const API_BATCH_WRITE_ROW = 'BatchWriteRow';
 
    protected $useInternalApi = false;
    protected $accessKey;
@@ -125,7 +132,7 @@ class Client
    /**
     * 删除本实例下指定的表。
     *
-    * @param $tableName
+    * @param string $tableName
     * @return Msg\DeleteTableResponse
     */
    public function deleteTable($tableName)
@@ -139,12 +146,170 @@ class Client
    }
 
    /**
+    * 根据给定的主键读取单行数据。
+    *
+    * @param string $tableName
+    * @param array $primaryKeys
+    * @param array $columns
+    * @return Msg\GetRowResponse
+    */
+   public function getRow($tableName, array $primaryKeys, array $columns)
+   {
+      $requestMsg = new Msg\GetRowRequest();
+      $requestMsg->setTableName($tableName);
+      foreach($primaryKeys as $key){
+         $requestMsg->appendPrimaryKey($key);
+      }
+      foreach($columns as $col){
+         $requestMsg->appendColumnsToGet($col);
+      }
+      $response = $this->requestOtsApi(self::API_GET_ROW, $requestMsg);
+      $buf = new Msg\GetRowResponse();
+      $buf->parseFromString($response->getBody());
+      return $buf;
+   }
+
+   /**
+    * @param string $tableName
+    * @param Msg\Condition $condition
+    * @param array $primaryKeys
+    * @param array $attributeColumns
+    * @return  Msg\PutRowResponse
+    */
+   public function putRow($tableName, Msg\Condition $condition, array $primaryKeys, array $attributeColumns)
+   {
+      $requestMsg = new Msg\PutRowRequest();
+      $requestMsg->setTableName($tableName);
+      $requestMsg->setCondition($condition);
+      foreach($primaryKeys as $key){
+         $requestMsg->appendPrimaryKey($key);
+      }
+      foreach($attributeColumns as $col){
+         $requestMsg->appendAttributeColumns($col);
+      }
+      $response = $this->requestOtsApi(self::API_PUT_ROW, $requestMsg);
+      $buf = new Msg\PutRowResponse();
+      $buf->parseFromString($response->getBody());
+      return $buf;
+   }
+
+   /**
+    * @param string  $tableName
+    * @param Msg\Condition $condition
+    * @param array $primaryKeys
+    * @param array $attributeColumns
+    * @return Msg\UpdateRowResponse
+    */
+   public function updateRow($tableName, Msg\Condition $condition, array $primaryKeys, array $attributeColumns)
+   {
+      $requestMsg = new Msg\UpdateRowRequest();
+      $requestMsg->setTableName($tableName);
+      $requestMsg->setCondition($condition);
+      foreach($primaryKeys as $key){
+         $requestMsg->appendPrimaryKey($key);
+      }
+      foreach($attributeColumns as $col){
+         $requestMsg->appendAttributeColumns($col);
+      }
+      $response = $this->requestOtsApi(self::API_UPDATE_ROW, $requestMsg);
+      $buf = new Msg\UpdateRowResponse();
+      $buf->parseFromString($response->getBody());
+      return $buf;
+   }
+
+   /**
+    * 删除一行数据。
+    *
+    * @param string $tableName
+    * @param Msg\Condition $condition
+    * @param array $primaryKeys
+    * @return Msg\DeleteRowResponse
+    */
+   public function deleteRow($tableName, Msg\Condition $condition, array $primaryKeys)
+   {
+      $requestMsg = new Msg\DeleteRowRequest();
+      $requestMsg->setTableName($tableName);
+      $requestMsg->setCondition($condition);
+      foreach($primaryKeys as $key){
+         $requestMsg->appendPrimaryKey($key);
+      }
+      $response = $this->requestOtsApi(self::API_DELETE_ROW, $requestMsg);
+      $buf = new Msg\DeleteRowResponse();
+      $buf->parseFromString($response->getBody());
+      return $buf;
+   }
+
+   /**
+    * 读取指定主键范围内的数据。
+    *
+    * @param string $tableName
+    * @param int $direction
+    * @param array $columnsToGet
+    * @param array $inclusiveStartPrimaryKey
+    * @param array $exclusiveEndPrimaryKey
+    * @param int $limit
+    * @return Msg\GetRangeResponse
+    */
+   public function getRange($tableName, $direction, array $columnsToGet, array $inclusiveStartPrimaryKey, array  $exclusiveEndPrimaryKey , $limit = 1)
+   {
+      $requestMsg = new Msg\GetRangeRequest();
+      $requestMsg->setTableName($tableName);
+      $requestMsg->setDirection($direction);
+      foreach($columnsToGet as $col){
+         $requestMsg->appendColumnsToGet($col);
+      }
+      foreach($inclusiveStartPrimaryKey as $key){
+         $requestMsg->appendColumnsToGet($key);
+      }
+      foreach($exclusiveEndPrimaryKey as $key){
+         $requestMsg->appendColumnsToGet($key);
+      }
+      $requestMsg->setLimit($limit);
+      $response = $this->requestOtsApi(self::API_GET_RANGE, $requestMsg);
+      $buf = new Msg\GetRangeResponse();
+      $buf->parseFromString($response->getBody());
+      return $buf;
+   }
+
+   /**
+    * @param array $tableRequests
+    * @return Msg\BatchGetRowResponse
+    */
+   public function batchGetRow(array $tableRequests)
+   {
+      $requestMsg = new Msg\BatchGetRowRequest();
+      foreach($tableRequests as $request){
+         $requestMsg->appendTables($request);
+      }
+      $response = $this->requestOtsApi(self::API_BATCH_GET_ROW, $requestMsg);
+      $buf = new Msg\BatchGetRowResponse();
+      $buf->parseFromString($response->getBody());
+      return $buf;
+   }
+
+   /**
+    * @param array $tableRequests
+    * @return Msg\BatchWriteRowResponse
+    */
+   public function batchWriteRow(array $tableRequests)
+   {
+      $requestMsg = new Msg\BatchWriteRowRequest();
+      foreach($tableRequests as $request){
+         $requestMsg->appendTables($request);
+      }
+      $response = $this->requestOtsApi(self::API_BATCH_WRITE_ROW, $requestMsg);
+      $buf = new Msg\BatchWriteRowResponse();
+      $buf->parseFromString($response->getBody());
+      return $buf;
+   }
+
+   /**
     * 查询指定表的结构信息和预留读写吞吐量设置信息。
     *
     * @param $tableName
     * @return Msg\DescribeTableResponse
     */
-   public function DescribeTable($tableName)
+   public function describeTable($tableName)
    {
       $requestMsg = new Msg\DescribeTableRequest();
       $requestMsg->setTableName($tableName);
