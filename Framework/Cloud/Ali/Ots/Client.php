@@ -21,8 +21,10 @@ class Client
    const INTERNAL_API = 'http://gzy-ots.cn-hangzhou.ots-internal.aliyuncs.com';
    const PUB_API = 'http://gzy-ots.cn-hangzhou.ots.aliyuncs.com';
    const MSG_CLS_FILENAME = __DIR__.DS.'Msg'.DS.'pb_proto_ots.php';
+
    const API_LIST_TABLE = 'ListTable';
    const API_CREATE_TABLE = 'CreateTable';
+   const API_DELETE_TABLE = 'DeleteTable';
 
    protected $useInternalApi = false;
    protected $accessKey;
@@ -94,7 +96,21 @@ class Client
       return $buf;
    }
 
-   
+   /**
+    * 删除指定的数据表
+    *
+    * @param $tableName
+    * @return Msg\DeleteTableResponse
+    */
+   public function deleteTable($tableName)
+   {
+      $requestMsg = new Msg\DescribeTableRequest();
+      $requestMsg->setTableName($tableName);
+      $response = $this->requestOtsApi(self::API_DELETE_TABLE, $requestMsg);
+      $buf = new Msg\DeleteTableResponse();
+      $buf->parseFromString($response->getBody());
+      return $buf;
+   }
 
    /**
     * @param string $api
