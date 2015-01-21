@@ -43,6 +43,7 @@ class Client
     * @var \Zend\Http\Client $client
     */
    protected $client;
+   private static $clsLoaded = false;
 
    public function __construct($instanceName = null, $accessKey = null, $accessKeySecret = null)
    {
@@ -153,7 +154,7 @@ class Client
     * @param array $columns
     * @return Msg\GetRowResponse
     */
-   public function getRow($tableName, array $primaryKeys, array $columns)
+   public function getRow($tableName, array $primaryKeys, array $columns = array())
    {
       $requestMsg = new Msg\GetRowRequest();
       $requestMsg->setTableName($tableName);
@@ -402,6 +403,10 @@ class Client
 
    public static function loadMsgCls()
    {
-      include self::MSG_CLS_FILENAME;
+      if(!self::$clsLoaded){
+         include self::MSG_CLS_FILENAME;
+         self::$clsLoaded = true;
+      }
+
    }
 }
