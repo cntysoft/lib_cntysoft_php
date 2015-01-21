@@ -1,6 +1,6 @@
 <?php
 /**
- * Auto generated from ots.proto at 2015-01-20 16:13:00
+ * Auto generated from ots.proto at 2015-01-21 02:49:28
  *
  * Cntysoft.Framework.Cloud.Ali.Ots.Msg package
  */
@@ -3259,6 +3259,2208 @@ class UpdateRowInBatchWriteRowRequest extends \ProtobufMessage
 
 namespace Cntysoft\Framework\Cloud\Ali\Ots\Msg {
 /**
+ * GetRowRequest message
+ */
+class GetRowRequest extends \ProtobufMessage
+{
+    /* Field index constants */
+    const TABLE_NAME = 1;
+    const PRIMARY_KEY = 2;
+    const COLUMNS_TO_GET = 3;
+
+    /* @var array Field descriptors */
+    protected static $fields = array(
+        self::TABLE_NAME => array(
+            'name' => 'table_name',
+            'required' => true,
+            'type' => 7,
+        ),
+        self::PRIMARY_KEY => array(
+            'name' => 'primary_key',
+            'repeated' => true,
+            'type' => '\Cntysoft\Framework\Cloud\Ali\Ots\Msg\Column'
+        ),
+        self::COLUMNS_TO_GET => array(
+            'name' => 'columns_to_get',
+            'repeated' => true,
+            'type' => 7,
+        ),
+    );
+
+    /**
+     * Constructs new message container and clears its internal state
+     *
+     * @return null
+     */
+    public function __construct()
+    {
+        $this->reset();
+    }
+
+    /**
+     * Clears message values and sets default ones
+     *
+     * @return null
+     */
+    public function reset()
+    {
+        $this->values[self::TABLE_NAME] = null;
+        $this->values[self::PRIMARY_KEY] = array();
+        $this->values[self::COLUMNS_TO_GET] = array();
+    }
+
+    /**
+     * Returns field descriptors
+     *
+     * @return array
+     */
+    public function fields()
+    {
+        return self::$fields;
+    }
+
+    /**
+     * Sets value of 'table_name' property
+     *
+     * @param string $value Property value
+     *
+     * @return null
+     */
+    public function setTableName($value)
+    {
+        return $this->set(self::TABLE_NAME, $value);
+    }
+
+    /**
+     * Returns value of 'table_name' property
+     *
+     * @return string
+     */
+    public function getTableName()
+    {
+        return $this->get(self::TABLE_NAME);
+    }
+
+    /**
+     * Appends value to 'primary_key' list
+     *
+     * @param \Cntysoft\Framework\Cloud\Ali\Ots\Msg\Column $value Value to append
+     *
+     * @return null
+     */
+    public function appendPrimaryKey(\Cntysoft\Framework\Cloud\Ali\Ots\Msg\Column $value)
+    {
+        return $this->append(self::PRIMARY_KEY, $value);
+    }
+
+    /**
+     * Clears 'primary_key' list
+     *
+     * @return null
+     */
+    public function clearPrimaryKey()
+    {
+        return $this->clear(self::PRIMARY_KEY);
+    }
+
+    /**
+     * Returns 'primary_key' list
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\Column[]
+     */
+    public function getPrimaryKey()
+    {
+        return $this->get(self::PRIMARY_KEY);
+    }
+
+    /**
+     * Returns 'primary_key' iterator
+     *
+     * @return ArrayIterator
+     */
+    public function getPrimaryKeyIterator()
+    {
+        return new \ArrayIterator($this->get(self::PRIMARY_KEY));
+    }
+
+    /**
+     * Returns element from 'primary_key' list at given offset
+     *
+     * @param int $offset Position in list
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\Column
+     */
+    public function getPrimaryKeyAt($offset)
+    {
+        return $this->get(self::PRIMARY_KEY, $offset);
+    }
+
+    /**
+     * Returns count of 'primary_key' list
+     *
+     * @return int
+     */
+    public function getPrimaryKeyCount()
+    {
+        return $this->count(self::PRIMARY_KEY);
+    }
+
+    /**
+     * Appends value to 'columns_to_get' list
+     *
+     * @param string $value Value to append
+     *
+     * @return null
+     */
+    public function appendColumnsToGet($value)
+    {
+        return $this->append(self::COLUMNS_TO_GET, $value);
+    }
+
+    /**
+     * Clears 'columns_to_get' list
+     *
+     * @return null
+     */
+    public function clearColumnsToGet()
+    {
+        return $this->clear(self::COLUMNS_TO_GET);
+    }
+
+    /**
+     * Returns 'columns_to_get' list
+     *
+     * @return string[]
+     */
+    public function getColumnsToGet()
+    {
+        return $this->get(self::COLUMNS_TO_GET);
+    }
+
+    /**
+     * Returns 'columns_to_get' iterator
+     *
+     * @return ArrayIterator
+     */
+    public function getColumnsToGetIterator()
+    {
+        return new \ArrayIterator($this->get(self::COLUMNS_TO_GET));
+    }
+
+    /**
+     * Returns element from 'columns_to_get' list at given offset
+     *
+     * @param int $offset Position in list
+     *
+     * @return string
+     */
+    public function getColumnsToGetAt($offset)
+    {
+        return $this->get(self::COLUMNS_TO_GET, $offset);
+    }
+
+    /**
+     * Returns count of 'columns_to_get' list
+     *
+     * @return int
+     */
+    public function getColumnsToGetCount()
+    {
+        return $this->count(self::COLUMNS_TO_GET);
+    }
+}
+}
+
+namespace Cntysoft\Framework\Cloud\Ali\Ots\Msg {
+/**
+ * GetRowResponse message
+ */
+class GetRowResponse extends \ProtobufMessage
+{
+    /* Field index constants */
+    const CONSUMED = 1;
+    const ROW = 2;
+
+    /* @var array Field descriptors */
+    protected static $fields = array(
+        self::CONSUMED => array(
+            'name' => 'consumed',
+            'required' => true,
+            'type' => '\Cntysoft\Framework\Cloud\Ali\Ots\Msg\ConsumedCapacity'
+        ),
+        self::ROW => array(
+            'name' => 'row',
+            'required' => true,
+            'type' => '\Cntysoft\Framework\Cloud\Ali\Ots\Msg\Row'
+        ),
+    );
+
+    /**
+     * Constructs new message container and clears its internal state
+     *
+     * @return null
+     */
+    public function __construct()
+    {
+        $this->reset();
+    }
+
+    /**
+     * Clears message values and sets default ones
+     *
+     * @return null
+     */
+    public function reset()
+    {
+        $this->values[self::CONSUMED] = null;
+        $this->values[self::ROW] = null;
+    }
+
+    /**
+     * Returns field descriptors
+     *
+     * @return array
+     */
+    public function fields()
+    {
+        return self::$fields;
+    }
+
+    /**
+     * Sets value of 'consumed' property
+     *
+     * @param \Cntysoft\Framework\Cloud\Ali\Ots\Msg\ConsumedCapacity $value Property value
+     *
+     * @return null
+     */
+    public function setConsumed(\Cntysoft\Framework\Cloud\Ali\Ots\Msg\ConsumedCapacity $value)
+    {
+        return $this->set(self::CONSUMED, $value);
+    }
+
+    /**
+     * Returns value of 'consumed' property
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\ConsumedCapacity
+     */
+    public function getConsumed()
+    {
+        return $this->get(self::CONSUMED);
+    }
+
+    /**
+     * Sets value of 'row' property
+     *
+     * @param \Cntysoft\Framework\Cloud\Ali\Ots\Msg\Row $value Property value
+     *
+     * @return null
+     */
+    public function setRow(\Cntysoft\Framework\Cloud\Ali\Ots\Msg\Row $value)
+    {
+        return $this->set(self::ROW, $value);
+    }
+
+    /**
+     * Returns value of 'row' property
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\Row
+     */
+    public function getRow()
+    {
+        return $this->get(self::ROW);
+    }
+}
+}
+
+namespace Cntysoft\Framework\Cloud\Ali\Ots\Msg {
+/**
+ * PutRowRequest message
+ */
+class PutRowRequest extends \ProtobufMessage
+{
+    /* Field index constants */
+    const TABLE_NAME = 1;
+    const CONDITION = 2;
+    const PRIMARY_KEY = 3;
+    const ATTRIBUTE_COLUMNS = 4;
+
+    /* @var array Field descriptors */
+    protected static $fields = array(
+        self::TABLE_NAME => array(
+            'name' => 'table_name',
+            'required' => true,
+            'type' => 7,
+        ),
+        self::CONDITION => array(
+            'name' => 'condition',
+            'required' => true,
+            'type' => '\Cntysoft\Framework\Cloud\Ali\Ots\Msg\Condition'
+        ),
+        self::PRIMARY_KEY => array(
+            'name' => 'primary_key',
+            'repeated' => true,
+            'type' => '\Cntysoft\Framework\Cloud\Ali\Ots\Msg\Column'
+        ),
+        self::ATTRIBUTE_COLUMNS => array(
+            'name' => 'attribute_columns',
+            'repeated' => true,
+            'type' => '\Cntysoft\Framework\Cloud\Ali\Ots\Msg\Column'
+        ),
+    );
+
+    /**
+     * Constructs new message container and clears its internal state
+     *
+     * @return null
+     */
+    public function __construct()
+    {
+        $this->reset();
+    }
+
+    /**
+     * Clears message values and sets default ones
+     *
+     * @return null
+     */
+    public function reset()
+    {
+        $this->values[self::TABLE_NAME] = null;
+        $this->values[self::CONDITION] = null;
+        $this->values[self::PRIMARY_KEY] = array();
+        $this->values[self::ATTRIBUTE_COLUMNS] = array();
+    }
+
+    /**
+     * Returns field descriptors
+     *
+     * @return array
+     */
+    public function fields()
+    {
+        return self::$fields;
+    }
+
+    /**
+     * Sets value of 'table_name' property
+     *
+     * @param string $value Property value
+     *
+     * @return null
+     */
+    public function setTableName($value)
+    {
+        return $this->set(self::TABLE_NAME, $value);
+    }
+
+    /**
+     * Returns value of 'table_name' property
+     *
+     * @return string
+     */
+    public function getTableName()
+    {
+        return $this->get(self::TABLE_NAME);
+    }
+
+    /**
+     * Sets value of 'condition' property
+     *
+     * @param \Cntysoft\Framework\Cloud\Ali\Ots\Msg\Condition $value Property value
+     *
+     * @return null
+     */
+    public function setCondition(\Cntysoft\Framework\Cloud\Ali\Ots\Msg\Condition $value)
+    {
+        return $this->set(self::CONDITION, $value);
+    }
+
+    /**
+     * Returns value of 'condition' property
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\Condition
+     */
+    public function getCondition()
+    {
+        return $this->get(self::CONDITION);
+    }
+
+    /**
+     * Appends value to 'primary_key' list
+     *
+     * @param \Cntysoft\Framework\Cloud\Ali\Ots\Msg\Column $value Value to append
+     *
+     * @return null
+     */
+    public function appendPrimaryKey(\Cntysoft\Framework\Cloud\Ali\Ots\Msg\Column $value)
+    {
+        return $this->append(self::PRIMARY_KEY, $value);
+    }
+
+    /**
+     * Clears 'primary_key' list
+     *
+     * @return null
+     */
+    public function clearPrimaryKey()
+    {
+        return $this->clear(self::PRIMARY_KEY);
+    }
+
+    /**
+     * Returns 'primary_key' list
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\Column[]
+     */
+    public function getPrimaryKey()
+    {
+        return $this->get(self::PRIMARY_KEY);
+    }
+
+    /**
+     * Returns 'primary_key' iterator
+     *
+     * @return ArrayIterator
+     */
+    public function getPrimaryKeyIterator()
+    {
+        return new \ArrayIterator($this->get(self::PRIMARY_KEY));
+    }
+
+    /**
+     * Returns element from 'primary_key' list at given offset
+     *
+     * @param int $offset Position in list
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\Column
+     */
+    public function getPrimaryKeyAt($offset)
+    {
+        return $this->get(self::PRIMARY_KEY, $offset);
+    }
+
+    /**
+     * Returns count of 'primary_key' list
+     *
+     * @return int
+     */
+    public function getPrimaryKeyCount()
+    {
+        return $this->count(self::PRIMARY_KEY);
+    }
+
+    /**
+     * Appends value to 'attribute_columns' list
+     *
+     * @param \Cntysoft\Framework\Cloud\Ali\Ots\Msg\Column $value Value to append
+     *
+     * @return null
+     */
+    public function appendAttributeColumns(\Cntysoft\Framework\Cloud\Ali\Ots\Msg\Column $value)
+    {
+        return $this->append(self::ATTRIBUTE_COLUMNS, $value);
+    }
+
+    /**
+     * Clears 'attribute_columns' list
+     *
+     * @return null
+     */
+    public function clearAttributeColumns()
+    {
+        return $this->clear(self::ATTRIBUTE_COLUMNS);
+    }
+
+    /**
+     * Returns 'attribute_columns' list
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\Column[]
+     */
+    public function getAttributeColumns()
+    {
+        return $this->get(self::ATTRIBUTE_COLUMNS);
+    }
+
+    /**
+     * Returns 'attribute_columns' iterator
+     *
+     * @return ArrayIterator
+     */
+    public function getAttributeColumnsIterator()
+    {
+        return new \ArrayIterator($this->get(self::ATTRIBUTE_COLUMNS));
+    }
+
+    /**
+     * Returns element from 'attribute_columns' list at given offset
+     *
+     * @param int $offset Position in list
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\Column
+     */
+    public function getAttributeColumnsAt($offset)
+    {
+        return $this->get(self::ATTRIBUTE_COLUMNS, $offset);
+    }
+
+    /**
+     * Returns count of 'attribute_columns' list
+     *
+     * @return int
+     */
+    public function getAttributeColumnsCount()
+    {
+        return $this->count(self::ATTRIBUTE_COLUMNS);
+    }
+}
+}
+
+namespace Cntysoft\Framework\Cloud\Ali\Ots\Msg {
+/**
+ * PutRowResponse message
+ */
+class PutRowResponse extends \ProtobufMessage
+{
+    /* Field index constants */
+    const CONSUMED = 1;
+
+    /* @var array Field descriptors */
+    protected static $fields = array(
+        self::CONSUMED => array(
+            'name' => 'consumed',
+            'required' => true,
+            'type' => '\Cntysoft\Framework\Cloud\Ali\Ots\Msg\ConsumedCapacity'
+        ),
+    );
+
+    /**
+     * Constructs new message container and clears its internal state
+     *
+     * @return null
+     */
+    public function __construct()
+    {
+        $this->reset();
+    }
+
+    /**
+     * Clears message values and sets default ones
+     *
+     * @return null
+     */
+    public function reset()
+    {
+        $this->values[self::CONSUMED] = null;
+    }
+
+    /**
+     * Returns field descriptors
+     *
+     * @return array
+     */
+    public function fields()
+    {
+        return self::$fields;
+    }
+
+    /**
+     * Sets value of 'consumed' property
+     *
+     * @param \Cntysoft\Framework\Cloud\Ali\Ots\Msg\ConsumedCapacity $value Property value
+     *
+     * @return null
+     */
+    public function setConsumed(\Cntysoft\Framework\Cloud\Ali\Ots\Msg\ConsumedCapacity $value)
+    {
+        return $this->set(self::CONSUMED, $value);
+    }
+
+    /**
+     * Returns value of 'consumed' property
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\ConsumedCapacity
+     */
+    public function getConsumed()
+    {
+        return $this->get(self::CONSUMED);
+    }
+}
+}
+
+namespace Cntysoft\Framework\Cloud\Ali\Ots\Msg {
+/**
+ * UpdateRowRequest message
+ */
+class UpdateRowRequest extends \ProtobufMessage
+{
+    /* Field index constants */
+    const TABLE_NAME = 1;
+    const CONDITION = 2;
+    const PRIMARY_KEY = 3;
+    const ATTRIBUTE_COLUMNS = 4;
+
+    /* @var array Field descriptors */
+    protected static $fields = array(
+        self::TABLE_NAME => array(
+            'name' => 'table_name',
+            'required' => true,
+            'type' => 7,
+        ),
+        self::CONDITION => array(
+            'name' => 'condition',
+            'required' => true,
+            'type' => '\Cntysoft\Framework\Cloud\Ali\Ots\Msg\Condition'
+        ),
+        self::PRIMARY_KEY => array(
+            'name' => 'primary_key',
+            'repeated' => true,
+            'type' => '\Cntysoft\Framework\Cloud\Ali\Ots\Msg\Column'
+        ),
+        self::ATTRIBUTE_COLUMNS => array(
+            'name' => 'attribute_columns',
+            'repeated' => true,
+            'type' => '\Cntysoft\Framework\Cloud\Ali\Ots\Msg\ColumnUpdate'
+        ),
+    );
+
+    /**
+     * Constructs new message container and clears its internal state
+     *
+     * @return null
+     */
+    public function __construct()
+    {
+        $this->reset();
+    }
+
+    /**
+     * Clears message values and sets default ones
+     *
+     * @return null
+     */
+    public function reset()
+    {
+        $this->values[self::TABLE_NAME] = null;
+        $this->values[self::CONDITION] = null;
+        $this->values[self::PRIMARY_KEY] = array();
+        $this->values[self::ATTRIBUTE_COLUMNS] = array();
+    }
+
+    /**
+     * Returns field descriptors
+     *
+     * @return array
+     */
+    public function fields()
+    {
+        return self::$fields;
+    }
+
+    /**
+     * Sets value of 'table_name' property
+     *
+     * @param string $value Property value
+     *
+     * @return null
+     */
+    public function setTableName($value)
+    {
+        return $this->set(self::TABLE_NAME, $value);
+    }
+
+    /**
+     * Returns value of 'table_name' property
+     *
+     * @return string
+     */
+    public function getTableName()
+    {
+        return $this->get(self::TABLE_NAME);
+    }
+
+    /**
+     * Sets value of 'condition' property
+     *
+     * @param \Cntysoft\Framework\Cloud\Ali\Ots\Msg\Condition $value Property value
+     *
+     * @return null
+     */
+    public function setCondition(\Cntysoft\Framework\Cloud\Ali\Ots\Msg\Condition $value)
+    {
+        return $this->set(self::CONDITION, $value);
+    }
+
+    /**
+     * Returns value of 'condition' property
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\Condition
+     */
+    public function getCondition()
+    {
+        return $this->get(self::CONDITION);
+    }
+
+    /**
+     * Appends value to 'primary_key' list
+     *
+     * @param \Cntysoft\Framework\Cloud\Ali\Ots\Msg\Column $value Value to append
+     *
+     * @return null
+     */
+    public function appendPrimaryKey(\Cntysoft\Framework\Cloud\Ali\Ots\Msg\Column $value)
+    {
+        return $this->append(self::PRIMARY_KEY, $value);
+    }
+
+    /**
+     * Clears 'primary_key' list
+     *
+     * @return null
+     */
+    public function clearPrimaryKey()
+    {
+        return $this->clear(self::PRIMARY_KEY);
+    }
+
+    /**
+     * Returns 'primary_key' list
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\Column[]
+     */
+    public function getPrimaryKey()
+    {
+        return $this->get(self::PRIMARY_KEY);
+    }
+
+    /**
+     * Returns 'primary_key' iterator
+     *
+     * @return ArrayIterator
+     */
+    public function getPrimaryKeyIterator()
+    {
+        return new \ArrayIterator($this->get(self::PRIMARY_KEY));
+    }
+
+    /**
+     * Returns element from 'primary_key' list at given offset
+     *
+     * @param int $offset Position in list
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\Column
+     */
+    public function getPrimaryKeyAt($offset)
+    {
+        return $this->get(self::PRIMARY_KEY, $offset);
+    }
+
+    /**
+     * Returns count of 'primary_key' list
+     *
+     * @return int
+     */
+    public function getPrimaryKeyCount()
+    {
+        return $this->count(self::PRIMARY_KEY);
+    }
+
+    /**
+     * Appends value to 'attribute_columns' list
+     *
+     * @param \Cntysoft\Framework\Cloud\Ali\Ots\Msg\ColumnUpdate $value Value to append
+     *
+     * @return null
+     */
+    public function appendAttributeColumns(\Cntysoft\Framework\Cloud\Ali\Ots\Msg\ColumnUpdate $value)
+    {
+        return $this->append(self::ATTRIBUTE_COLUMNS, $value);
+    }
+
+    /**
+     * Clears 'attribute_columns' list
+     *
+     * @return null
+     */
+    public function clearAttributeColumns()
+    {
+        return $this->clear(self::ATTRIBUTE_COLUMNS);
+    }
+
+    /**
+     * Returns 'attribute_columns' list
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\ColumnUpdate[]
+     */
+    public function getAttributeColumns()
+    {
+        return $this->get(self::ATTRIBUTE_COLUMNS);
+    }
+
+    /**
+     * Returns 'attribute_columns' iterator
+     *
+     * @return ArrayIterator
+     */
+    public function getAttributeColumnsIterator()
+    {
+        return new \ArrayIterator($this->get(self::ATTRIBUTE_COLUMNS));
+    }
+
+    /**
+     * Returns element from 'attribute_columns' list at given offset
+     *
+     * @param int $offset Position in list
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\ColumnUpdate
+     */
+    public function getAttributeColumnsAt($offset)
+    {
+        return $this->get(self::ATTRIBUTE_COLUMNS, $offset);
+    }
+
+    /**
+     * Returns count of 'attribute_columns' list
+     *
+     * @return int
+     */
+    public function getAttributeColumnsCount()
+    {
+        return $this->count(self::ATTRIBUTE_COLUMNS);
+    }
+}
+}
+
+namespace Cntysoft\Framework\Cloud\Ali\Ots\Msg {
+/**
+ * UpdateRowResponse message
+ */
+class UpdateRowResponse extends \ProtobufMessage
+{
+    /* Field index constants */
+    const CONSUMED = 1;
+
+    /* @var array Field descriptors */
+    protected static $fields = array(
+        self::CONSUMED => array(
+            'name' => 'consumed',
+            'required' => true,
+            'type' => '\Cntysoft\Framework\Cloud\Ali\Ots\Msg\ConsumedCapacity'
+        ),
+    );
+
+    /**
+     * Constructs new message container and clears its internal state
+     *
+     * @return null
+     */
+    public function __construct()
+    {
+        $this->reset();
+    }
+
+    /**
+     * Clears message values and sets default ones
+     *
+     * @return null
+     */
+    public function reset()
+    {
+        $this->values[self::CONSUMED] = null;
+    }
+
+    /**
+     * Returns field descriptors
+     *
+     * @return array
+     */
+    public function fields()
+    {
+        return self::$fields;
+    }
+
+    /**
+     * Sets value of 'consumed' property
+     *
+     * @param \Cntysoft\Framework\Cloud\Ali\Ots\Msg\ConsumedCapacity $value Property value
+     *
+     * @return null
+     */
+    public function setConsumed(\Cntysoft\Framework\Cloud\Ali\Ots\Msg\ConsumedCapacity $value)
+    {
+        return $this->set(self::CONSUMED, $value);
+    }
+
+    /**
+     * Returns value of 'consumed' property
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\ConsumedCapacity
+     */
+    public function getConsumed()
+    {
+        return $this->get(self::CONSUMED);
+    }
+}
+}
+
+namespace Cntysoft\Framework\Cloud\Ali\Ots\Msg {
+/**
+ * DeleteRowRequest message
+ */
+class DeleteRowRequest extends \ProtobufMessage
+{
+    /* Field index constants */
+    const TABLE_NAME = 1;
+    const CONDITION = 2;
+    const PRIMARY_KEY = 3;
+
+    /* @var array Field descriptors */
+    protected static $fields = array(
+        self::TABLE_NAME => array(
+            'name' => 'table_name',
+            'required' => true,
+            'type' => 7,
+        ),
+        self::CONDITION => array(
+            'name' => 'condition',
+            'required' => true,
+            'type' => '\Cntysoft\Framework\Cloud\Ali\Ots\Msg\Condition'
+        ),
+        self::PRIMARY_KEY => array(
+            'name' => 'primary_key',
+            'repeated' => true,
+            'type' => '\Cntysoft\Framework\Cloud\Ali\Ots\Msg\Column'
+        ),
+    );
+
+    /**
+     * Constructs new message container and clears its internal state
+     *
+     * @return null
+     */
+    public function __construct()
+    {
+        $this->reset();
+    }
+
+    /**
+     * Clears message values and sets default ones
+     *
+     * @return null
+     */
+    public function reset()
+    {
+        $this->values[self::TABLE_NAME] = null;
+        $this->values[self::CONDITION] = null;
+        $this->values[self::PRIMARY_KEY] = array();
+    }
+
+    /**
+     * Returns field descriptors
+     *
+     * @return array
+     */
+    public function fields()
+    {
+        return self::$fields;
+    }
+
+    /**
+     * Sets value of 'table_name' property
+     *
+     * @param string $value Property value
+     *
+     * @return null
+     */
+    public function setTableName($value)
+    {
+        return $this->set(self::TABLE_NAME, $value);
+    }
+
+    /**
+     * Returns value of 'table_name' property
+     *
+     * @return string
+     */
+    public function getTableName()
+    {
+        return $this->get(self::TABLE_NAME);
+    }
+
+    /**
+     * Sets value of 'condition' property
+     *
+     * @param \Cntysoft\Framework\Cloud\Ali\Ots\Msg\Condition $value Property value
+     *
+     * @return null
+     */
+    public function setCondition(\Cntysoft\Framework\Cloud\Ali\Ots\Msg\Condition $value)
+    {
+        return $this->set(self::CONDITION, $value);
+    }
+
+    /**
+     * Returns value of 'condition' property
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\Condition
+     */
+    public function getCondition()
+    {
+        return $this->get(self::CONDITION);
+    }
+
+    /**
+     * Appends value to 'primary_key' list
+     *
+     * @param \Cntysoft\Framework\Cloud\Ali\Ots\Msg\Column $value Value to append
+     *
+     * @return null
+     */
+    public function appendPrimaryKey(\Cntysoft\Framework\Cloud\Ali\Ots\Msg\Column $value)
+    {
+        return $this->append(self::PRIMARY_KEY, $value);
+    }
+
+    /**
+     * Clears 'primary_key' list
+     *
+     * @return null
+     */
+    public function clearPrimaryKey()
+    {
+        return $this->clear(self::PRIMARY_KEY);
+    }
+
+    /**
+     * Returns 'primary_key' list
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\Column[]
+     */
+    public function getPrimaryKey()
+    {
+        return $this->get(self::PRIMARY_KEY);
+    }
+
+    /**
+     * Returns 'primary_key' iterator
+     *
+     * @return ArrayIterator
+     */
+    public function getPrimaryKeyIterator()
+    {
+        return new \ArrayIterator($this->get(self::PRIMARY_KEY));
+    }
+
+    /**
+     * Returns element from 'primary_key' list at given offset
+     *
+     * @param int $offset Position in list
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\Column
+     */
+    public function getPrimaryKeyAt($offset)
+    {
+        return $this->get(self::PRIMARY_KEY, $offset);
+    }
+
+    /**
+     * Returns count of 'primary_key' list
+     *
+     * @return int
+     */
+    public function getPrimaryKeyCount()
+    {
+        return $this->count(self::PRIMARY_KEY);
+    }
+}
+}
+
+namespace Cntysoft\Framework\Cloud\Ali\Ots\Msg {
+/**
+ * DeleteRowResponse message
+ */
+class DeleteRowResponse extends \ProtobufMessage
+{
+    /* Field index constants */
+    const CONSUMED = 1;
+
+    /* @var array Field descriptors */
+    protected static $fields = array(
+        self::CONSUMED => array(
+            'name' => 'consumed',
+            'required' => true,
+            'type' => '\Cntysoft\Framework\Cloud\Ali\Ots\Msg\ConsumedCapacity'
+        ),
+    );
+
+    /**
+     * Constructs new message container and clears its internal state
+     *
+     * @return null
+     */
+    public function __construct()
+    {
+        $this->reset();
+    }
+
+    /**
+     * Clears message values and sets default ones
+     *
+     * @return null
+     */
+    public function reset()
+    {
+        $this->values[self::CONSUMED] = null;
+    }
+
+    /**
+     * Returns field descriptors
+     *
+     * @return array
+     */
+    public function fields()
+    {
+        return self::$fields;
+    }
+
+    /**
+     * Sets value of 'consumed' property
+     *
+     * @param \Cntysoft\Framework\Cloud\Ali\Ots\Msg\ConsumedCapacity $value Property value
+     *
+     * @return null
+     */
+    public function setConsumed(\Cntysoft\Framework\Cloud\Ali\Ots\Msg\ConsumedCapacity $value)
+    {
+        return $this->set(self::CONSUMED, $value);
+    }
+
+    /**
+     * Returns value of 'consumed' property
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\ConsumedCapacity
+     */
+    public function getConsumed()
+    {
+        return $this->get(self::CONSUMED);
+    }
+}
+}
+
+namespace Cntysoft\Framework\Cloud\Ali\Ots\Msg {
+/**
+ * GetRangeRequest message
+ */
+class GetRangeRequest extends \ProtobufMessage
+{
+    /* Field index constants */
+    const TABLE_NAME = 1;
+    const DIRECTION = 2;
+    const COLUMNS_TO_GET = 3;
+    const LIMIT = 4;
+    const INCLUSIVE_START_PRIMARY_KEY = 5;
+    const EXCLUSIVE_END_PRIMARY_KEY = 6;
+
+    /* @var array Field descriptors */
+    protected static $fields = array(
+        self::TABLE_NAME => array(
+            'name' => 'table_name',
+            'required' => true,
+            'type' => 7,
+        ),
+        self::DIRECTION => array(
+            'name' => 'direction',
+            'required' => true,
+            'type' => 5,
+        ),
+        self::COLUMNS_TO_GET => array(
+            'name' => 'columns_to_get',
+            'repeated' => true,
+            'type' => 7,
+        ),
+        self::LIMIT => array(
+            'name' => 'limit',
+            'required' => false,
+            'type' => 5,
+        ),
+        self::INCLUSIVE_START_PRIMARY_KEY => array(
+            'name' => 'inclusive_start_primary_key',
+            'repeated' => true,
+            'type' => '\Cntysoft\Framework\Cloud\Ali\Ots\Msg\Column'
+        ),
+        self::EXCLUSIVE_END_PRIMARY_KEY => array(
+            'name' => 'exclusive_end_primary_key',
+            'repeated' => true,
+            'type' => '\Cntysoft\Framework\Cloud\Ali\Ots\Msg\Column'
+        ),
+    );
+
+    /**
+     * Constructs new message container and clears its internal state
+     *
+     * @return null
+     */
+    public function __construct()
+    {
+        $this->reset();
+    }
+
+    /**
+     * Clears message values and sets default ones
+     *
+     * @return null
+     */
+    public function reset()
+    {
+        $this->values[self::TABLE_NAME] = null;
+        $this->values[self::DIRECTION] = null;
+        $this->values[self::COLUMNS_TO_GET] = array();
+        $this->values[self::LIMIT] = null;
+        $this->values[self::INCLUSIVE_START_PRIMARY_KEY] = array();
+        $this->values[self::EXCLUSIVE_END_PRIMARY_KEY] = array();
+    }
+
+    /**
+     * Returns field descriptors
+     *
+     * @return array
+     */
+    public function fields()
+    {
+        return self::$fields;
+    }
+
+    /**
+     * Sets value of 'table_name' property
+     *
+     * @param string $value Property value
+     *
+     * @return null
+     */
+    public function setTableName($value)
+    {
+        return $this->set(self::TABLE_NAME, $value);
+    }
+
+    /**
+     * Returns value of 'table_name' property
+     *
+     * @return string
+     */
+    public function getTableName()
+    {
+        return $this->get(self::TABLE_NAME);
+    }
+
+    /**
+     * Sets value of 'direction' property
+     *
+     * @param int $value Property value
+     *
+     * @return null
+     */
+    public function setDirection($value)
+    {
+        return $this->set(self::DIRECTION, $value);
+    }
+
+    /**
+     * Returns value of 'direction' property
+     *
+     * @return int
+     */
+    public function getDirection()
+    {
+        return $this->get(self::DIRECTION);
+    }
+
+    /**
+     * Appends value to 'columns_to_get' list
+     *
+     * @param string $value Value to append
+     *
+     * @return null
+     */
+    public function appendColumnsToGet($value)
+    {
+        return $this->append(self::COLUMNS_TO_GET, $value);
+    }
+
+    /**
+     * Clears 'columns_to_get' list
+     *
+     * @return null
+     */
+    public function clearColumnsToGet()
+    {
+        return $this->clear(self::COLUMNS_TO_GET);
+    }
+
+    /**
+     * Returns 'columns_to_get' list
+     *
+     * @return string[]
+     */
+    public function getColumnsToGet()
+    {
+        return $this->get(self::COLUMNS_TO_GET);
+    }
+
+    /**
+     * Returns 'columns_to_get' iterator
+     *
+     * @return ArrayIterator
+     */
+    public function getColumnsToGetIterator()
+    {
+        return new \ArrayIterator($this->get(self::COLUMNS_TO_GET));
+    }
+
+    /**
+     * Returns element from 'columns_to_get' list at given offset
+     *
+     * @param int $offset Position in list
+     *
+     * @return string
+     */
+    public function getColumnsToGetAt($offset)
+    {
+        return $this->get(self::COLUMNS_TO_GET, $offset);
+    }
+
+    /**
+     * Returns count of 'columns_to_get' list
+     *
+     * @return int
+     */
+    public function getColumnsToGetCount()
+    {
+        return $this->count(self::COLUMNS_TO_GET);
+    }
+
+    /**
+     * Sets value of 'limit' property
+     *
+     * @param int $value Property value
+     *
+     * @return null
+     */
+    public function setLimit($value)
+    {
+        return $this->set(self::LIMIT, $value);
+    }
+
+    /**
+     * Returns value of 'limit' property
+     *
+     * @return int
+     */
+    public function getLimit()
+    {
+        return $this->get(self::LIMIT);
+    }
+
+    /**
+     * Appends value to 'inclusive_start_primary_key' list
+     *
+     * @param \Cntysoft\Framework\Cloud\Ali\Ots\Msg\Column $value Value to append
+     *
+     * @return null
+     */
+    public function appendInclusiveStartPrimaryKey(\Cntysoft\Framework\Cloud\Ali\Ots\Msg\Column $value)
+    {
+        return $this->append(self::INCLUSIVE_START_PRIMARY_KEY, $value);
+    }
+
+    /**
+     * Clears 'inclusive_start_primary_key' list
+     *
+     * @return null
+     */
+    public function clearInclusiveStartPrimaryKey()
+    {
+        return $this->clear(self::INCLUSIVE_START_PRIMARY_KEY);
+    }
+
+    /**
+     * Returns 'inclusive_start_primary_key' list
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\Column[]
+     */
+    public function getInclusiveStartPrimaryKey()
+    {
+        return $this->get(self::INCLUSIVE_START_PRIMARY_KEY);
+    }
+
+    /**
+     * Returns 'inclusive_start_primary_key' iterator
+     *
+     * @return ArrayIterator
+     */
+    public function getInclusiveStartPrimaryKeyIterator()
+    {
+        return new \ArrayIterator($this->get(self::INCLUSIVE_START_PRIMARY_KEY));
+    }
+
+    /**
+     * Returns element from 'inclusive_start_primary_key' list at given offset
+     *
+     * @param int $offset Position in list
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\Column
+     */
+    public function getInclusiveStartPrimaryKeyAt($offset)
+    {
+        return $this->get(self::INCLUSIVE_START_PRIMARY_KEY, $offset);
+    }
+
+    /**
+     * Returns count of 'inclusive_start_primary_key' list
+     *
+     * @return int
+     */
+    public function getInclusiveStartPrimaryKeyCount()
+    {
+        return $this->count(self::INCLUSIVE_START_PRIMARY_KEY);
+    }
+
+    /**
+     * Appends value to 'exclusive_end_primary_key' list
+     *
+     * @param \Cntysoft\Framework\Cloud\Ali\Ots\Msg\Column $value Value to append
+     *
+     * @return null
+     */
+    public function appendExclusiveEndPrimaryKey(\Cntysoft\Framework\Cloud\Ali\Ots\Msg\Column $value)
+    {
+        return $this->append(self::EXCLUSIVE_END_PRIMARY_KEY, $value);
+    }
+
+    /**
+     * Clears 'exclusive_end_primary_key' list
+     *
+     * @return null
+     */
+    public function clearExclusiveEndPrimaryKey()
+    {
+        return $this->clear(self::EXCLUSIVE_END_PRIMARY_KEY);
+    }
+
+    /**
+     * Returns 'exclusive_end_primary_key' list
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\Column[]
+     */
+    public function getExclusiveEndPrimaryKey()
+    {
+        return $this->get(self::EXCLUSIVE_END_PRIMARY_KEY);
+    }
+
+    /**
+     * Returns 'exclusive_end_primary_key' iterator
+     *
+     * @return ArrayIterator
+     */
+    public function getExclusiveEndPrimaryKeyIterator()
+    {
+        return new \ArrayIterator($this->get(self::EXCLUSIVE_END_PRIMARY_KEY));
+    }
+
+    /**
+     * Returns element from 'exclusive_end_primary_key' list at given offset
+     *
+     * @param int $offset Position in list
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\Column
+     */
+    public function getExclusiveEndPrimaryKeyAt($offset)
+    {
+        return $this->get(self::EXCLUSIVE_END_PRIMARY_KEY, $offset);
+    }
+
+    /**
+     * Returns count of 'exclusive_end_primary_key' list
+     *
+     * @return int
+     */
+    public function getExclusiveEndPrimaryKeyCount()
+    {
+        return $this->count(self::EXCLUSIVE_END_PRIMARY_KEY);
+    }
+}
+}
+
+namespace Cntysoft\Framework\Cloud\Ali\Ots\Msg {
+/**
+ * GetRangeResponse message
+ */
+class GetRangeResponse extends \ProtobufMessage
+{
+    /* Field index constants */
+    const CONSUMED = 1;
+    const NEXT_START_PRIMARY_KEY = 2;
+    const ROWS = 3;
+
+    /* @var array Field descriptors */
+    protected static $fields = array(
+        self::CONSUMED => array(
+            'name' => 'consumed',
+            'required' => true,
+            'type' => '\Cntysoft\Framework\Cloud\Ali\Ots\Msg\ConsumedCapacity'
+        ),
+        self::NEXT_START_PRIMARY_KEY => array(
+            'name' => 'next_start_primary_key',
+            'repeated' => true,
+            'type' => '\Cntysoft\Framework\Cloud\Ali\Ots\Msg\Column'
+        ),
+        self::ROWS => array(
+            'name' => 'rows',
+            'repeated' => true,
+            'type' => '\Cntysoft\Framework\Cloud\Ali\Ots\Msg\Row'
+        ),
+    );
+
+    /**
+     * Constructs new message container and clears its internal state
+     *
+     * @return null
+     */
+    public function __construct()
+    {
+        $this->reset();
+    }
+
+    /**
+     * Clears message values and sets default ones
+     *
+     * @return null
+     */
+    public function reset()
+    {
+        $this->values[self::CONSUMED] = null;
+        $this->values[self::NEXT_START_PRIMARY_KEY] = array();
+        $this->values[self::ROWS] = array();
+    }
+
+    /**
+     * Returns field descriptors
+     *
+     * @return array
+     */
+    public function fields()
+    {
+        return self::$fields;
+    }
+
+    /**
+     * Sets value of 'consumed' property
+     *
+     * @param \Cntysoft\Framework\Cloud\Ali\Ots\Msg\ConsumedCapacity $value Property value
+     *
+     * @return null
+     */
+    public function setConsumed(\Cntysoft\Framework\Cloud\Ali\Ots\Msg\ConsumedCapacity $value)
+    {
+        return $this->set(self::CONSUMED, $value);
+    }
+
+    /**
+     * Returns value of 'consumed' property
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\ConsumedCapacity
+     */
+    public function getConsumed()
+    {
+        return $this->get(self::CONSUMED);
+    }
+
+    /**
+     * Appends value to 'next_start_primary_key' list
+     *
+     * @param \Cntysoft\Framework\Cloud\Ali\Ots\Msg\Column $value Value to append
+     *
+     * @return null
+     */
+    public function appendNextStartPrimaryKey(\Cntysoft\Framework\Cloud\Ali\Ots\Msg\Column $value)
+    {
+        return $this->append(self::NEXT_START_PRIMARY_KEY, $value);
+    }
+
+    /**
+     * Clears 'next_start_primary_key' list
+     *
+     * @return null
+     */
+    public function clearNextStartPrimaryKey()
+    {
+        return $this->clear(self::NEXT_START_PRIMARY_KEY);
+    }
+
+    /**
+     * Returns 'next_start_primary_key' list
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\Column[]
+     */
+    public function getNextStartPrimaryKey()
+    {
+        return $this->get(self::NEXT_START_PRIMARY_KEY);
+    }
+
+    /**
+     * Returns 'next_start_primary_key' iterator
+     *
+     * @return ArrayIterator
+     */
+    public function getNextStartPrimaryKeyIterator()
+    {
+        return new \ArrayIterator($this->get(self::NEXT_START_PRIMARY_KEY));
+    }
+
+    /**
+     * Returns element from 'next_start_primary_key' list at given offset
+     *
+     * @param int $offset Position in list
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\Column
+     */
+    public function getNextStartPrimaryKeyAt($offset)
+    {
+        return $this->get(self::NEXT_START_PRIMARY_KEY, $offset);
+    }
+
+    /**
+     * Returns count of 'next_start_primary_key' list
+     *
+     * @return int
+     */
+    public function getNextStartPrimaryKeyCount()
+    {
+        return $this->count(self::NEXT_START_PRIMARY_KEY);
+    }
+
+    /**
+     * Appends value to 'rows' list
+     *
+     * @param \Cntysoft\Framework\Cloud\Ali\Ots\Msg\Row $value Value to append
+     *
+     * @return null
+     */
+    public function appendRows(\Cntysoft\Framework\Cloud\Ali\Ots\Msg\Row $value)
+    {
+        return $this->append(self::ROWS, $value);
+    }
+
+    /**
+     * Clears 'rows' list
+     *
+     * @return null
+     */
+    public function clearRows()
+    {
+        return $this->clear(self::ROWS);
+    }
+
+    /**
+     * Returns 'rows' list
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\Row[]
+     */
+    public function getRows()
+    {
+        return $this->get(self::ROWS);
+    }
+
+    /**
+     * Returns 'rows' iterator
+     *
+     * @return ArrayIterator
+     */
+    public function getRowsIterator()
+    {
+        return new \ArrayIterator($this->get(self::ROWS));
+    }
+
+    /**
+     * Returns element from 'rows' list at given offset
+     *
+     * @param int $offset Position in list
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\Row
+     */
+    public function getRowsAt($offset)
+    {
+        return $this->get(self::ROWS, $offset);
+    }
+
+    /**
+     * Returns count of 'rows' list
+     *
+     * @return int
+     */
+    public function getRowsCount()
+    {
+        return $this->count(self::ROWS);
+    }
+}
+}
+
+namespace Cntysoft\Framework\Cloud\Ali\Ots\Msg {
+/**
+ * BatchGetRowRequest message
+ */
+class BatchGetRowRequest extends \ProtobufMessage
+{
+    /* Field index constants */
+    const TABLES = 1;
+
+    /* @var array Field descriptors */
+    protected static $fields = array(
+        self::TABLES => array(
+            'name' => 'tables',
+            'repeated' => true,
+            'type' => '\Cntysoft\Framework\Cloud\Ali\Ots\Msg\TableInBatchGetRowRequest'
+        ),
+    );
+
+    /**
+     * Constructs new message container and clears its internal state
+     *
+     * @return null
+     */
+    public function __construct()
+    {
+        $this->reset();
+    }
+
+    /**
+     * Clears message values and sets default ones
+     *
+     * @return null
+     */
+    public function reset()
+    {
+        $this->values[self::TABLES] = array();
+    }
+
+    /**
+     * Returns field descriptors
+     *
+     * @return array
+     */
+    public function fields()
+    {
+        return self::$fields;
+    }
+
+    /**
+     * Appends value to 'tables' list
+     *
+     * @param \Cntysoft\Framework\Cloud\Ali\Ots\Msg\TableInBatchGetRowRequest $value Value to append
+     *
+     * @return null
+     */
+    public function appendTables(\Cntysoft\Framework\Cloud\Ali\Ots\Msg\TableInBatchGetRowRequest $value)
+    {
+        return $this->append(self::TABLES, $value);
+    }
+
+    /**
+     * Clears 'tables' list
+     *
+     * @return null
+     */
+    public function clearTables()
+    {
+        return $this->clear(self::TABLES);
+    }
+
+    /**
+     * Returns 'tables' list
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\TableInBatchGetRowRequest[]
+     */
+    public function getTables()
+    {
+        return $this->get(self::TABLES);
+    }
+
+    /**
+     * Returns 'tables' iterator
+     *
+     * @return ArrayIterator
+     */
+    public function getTablesIterator()
+    {
+        return new \ArrayIterator($this->get(self::TABLES));
+    }
+
+    /**
+     * Returns element from 'tables' list at given offset
+     *
+     * @param int $offset Position in list
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\TableInBatchGetRowRequest
+     */
+    public function getTablesAt($offset)
+    {
+        return $this->get(self::TABLES, $offset);
+    }
+
+    /**
+     * Returns count of 'tables' list
+     *
+     * @return int
+     */
+    public function getTablesCount()
+    {
+        return $this->count(self::TABLES);
+    }
+}
+}
+
+namespace Cntysoft\Framework\Cloud\Ali\Ots\Msg {
+/**
+ * BatchGetRowResponse message
+ */
+class BatchGetRowResponse extends \ProtobufMessage
+{
+    /* Field index constants */
+    const TABLES = 1;
+
+    /* @var array Field descriptors */
+    protected static $fields = array(
+        self::TABLES => array(
+            'name' => 'tables',
+            'repeated' => true,
+            'type' => '\Cntysoft\Framework\Cloud\Ali\Ots\Msg\TableInBatchGetRowResponse'
+        ),
+    );
+
+    /**
+     * Constructs new message container and clears its internal state
+     *
+     * @return null
+     */
+    public function __construct()
+    {
+        $this->reset();
+    }
+
+    /**
+     * Clears message values and sets default ones
+     *
+     * @return null
+     */
+    public function reset()
+    {
+        $this->values[self::TABLES] = array();
+    }
+
+    /**
+     * Returns field descriptors
+     *
+     * @return array
+     */
+    public function fields()
+    {
+        return self::$fields;
+    }
+
+    /**
+     * Appends value to 'tables' list
+     *
+     * @param \Cntysoft\Framework\Cloud\Ali\Ots\Msg\TableInBatchGetRowResponse $value Value to append
+     *
+     * @return null
+     */
+    public function appendTables(\Cntysoft\Framework\Cloud\Ali\Ots\Msg\TableInBatchGetRowResponse $value)
+    {
+        return $this->append(self::TABLES, $value);
+    }
+
+    /**
+     * Clears 'tables' list
+     *
+     * @return null
+     */
+    public function clearTables()
+    {
+        return $this->clear(self::TABLES);
+    }
+
+    /**
+     * Returns 'tables' list
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\TableInBatchGetRowResponse[]
+     */
+    public function getTables()
+    {
+        return $this->get(self::TABLES);
+    }
+
+    /**
+     * Returns 'tables' iterator
+     *
+     * @return ArrayIterator
+     */
+    public function getTablesIterator()
+    {
+        return new \ArrayIterator($this->get(self::TABLES));
+    }
+
+    /**
+     * Returns element from 'tables' list at given offset
+     *
+     * @param int $offset Position in list
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\TableInBatchGetRowResponse
+     */
+    public function getTablesAt($offset)
+    {
+        return $this->get(self::TABLES, $offset);
+    }
+
+    /**
+     * Returns count of 'tables' list
+     *
+     * @return int
+     */
+    public function getTablesCount()
+    {
+        return $this->count(self::TABLES);
+    }
+}
+}
+
+namespace Cntysoft\Framework\Cloud\Ali\Ots\Msg {
+/**
+ * BatchWriteRowRequest message
+ */
+class BatchWriteRowRequest extends \ProtobufMessage
+{
+    /* Field index constants */
+    const TABLES = 1;
+
+    /* @var array Field descriptors */
+    protected static $fields = array(
+        self::TABLES => array(
+            'name' => 'tables',
+            'repeated' => true,
+            'type' => '\Cntysoft\Framework\Cloud\Ali\Ots\Msg\TableInBatchWriteRowRequest'
+        ),
+    );
+
+    /**
+     * Constructs new message container and clears its internal state
+     *
+     * @return null
+     */
+    public function __construct()
+    {
+        $this->reset();
+    }
+
+    /**
+     * Clears message values and sets default ones
+     *
+     * @return null
+     */
+    public function reset()
+    {
+        $this->values[self::TABLES] = array();
+    }
+
+    /**
+     * Returns field descriptors
+     *
+     * @return array
+     */
+    public function fields()
+    {
+        return self::$fields;
+    }
+
+    /**
+     * Appends value to 'tables' list
+     *
+     * @param \Cntysoft\Framework\Cloud\Ali\Ots\Msg\TableInBatchWriteRowRequest $value Value to append
+     *
+     * @return null
+     */
+    public function appendTables(\Cntysoft\Framework\Cloud\Ali\Ots\Msg\TableInBatchWriteRowRequest $value)
+    {
+        return $this->append(self::TABLES, $value);
+    }
+
+    /**
+     * Clears 'tables' list
+     *
+     * @return null
+     */
+    public function clearTables()
+    {
+        return $this->clear(self::TABLES);
+    }
+
+    /**
+     * Returns 'tables' list
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\TableInBatchWriteRowRequest[]
+     */
+    public function getTables()
+    {
+        return $this->get(self::TABLES);
+    }
+
+    /**
+     * Returns 'tables' iterator
+     *
+     * @return ArrayIterator
+     */
+    public function getTablesIterator()
+    {
+        return new \ArrayIterator($this->get(self::TABLES));
+    }
+
+    /**
+     * Returns element from 'tables' list at given offset
+     *
+     * @param int $offset Position in list
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\TableInBatchWriteRowRequest
+     */
+    public function getTablesAt($offset)
+    {
+        return $this->get(self::TABLES, $offset);
+    }
+
+    /**
+     * Returns count of 'tables' list
+     *
+     * @return int
+     */
+    public function getTablesCount()
+    {
+        return $this->count(self::TABLES);
+    }
+}
+}
+
+namespace Cntysoft\Framework\Cloud\Ali\Ots\Msg {
+/**
+ * BatchWriteRowResponse message
+ */
+class BatchWriteRowResponse extends \ProtobufMessage
+{
+    /* Field index constants */
+    const TABLES = 1;
+
+    /* @var array Field descriptors */
+    protected static $fields = array(
+        self::TABLES => array(
+            'name' => 'tables',
+            'repeated' => true,
+            'type' => '\Cntysoft\Framework\Cloud\Ali\Ots\Msg\TableInBatchWriteRowResponse'
+        ),
+    );
+
+    /**
+     * Constructs new message container and clears its internal state
+     *
+     * @return null
+     */
+    public function __construct()
+    {
+        $this->reset();
+    }
+
+    /**
+     * Clears message values and sets default ones
+     *
+     * @return null
+     */
+    public function reset()
+    {
+        $this->values[self::TABLES] = array();
+    }
+
+    /**
+     * Returns field descriptors
+     *
+     * @return array
+     */
+    public function fields()
+    {
+        return self::$fields;
+    }
+
+    /**
+     * Appends value to 'tables' list
+     *
+     * @param \Cntysoft\Framework\Cloud\Ali\Ots\Msg\TableInBatchWriteRowResponse $value Value to append
+     *
+     * @return null
+     */
+    public function appendTables(\Cntysoft\Framework\Cloud\Ali\Ots\Msg\TableInBatchWriteRowResponse $value)
+    {
+        return $this->append(self::TABLES, $value);
+    }
+
+    /**
+     * Clears 'tables' list
+     *
+     * @return null
+     */
+    public function clearTables()
+    {
+        return $this->clear(self::TABLES);
+    }
+
+    /**
+     * Returns 'tables' list
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\TableInBatchWriteRowResponse[]
+     */
+    public function getTables()
+    {
+        return $this->get(self::TABLES);
+    }
+
+    /**
+     * Returns 'tables' iterator
+     *
+     * @return ArrayIterator
+     */
+    public function getTablesIterator()
+    {
+        return new \ArrayIterator($this->get(self::TABLES));
+    }
+
+    /**
+     * Returns element from 'tables' list at given offset
+     *
+     * @param int $offset Position in list
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\TableInBatchWriteRowResponse
+     */
+    public function getTablesAt($offset)
+    {
+        return $this->get(self::TABLES, $offset);
+    }
+
+    /**
+     * Returns count of 'tables' list
+     *
+     * @return int
+     */
+    public function getTablesCount()
+    {
+        return $this->count(self::TABLES);
+    }
+}
+}
+
+namespace Cntysoft\Framework\Cloud\Ali\Ots\Msg {
+/**
  * CreateTableRequest message
  */
 class CreateTableRequest extends \ProtobufMessage
@@ -3354,6 +5556,667 @@ class CreateTableRequest extends \ProtobufMessage
     public function getReservedThroughput()
     {
         return $this->get(self::RESERVED_THROUGHPUT);
+    }
+}
+}
+
+namespace Cntysoft\Framework\Cloud\Ali\Ots\Msg {
+/**
+ * CreateTableResponse message
+ */
+class CreateTableResponse extends \ProtobufMessage
+{
+    /* Field index constants */
+
+    /* @var array Field descriptors */
+    protected static $fields = array(
+    );
+
+    /**
+     * Constructs new message container and clears its internal state
+     *
+     * @return null
+     */
+    public function __construct()
+    {
+        $this->reset();
+    }
+
+    /**
+     * Clears message values and sets default ones
+     *
+     * @return null
+     */
+    public function reset()
+    {
+    }
+
+    /**
+     * Returns field descriptors
+     *
+     * @return array
+     */
+    public function fields()
+    {
+        return self::$fields;
+    }
+}
+}
+
+namespace Cntysoft\Framework\Cloud\Ali\Ots\Msg {
+/**
+ * ListTableRequest message
+ */
+class ListTableRequest extends \ProtobufMessage
+{
+    /* Field index constants */
+
+    /* @var array Field descriptors */
+    protected static $fields = array(
+    );
+
+    /**
+     * Constructs new message container and clears its internal state
+     *
+     * @return null
+     */
+    public function __construct()
+    {
+        $this->reset();
+    }
+
+    /**
+     * Clears message values and sets default ones
+     *
+     * @return null
+     */
+    public function reset()
+    {
+    }
+
+    /**
+     * Returns field descriptors
+     *
+     * @return array
+     */
+    public function fields()
+    {
+        return self::$fields;
+    }
+}
+}
+
+namespace Cntysoft\Framework\Cloud\Ali\Ots\Msg {
+/**
+ * ListTableResponse message
+ */
+class ListTableResponse extends \ProtobufMessage
+{
+    /* Field index constants */
+    const TABLE_NAMES = 1;
+
+    /* @var array Field descriptors */
+    protected static $fields = array(
+        self::TABLE_NAMES => array(
+            'name' => 'table_names',
+            'repeated' => true,
+            'type' => 7,
+        ),
+    );
+
+    /**
+     * Constructs new message container and clears its internal state
+     *
+     * @return null
+     */
+    public function __construct()
+    {
+        $this->reset();
+    }
+
+    /**
+     * Clears message values and sets default ones
+     *
+     * @return null
+     */
+    public function reset()
+    {
+        $this->values[self::TABLE_NAMES] = array();
+    }
+
+    /**
+     * Returns field descriptors
+     *
+     * @return array
+     */
+    public function fields()
+    {
+        return self::$fields;
+    }
+
+    /**
+     * Appends value to 'table_names' list
+     *
+     * @param string $value Value to append
+     *
+     * @return null
+     */
+    public function appendTableNames($value)
+    {
+        return $this->append(self::TABLE_NAMES, $value);
+    }
+
+    /**
+     * Clears 'table_names' list
+     *
+     * @return null
+     */
+    public function clearTableNames()
+    {
+        return $this->clear(self::TABLE_NAMES);
+    }
+
+    /**
+     * Returns 'table_names' list
+     *
+     * @return string[]
+     */
+    public function getTableNames()
+    {
+        return $this->get(self::TABLE_NAMES);
+    }
+
+    /**
+     * Returns 'table_names' iterator
+     *
+     * @return ArrayIterator
+     */
+    public function getTableNamesIterator()
+    {
+        return new \ArrayIterator($this->get(self::TABLE_NAMES));
+    }
+
+    /**
+     * Returns element from 'table_names' list at given offset
+     *
+     * @param int $offset Position in list
+     *
+     * @return string
+     */
+    public function getTableNamesAt($offset)
+    {
+        return $this->get(self::TABLE_NAMES, $offset);
+    }
+
+    /**
+     * Returns count of 'table_names' list
+     *
+     * @return int
+     */
+    public function getTableNamesCount()
+    {
+        return $this->count(self::TABLE_NAMES);
+    }
+}
+}
+
+namespace Cntysoft\Framework\Cloud\Ali\Ots\Msg {
+/**
+ * DeleteTableRequest message
+ */
+class DeleteTableRequest extends \ProtobufMessage
+{
+    /* Field index constants */
+    const TABLE_NAME = 1;
+
+    /* @var array Field descriptors */
+    protected static $fields = array(
+        self::TABLE_NAME => array(
+            'name' => 'table_name',
+            'required' => true,
+            'type' => 7,
+        ),
+    );
+
+    /**
+     * Constructs new message container and clears its internal state
+     *
+     * @return null
+     */
+    public function __construct()
+    {
+        $this->reset();
+    }
+
+    /**
+     * Clears message values and sets default ones
+     *
+     * @return null
+     */
+    public function reset()
+    {
+        $this->values[self::TABLE_NAME] = null;
+    }
+
+    /**
+     * Returns field descriptors
+     *
+     * @return array
+     */
+    public function fields()
+    {
+        return self::$fields;
+    }
+
+    /**
+     * Sets value of 'table_name' property
+     *
+     * @param string $value Property value
+     *
+     * @return null
+     */
+    public function setTableName($value)
+    {
+        return $this->set(self::TABLE_NAME, $value);
+    }
+
+    /**
+     * Returns value of 'table_name' property
+     *
+     * @return string
+     */
+    public function getTableName()
+    {
+        return $this->get(self::TABLE_NAME);
+    }
+}
+}
+
+namespace Cntysoft\Framework\Cloud\Ali\Ots\Msg {
+/**
+ * DeleteTableResponse message
+ */
+class DeleteTableResponse extends \ProtobufMessage
+{
+    /* Field index constants */
+
+    /* @var array Field descriptors */
+    protected static $fields = array(
+    );
+
+    /**
+     * Constructs new message container and clears its internal state
+     *
+     * @return null
+     */
+    public function __construct()
+    {
+        $this->reset();
+    }
+
+    /**
+     * Clears message values and sets default ones
+     *
+     * @return null
+     */
+    public function reset()
+    {
+    }
+
+    /**
+     * Returns field descriptors
+     *
+     * @return array
+     */
+    public function fields()
+    {
+        return self::$fields;
+    }
+}
+}
+
+namespace Cntysoft\Framework\Cloud\Ali\Ots\Msg {
+/**
+ * UpdateTableRequest message
+ */
+class UpdateTableRequest extends \ProtobufMessage
+{
+    /* Field index constants */
+    const TABLE_NAME = 1;
+    const RESERVED_THROUGHPUT = 2;
+
+    /* @var array Field descriptors */
+    protected static $fields = array(
+        self::TABLE_NAME => array(
+            'name' => 'table_name',
+            'required' => true,
+            'type' => 7,
+        ),
+        self::RESERVED_THROUGHPUT => array(
+            'name' => 'reserved_throughput',
+            'required' => true,
+            'type' => '\Cntysoft\Framework\Cloud\Ali\Ots\Msg\ReservedThroughput'
+        ),
+    );
+
+    /**
+     * Constructs new message container and clears its internal state
+     *
+     * @return null
+     */
+    public function __construct()
+    {
+        $this->reset();
+    }
+
+    /**
+     * Clears message values and sets default ones
+     *
+     * @return null
+     */
+    public function reset()
+    {
+        $this->values[self::TABLE_NAME] = null;
+        $this->values[self::RESERVED_THROUGHPUT] = null;
+    }
+
+    /**
+     * Returns field descriptors
+     *
+     * @return array
+     */
+    public function fields()
+    {
+        return self::$fields;
+    }
+
+    /**
+     * Sets value of 'table_name' property
+     *
+     * @param string $value Property value
+     *
+     * @return null
+     */
+    public function setTableName($value)
+    {
+        return $this->set(self::TABLE_NAME, $value);
+    }
+
+    /**
+     * Returns value of 'table_name' property
+     *
+     * @return string
+     */
+    public function getTableName()
+    {
+        return $this->get(self::TABLE_NAME);
+    }
+
+    /**
+     * Sets value of 'reserved_throughput' property
+     *
+     * @param \Cntysoft\Framework\Cloud\Ali\Ots\Msg\ReservedThroughput $value Property value
+     *
+     * @return null
+     */
+    public function setReservedThroughput(\Cntysoft\Framework\Cloud\Ali\Ots\Msg\ReservedThroughput $value)
+    {
+        return $this->set(self::RESERVED_THROUGHPUT, $value);
+    }
+
+    /**
+     * Returns value of 'reserved_throughput' property
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\ReservedThroughput
+     */
+    public function getReservedThroughput()
+    {
+        return $this->get(self::RESERVED_THROUGHPUT);
+    }
+}
+}
+
+namespace Cntysoft\Framework\Cloud\Ali\Ots\Msg {
+/**
+ * UpdateTableResponse message
+ */
+class UpdateTableResponse extends \ProtobufMessage
+{
+    /* Field index constants */
+    const RESERVED_THROUGHPUT_DETAILS = 1;
+
+    /* @var array Field descriptors */
+    protected static $fields = array(
+        self::RESERVED_THROUGHPUT_DETAILS => array(
+            'name' => 'reserved_throughput_details',
+            'required' => true,
+            'type' => '\Cntysoft\Framework\Cloud\Ali\Ots\Msg\ReservedThroughputDetails'
+        ),
+    );
+
+    /**
+     * Constructs new message container and clears its internal state
+     *
+     * @return null
+     */
+    public function __construct()
+    {
+        $this->reset();
+    }
+
+    /**
+     * Clears message values and sets default ones
+     *
+     * @return null
+     */
+    public function reset()
+    {
+        $this->values[self::RESERVED_THROUGHPUT_DETAILS] = null;
+    }
+
+    /**
+     * Returns field descriptors
+     *
+     * @return array
+     */
+    public function fields()
+    {
+        return self::$fields;
+    }
+
+    /**
+     * Sets value of 'reserved_throughput_details' property
+     *
+     * @param \Cntysoft\Framework\Cloud\Ali\Ots\Msg\ReservedThroughputDetails $value Property value
+     *
+     * @return null
+     */
+    public function setReservedThroughputDetails(\Cntysoft\Framework\Cloud\Ali\Ots\Msg\ReservedThroughputDetails $value)
+    {
+        return $this->set(self::RESERVED_THROUGHPUT_DETAILS, $value);
+    }
+
+    /**
+     * Returns value of 'reserved_throughput_details' property
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\ReservedThroughputDetails
+     */
+    public function getReservedThroughputDetails()
+    {
+        return $this->get(self::RESERVED_THROUGHPUT_DETAILS);
+    }
+}
+}
+
+namespace Cntysoft\Framework\Cloud\Ali\Ots\Msg {
+/**
+ * DescribeTableRequest message
+ */
+class DescribeTableRequest extends \ProtobufMessage
+{
+    /* Field index constants */
+    const TABLE_NAME = 1;
+
+    /* @var array Field descriptors */
+    protected static $fields = array(
+        self::TABLE_NAME => array(
+            'name' => 'table_name',
+            'required' => true,
+            'type' => 7,
+        ),
+    );
+
+    /**
+     * Constructs new message container and clears its internal state
+     *
+     * @return null
+     */
+    public function __construct()
+    {
+        $this->reset();
+    }
+
+    /**
+     * Clears message values and sets default ones
+     *
+     * @return null
+     */
+    public function reset()
+    {
+        $this->values[self::TABLE_NAME] = null;
+    }
+
+    /**
+     * Returns field descriptors
+     *
+     * @return array
+     */
+    public function fields()
+    {
+        return self::$fields;
+    }
+
+    /**
+     * Sets value of 'table_name' property
+     *
+     * @param string $value Property value
+     *
+     * @return null
+     */
+    public function setTableName($value)
+    {
+        return $this->set(self::TABLE_NAME, $value);
+    }
+
+    /**
+     * Returns value of 'table_name' property
+     *
+     * @return string
+     */
+    public function getTableName()
+    {
+        return $this->get(self::TABLE_NAME);
+    }
+}
+}
+
+namespace Cntysoft\Framework\Cloud\Ali\Ots\Msg {
+/**
+ * DescribeTableResponse message
+ */
+class DescribeTableResponse extends \ProtobufMessage
+{
+    /* Field index constants */
+    const TABLE_META = 1;
+    const RESERVED_THROUGHPUT_DETAILS = 2;
+
+    /* @var array Field descriptors */
+    protected static $fields = array(
+        self::TABLE_META => array(
+            'name' => 'table_meta',
+            'required' => true,
+            'type' => '\Cntysoft\Framework\Cloud\Ali\Ots\Msg\TableMeta'
+        ),
+        self::RESERVED_THROUGHPUT_DETAILS => array(
+            'name' => 'reserved_throughput_details',
+            'required' => true,
+            'type' => '\Cntysoft\Framework\Cloud\Ali\Ots\Msg\ReservedThroughputDetails'
+        ),
+    );
+
+    /**
+     * Constructs new message container and clears its internal state
+     *
+     * @return null
+     */
+    public function __construct()
+    {
+        $this->reset();
+    }
+
+    /**
+     * Clears message values and sets default ones
+     *
+     * @return null
+     */
+    public function reset()
+    {
+        $this->values[self::TABLE_META] = null;
+        $this->values[self::RESERVED_THROUGHPUT_DETAILS] = null;
+    }
+
+    /**
+     * Returns field descriptors
+     *
+     * @return array
+     */
+    public function fields()
+    {
+        return self::$fields;
+    }
+
+    /**
+     * Sets value of 'table_meta' property
+     *
+     * @param \Cntysoft\Framework\Cloud\Ali\Ots\Msg\TableMeta $value Property value
+     *
+     * @return null
+     */
+    public function setTableMeta(\Cntysoft\Framework\Cloud\Ali\Ots\Msg\TableMeta $value)
+    {
+        return $this->set(self::TABLE_META, $value);
+    }
+
+    /**
+     * Returns value of 'table_meta' property
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\TableMeta
+     */
+    public function getTableMeta()
+    {
+        return $this->get(self::TABLE_META);
+    }
+
+    /**
+     * Sets value of 'reserved_throughput_details' property
+     *
+     * @param \Cntysoft\Framework\Cloud\Ali\Ots\Msg\ReservedThroughputDetails $value Property value
+     *
+     * @return null
+     */
+    public function setReservedThroughputDetails(\Cntysoft\Framework\Cloud\Ali\Ots\Msg\ReservedThroughputDetails $value)
+    {
+        return $this->set(self::RESERVED_THROUGHPUT_DETAILS, $value);
+    }
+
+    /**
+     * Returns value of 'reserved_throughput_details' property
+     *
+     * @return \Cntysoft\Framework\Cloud\Ali\Ots\Msg\ReservedThroughputDetails
+     */
+    public function getReservedThroughputDetails()
+    {
+        return $this->get(self::RESERVED_THROUGHPUT_DETAILS);
     }
 }
 }

@@ -50,10 +50,10 @@ class Client
     */
    public function getTableNames()
    {
-      $response = $this->requestOtsApi(self::API_LIST_TABLE, new ApiMessage\EmptyRequest());
-      $responseBuf = new ApiMessage\ListTableResponse();
-      $responseBuf->parse($response->getBody(), Protobuf::getCodec('Binary'));
-      return $responseBuf->table_names;
+      $response = $this->requestOtsApi(self::API_LIST_TABLE, new Msg\ListTableRequest());
+      $responseBuf = new Msg\ListTableResponse();
+      $responseBuf->parseFromString($response->getBody());
+      return $responseBuf->getTableNames();
    }
 
    /**
@@ -68,6 +68,7 @@ class Client
     * @param array $primaryKeys
     * @param int $readCapacityUnit
     * @param int $writeCapacityUnit
+    * @return Msg\CreateTableResponse
     */
    public function createTable($tableName, array $primaryKeys, $readCapacityUnit = 2, $writeCapacityUnit = 2)
    {
@@ -88,7 +89,12 @@ class Client
       $createTableRequest->setTableMeta($tableMeta);
       $createTableRequest->setReservedThroughput($reservedThroughput);
       $response = $this->requestOtsApi(self::API_CREATE_TABLE, $createTableRequest);
+      $buf = new Msg\CreateTableResponse();
+      $buf->parseFromString($response->getBody());
+      return $buf;
    }
+
+   
 
    /**
     * @param string $api

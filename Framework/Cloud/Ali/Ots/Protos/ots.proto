@@ -145,8 +145,118 @@ message UpdateRowInBatchWriteRowRequest
    repeated Column primary_key = 2;
    repeated ColumnUpdate attribute_columns = 3;
 }
+message GetRowRequest
+{
+   required string table_name = 1;
+   repeated Column primary_key = 2;
+   repeated string columns_to_get = 3;
+}
+message GetRowResponse
+{
+   required ConsumedCapacity consumed = 1;
+   required Row row = 2;
+}
+message PutRowRequest
+{
+   required string table_name = 1;
+   required Condition condition = 2;
+   repeated Column primary_key = 3;
+   repeated Column attribute_columns = 4;
+}
+message PutRowResponse
+{
+   required ConsumedCapacity consumed = 1;
+}
+message UpdateRowRequest
+{
+   required string table_name = 1;
+   required Condition condition = 2;
+   repeated Column primary_key = 3;
+   repeated ColumnUpdate attribute_columns = 4;
+}
+message UpdateRowResponse
+{
+   required ConsumedCapacity consumed = 1;
+}
+message DeleteRowRequest
+{
+   required string table_name = 1;
+   required Condition condition = 2;
+   repeated Column primary_key = 3;
+}
+message DeleteRowResponse
+{
+   required ConsumedCapacity consumed = 1;
+}
+message GetRangeRequest
+{
+   required string table_name = 1;
+   required Direction direction = 2;
+   repeated string columns_to_get = 3;
+   optional int32 limit = 4;
+   repeated Column inclusive_start_primary_key = 5;
+   repeated Column exclusive_end_primary_key = 6;
+}
+message GetRangeResponse
+{
+   required ConsumedCapacity consumed = 1;
+   repeated Column next_start_primary_key = 2;
+   repeated Row rows = 3;
+}
+message BatchGetRowRequest
+{
+   repeated TableInBatchGetRowRequest tables = 1;
+}
+message BatchGetRowResponse
+{
+   repeated TableInBatchGetRowResponse tables = 1;
+}
+message BatchWriteRowRequest
+{
+   repeated TableInBatchWriteRowRequest tables = 1;
+}
+message BatchWriteRowResponse
+{
+   repeated TableInBatchWriteRowResponse tables = 1;
+}
 message CreateTableRequest
 {
    required TableMeta table_meta = 1;
    required ReservedThroughput reserved_throughput = 2;
 }
+message CreateTableResponse
+{
+}
+message ListTableRequest
+{
+}
+message ListTableResponse
+{
+   repeated string table_names = 1;
+}
+message DeleteTableRequest
+{
+   required string table_name = 1;
+}
+message DeleteTableResponse
+{
+}
+message UpdateTableRequest
+{
+   required string table_name = 1;
+   required ReservedThroughput reserved_throughput = 2;
+}
+message UpdateTableResponse
+{
+   required ReservedThroughputDetails reserved_throughput_details = 1;
+}
+message DescribeTableRequest
+{
+   required string table_name = 1;
+}
+message DescribeTableResponse
+{
+   required TableMeta table_meta = 1;
+   required ReservedThroughputDetails reserved_throughput_details = 2;
+}
+
