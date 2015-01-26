@@ -19,7 +19,7 @@ class KvDict extends BaseModel
 
    public function getSource()
    {
-      return 'sys_kvdict';
+      return 'sys_m_std_kvdict';
    }
 
    public function getKey()
