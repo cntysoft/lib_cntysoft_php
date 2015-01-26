@@ -71,7 +71,7 @@ abstract class FileRefDownload
          $refInfo = array(
             'filename' => Filesystem::basename($url->getPath()),
             'filesize' => $fileinfo['size'],
-            'attachment' => str_replace(CNTY_ROOT_DIR, '', $attachmentFilename),
+            'attachment' => str_replace('\\', '/', str_replace(CNTY_ROOT_DIR, '', $attachmentFilename)),
             'targetFile' => $attachmentFilename
          );
          $refInfo = $this->afterFileSavedHandler($refInfo);
