@@ -43,14 +43,14 @@ class Sys
    /**
     * 加载指定版本的Jquery文件
     *
-    * 调用方式 <code>Qs::Sys('loadJquery', 'version');</code>
-    * @param string $version
+    * 调用方式 <code>Qs::Sys('loadJquery', array('version');</code>
+    * @param array $file
     * @return string
     */
-   public static function loadJquery($version)
+   public static function loadJquery($file)
    {
       $base = StdHtmlPath::getJsPath();
-      return Utils::generateJsScriptTag($base, sprintf('Jquery/jquery-%s.min.js', $version));
+      return Utils::generateJsScriptTag($base, sprintf('Jquery/jquery-%s.min.js', $file[0]));
    }
    /**
     * 加载用户中心相关的js
@@ -74,13 +74,16 @@ class Sys
       return self::loadCss($filename, '/Modules/User/Ui/Css');
    }
 
-   public static function loadImage($file, $type = 'Pc')
+   /**
+    * 加载指定路径的图片
+    * 
+    * @param array $file
+    * @return string
+    */
+   public static function loadImage($file)
    {
-      if('Pc' === $type){
-         return StdHtmlPath::getPcImagePath() . DS . $file[0];
-      }else{
-         return StdHtmlPath::getMobileImagePath() . DS . $file[0];
-      }
+      $basepath = StdHtmlPath::getSkinPath();
+      return $basepath . '/' . $file[0];
    }
    /**
     * 加载Css文件

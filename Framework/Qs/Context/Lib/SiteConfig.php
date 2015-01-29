@@ -57,20 +57,7 @@ class SiteConfig
      */
     public static function jqueryPath()
     {
-        return self::jsPath().'/Jquery';
-    }
-
-    /**
-     * bootstrap框架相关的路径
-     * 
-     * 
-     * 调用方式
-     * <code>Qs::SiteConfig('bootstrapPath');</code>
-     * @return string
-     */
-    public static function bootstrapPath()
-    {
-       return self::jsPath() . '/Bootstrap';
+        return self::sysJsLibraryPath().'/Jquery';
     }
 
     /**

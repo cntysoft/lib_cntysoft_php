@@ -15,7 +15,6 @@ define('CNTY_TAG_DIR', CNTY_ROOT_DIR.DS.'TagLibrary');
 define('CNTY_JS_LIB_DIR', CNTY_ROOT_DIR.DS.'JsLibrary');
 define('CNTY_JS_SYS_DIR', CNTY_ROOT_DIR.DS.'SysManager');
 define('CNTY_SKIN_DIR', CNTY_UI_DIR.DS.'Skins');
-define('CNTY_IMAGE_DIR', CNTY_UI_DIR.DS.'Images');
 define('CNTY_DATA_DIR', CNTY_ROOT_DIR.DS.'Data');
 define('CNTY_CACHE_DIR', CNTY_DATA_DIR.DS.'Cache');
 define('CNTY_UPLOAD_DIR', CNTY_DATA_DIR.DS.'UploadFiles');

@@ -55,16 +55,6 @@ abstract class StdDir
    }
 
    /**
-    * 获取系统图片目录
-    *
-    * @return string
-    */
-   public static function getImagesDir()
-   {
-      return CNTY_IMAGE_DIR;
-   }
-
-   /**
     * 获取模板路径
     *
     * @return string
@@ -82,26 +72,6 @@ abstract class StdDir
    public static function getSkinDir()
    {
       return CNTY_SKIN_DIR;
-   }
-
-   /**
-    * 获取pc版模板路径
-    *
-    * @return string
-    */
-   public static function getPcTemplatesDir()
-   {
-      return CNTY_TEMPLATE_DIR.DS.'Pc';
-   }
-
-   /**
-    * 获取mobile版模板路径
-    *
-    * @return string
-    */
-   public static function getMobileTemplatesDir()
-   {
-      return CNTY_TEMPLATE_DIR.DS.'Mobile';
    }
 
    /**
