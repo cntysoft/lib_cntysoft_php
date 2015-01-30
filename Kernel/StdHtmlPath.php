@@ -53,7 +53,7 @@ abstract class StdHtmlPath
     */
    public static function getSkinPath()
    {
-      return '/Ui/Skins/'. Kernel\get_site_id() . '/' . Kernel\get_tpl_project();
+      return '/Ui/Skins';
    }
 
    /**
@@ -63,7 +63,7 @@ abstract class StdHtmlPath
     */
    public static function getTemplatesPath()
    {
-      return '/Ui/Templates/'. \Kernel\get_site_id() . '/' . Kernel\get_tpl_project();
+      return '/Ui/Templates';
    }
 
    /**

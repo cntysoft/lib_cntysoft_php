@@ -39,12 +39,6 @@ abstract class AbstractScript
      */
     protected $appCaller = null;
     /**
-     * 教堂ID
-     * 
-     * @var int $siteId
-     */
-    protected $siteId = null;
-    /**
      * @param array $params
      * @param \Cntysoft\Framework\Qs\Engine $engine
      */
@@ -54,7 +48,6 @@ abstract class AbstractScript
         $this->engine = $engine;
         $this->di = Kernel\get_global_di();
         $this->appCaller = $this->di->get('AppCaller');
-        $this->siteId = Kernel\get_site_id();
     }
 
     /**
