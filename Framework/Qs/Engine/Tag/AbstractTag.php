@@ -199,7 +199,7 @@ abstract class AbstractTag
          }
          if (!empty($leak)) {
             $errorType = ErrorType::getInstance();
-            throw new Exception($errorType->msg('E_TAG_REQUIRE_PATAM_NOT_EXIST', implode(',', $leak), $errorType->code('E_TAG_REQUIRE_PATAM_NOT_EXIST')));
+            throw new Exception($errorType->msg('E_TAG_REQUIRE_PARAM_NOT_EXIST', implode(',', $leak), $errorType->code('E_TAG_REQUIRE_PARAM_NOT_EXIST')));
          }
       }
    }

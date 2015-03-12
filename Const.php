@@ -85,3 +85,8 @@ const UI_MODE_CUSTOMIZE = 2;
 const UTF8 = 'utf-8';
 const GBK = 'gbk';
 const GB2312 = 'gb2312';
+
+//Asset相关文件夹名称
+const CSS = 'Css';
+const IMAGE = 'Images';
+const JS = 'Js';

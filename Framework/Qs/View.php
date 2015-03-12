@@ -121,6 +121,11 @@ class View implements \Phalcon\Events\EventsAwareInterface, \Phalcon\DI\Injectio
     * @var \Cntysoft\Framework\Qs\TagResolverInterface
     */
    protected static $tagResolver = null;
+
+   /**
+    * @var \Cntysoft\Framework\Qs\AssetResolverInterface
+    */
+   protected static $assetResolver = null;
    /**
     * @param \Phalcon\DiInterface $dependencyInjector
     * @return \Cntysoft\Framework\Qs\View
@@ -438,6 +443,31 @@ class View implements \Phalcon\Events\EventsAwareInterface, \Phalcon\DI\Injectio
                $errorType->code('E_TAG_DIR_FINDER_NOT_SET')),$errorType);
       }
       return self::$tagResolver;
+   }
+
+   /**
+    * @param AssetResolverInterface $finder
+    */
+   public static function setAssetResolver(AssetResolverInterface $finder)
+   {
+      if(self::$assetResolver != $finder) {
+         self::$assetResolver = $finder;
+      }
+   }
+
+   /**
+    * @return AssetResolverInterface
+    */
+   public static function getAssetResolver()
+   {
+      if(null == self::$assetResolver){
+         $errorType = ErrorType::getInstance();
+         Kernel\throw_exception(
+            new Exception(
+               $errorType->msg('E_TAG_DIR_FINDER_NOT_SET'),
+               $errorType->code('E_TAG_DIR_FINDER_NOT_SET')),$errorType);
+      }
+      return self::$assetResolver;
    }
 
    /**

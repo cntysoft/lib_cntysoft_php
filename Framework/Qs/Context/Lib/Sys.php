@@ -9,6 +9,7 @@
 namespace Qs\Lib;
 use Cntysoft\Kernel\StdHtmlPath;
 use Cntysoft\Framework\Qs\Utils;
+use Cntysoft\Framework\Qs\View;
 class Sys
 {
    /**
@@ -23,7 +24,8 @@ class Sys
     */
    public static function loadJs($file, $basepath = null)
    {
-      $basepath = $basepath ? $basepath : StdHtmlPath::getSkinPath();
+      $assetResolver = View::getAssetResolver();
+      $basepath = $basepath ? $basepath : $assetResolver->getJsBasePath();
       return Utils::generateJsScriptTag($basepath, $file);
    }
 
@@ -50,6 +52,9 @@ class Sys
    public static function loadJquery($file)
    {
       $base = StdHtmlPath::getJsPath();
+      if(!is_array($file)) {
+         $file = array($file);
+      }
       return Utils::generateJsScriptTag($base, sprintf('Jquery/jquery-%s.min.js', $file[0]));
    }
    /**
@@ -82,21 +87,29 @@ class Sys
     */
    public static function loadImage($file)
    {
-      $basepath = StdHtmlPath::getSkinPath();
-      return $basepath . '/' . $file[0];
+      $assetResolver = View::getAssetResolver();
+      $basePath = $assetResolver->getImageBasePath();
+      if(!is_array($file)) {
+         $file = array($file);
+      }
+      return $basePath . '/' . $file[0];
    }
+
    /**
     * 加载Css文件
     *
     * 调用方式
     * <code>Qs::Sys('loadCss', 'filename', 'path/to/file');</code> Or
     * <code>Qs::Sys('loadCss', array('filename1', 'filename2'), 'path/to/file');</code>
-    * @param string | array $file
-    * @param string $basePath
+    *
+    * @param $file
+    * @param null $basePath
+    * @return string
     */
    public static function loadCss($file, $basePath = null)
    {
-      $basePath = $basePath ? $basePath : StdHtmlPath::getSkinPath();
+      $assetResolver = View::getAssetResolver();
+      $basePath = $basePath ? $basePath : $assetResolver->getCssBasePath();
       return Utils::generateCssLinkTag($basePath, $file);
    }
 
