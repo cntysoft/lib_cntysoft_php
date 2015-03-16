@@ -226,7 +226,7 @@ abstract class ArrayUtils extends BaseArrayUtils
      * @param array $target 目标修改数组
      * @param string $path 写入路径
      * @param mixed $data 待写入的数据
-     * @throws Exception\InvalidArgumentException
+     * @throws Exception
      */
     public function applyPath(array &$target, $path, $data)
     {
@@ -237,7 +237,7 @@ abstract class ArrayUtils extends BaseArrayUtils
             $parts = $path;
         } else {
             Kernel\throw_exception(new Exception(
-            StdErrorType::msg('E_ARG_TYPE_ERROR', 'array or string', is_object($path) ? get_class($path) : gettype($iterator)),
+            StdErrorType::msg('E_ARG_TYPE_ERROR', 'array or string', is_object($path) ? get_class($path) : gettype($path)),
             StdErrorType::code('E_ARG_TYPE_ERROR')), \Cntysoft\STD_EXCEPTION_CONTEXT);
         }
         $ckey = '';

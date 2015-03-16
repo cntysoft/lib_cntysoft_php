@@ -469,7 +469,6 @@ class TagRefl
     * @param string $classify
     * @param string $tagName
     * @return array
-    * @throw Exception\RuntimeException
     */
    public static function getTagMeta($tagType, $classify, $tagName)
    {
@@ -485,7 +484,6 @@ class TagRefl
     * @param string $tagType
     * @param string $classify
     * @return boolean
-    * @throw Exception\InvalidArgumentException
     */
    public static function classifyExist($tagType, $classify)
    {

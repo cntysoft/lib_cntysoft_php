@@ -347,7 +347,7 @@ class Tree
    public function isLeaf($id)
    {
       if (!isset($this->_data[$id])) {
-         throw new Exception\RuntimeException(sprintf(
+         throw new Exception(sprintf(
             'node id %d is not exist', $id
          ));
       }
