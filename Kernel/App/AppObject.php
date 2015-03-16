@@ -13,6 +13,9 @@ use Cntysoft\Kernel\StdErrorType;
 use Cntysoft\Kernel;
 use Cntysoft\Kernel\StdDir;
 use Cntysoft\Stdlib\Filesystem;
+use Cntysoft\Kernel\ConfigProxy;
+use Cntysoft\StdModel\Config;
+
 /**
  * APP描述对象
  */
@@ -221,6 +224,15 @@ class AppObject
       return $this->errorType;
    }
 
+   /**
+    * 获取本App的配置信息
+    *
+    * @return array
+    */
+   public function getConfig()
+   {
+      return ConfigProxy::getAppConfig($this->module, $this->name);
+   }
    /**
     * 获取缓存的子文件夹,可以通过继承来改变
     *
