@@ -149,7 +149,6 @@ abstract class AbstractScript
     *
     * @param array $data
     * @param array $fields
-    * @throw Exception\InvalidArgumentException
     */
    protected function checkRequireParams(array &$data = array(), array $fields = array())
    {

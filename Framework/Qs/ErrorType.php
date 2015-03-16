@@ -22,7 +22,7 @@ class ErrorType extends BaseErrorType
        'E_TAG_NOT_EXIST' => array(10002, 'tag %s  is not exist'),
        'E_TAG_META_NOT_EXIST' => array(10003, ' meta file is not exist'),
        'E_TAG_META_ERROR' => array(10004, ' meta parse error : %s'),
-       'E_TAG_REQUIRE_PATAM_NOT_EXIST' => array(10009, 'tag require params : %s'),
+       'E_TAG_REQUIRE_PARAM_NOT_EXIST' => array(10009, 'tag require params : %s'),
        'E_TAG_SCRIPT_FILE_NOT_EXIST' => array(10010, ' script file not exist'),
        'E_TAG_TPL_FILE_NOT_EXIST' => array(10011, ' template file not exist'),
        'E_TAG_CLS_NOT_EXIST' => array(10012, ' class %s not exist'),
@@ -31,6 +31,7 @@ class ErrorType extends BaseErrorType
        'E_TAG_EXIST' => array(10015, 'tag %s is exit'),
        'E_TAG_CATEGORY_NOT_EXIST' => array(10016, 'tag category is not exit'),
        'E_TAG_CLASS_EXIT' => array(10017, 'class %s is exit'),
-       'E_TAG_DIR_FINDER_NOT_SET' => array(10018, 'tag dir finder is not set')
+       'E_TAG_DIR_FINDER_NOT_SET' => array(10018, 'tag dir finder is not set'),
+       'E_ASSET_DIR_FINDER_NOT_SET' => array(10019, 'asset dir finder is not set')
     );
  }

@@ -59,18 +59,6 @@ class SiteConfig
     {
         return self::sysJsLibraryPath().'/Jquery';
     }
-
-    /**
-     * 获取系统ExtJs路经
-     *
-     * 调用方式
-     * <code>Qs::SiteConfig('extJsPath');</code>
-     * return string
-     */
-    public static function extJsPath()
-    {
-        return self::sysJsLibraryPath().'/ExtJs';
-    }
     
     /**
      * 获取系统
