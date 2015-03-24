@@ -58,7 +58,7 @@ class KvDict extends BaseModel
    }
    /**
     *
-    * @param string $items
+    * @param array $items
     * @return \Cntysoft\StdModel\KvDict
     */
    public function setItems(array $items)

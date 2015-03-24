@@ -172,6 +172,7 @@ class Model extends AbstractModel
     * @TODO 这个方法有漏洞，当$range数组里面的值必须是int的时候就会生成出错
     * @param string $key
     * @param array $range
+    * @return string
     */
    public static function generateRangeCond($key, array $range)
    {

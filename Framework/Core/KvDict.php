@@ -90,7 +90,8 @@ class KvDict
 
     /**
      * 获取映射数据项
-     * 
+     *
+     * @param string $key
      * @return array
      */
     public function getMapItems($key)
@@ -135,7 +136,10 @@ class KvDict
         }
         return $model;
     }
+
     /**
+     *  更改指定键值的数据项
+     *
      * @param string $key 映射识别KEY
      * @param array $items 数据项
      * @return \Cntysoft\Framework\Core\KvDict
@@ -155,41 +159,10 @@ class KvDict
     }
 
     /**
-     * @return array
-     */
-    public function toArray()
-    {
-        $items = $this->getAll();
-        $ret = array();
-        foreach ($items as $item) {
-            $ret[] = array(
-               'key'   => $item->getKey(),
-               'name' => $item->getName(),
-               'items' => $item->getItems()
-            );
-        }
-        return $ret;
-    }
-    /**
      * 获取所有的值
      */
     public function getAll()
     {
         return KvDictModel::find();
     }
-    /**
-     * 获取所有的键
-     * 
-     * @return array
-     */
-    public function getAllKeys()
-    {
-        $items = KvDictModel::find();
-        $ret = array();
-         foreach ($items as $item) {
-            $ret[] = $item->getKey();
-        }
-        return $ret;
-    }
-
 }
