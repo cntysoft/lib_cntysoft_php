@@ -118,7 +118,7 @@ abstract class Upload
          $savedFiles[] = $imageNail->generateThumbnail($targetDir, $nailName . '_nail');
          unset($imageNail);
          if(strstr($type, 'jpg')){
-             $image->generateThumbnail($targetDir, $nailName, 'LT', 10);
+             $image->generateThumbnail($targetDir, $nailName, 'LT', 60);
          }
       }
       unset($image);
