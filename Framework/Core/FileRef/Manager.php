@@ -268,6 +268,17 @@ class Manager implements EventsAwareInterface
    }
 
    /**
+    * 判断一个文件引用是否存在
+    *
+    * @param int $rid
+    * @return boolean
+    */
+   public function hasFileRef($rid)
+   {
+      return false == EntryModel::findFirst((int)$rid) ? false : true ;
+   }
+
+   /**
     *  获取未使用文件引用数量
     *
     * @return int
