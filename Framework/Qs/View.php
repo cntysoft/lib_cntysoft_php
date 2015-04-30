@@ -11,6 +11,8 @@ use Phalcon\Events\Manager as EventsManager;
 use Cntysoft\Kernel;
 use Cntysoft\Kernel\StdDir;
 use Cntysoft\Stdlib\Filesystem;
+use Phalcon\Events\ManagerInterface;
+use Phalcon\DiInterface;
 /**
  * 系统模板显示引擎
  */
@@ -130,7 +132,7 @@ class View implements \Phalcon\Events\EventsAwareInterface, \Phalcon\DI\Injectio
     * @param \Phalcon\DiInterface $dependencyInjector
     * @return \Cntysoft\Framework\Qs\View
     */
-   public function setDI($dependencyInjector)
+   public function setDI(DiInterface $dependencyInjector)
    {
       $this->di = $dependencyInjector;
       return $this;
@@ -222,7 +224,7 @@ class View implements \Phalcon\Events\EventsAwareInterface, \Phalcon\DI\Injectio
     * @param \Phalcon\Events\ManagerInterface $eventsManager
     * @return  \Cntysoft\Framework\Qs\View
     */
-   public function setEventsManager($eventsManager)
+   public function setEventsManager(ManagerInterface $eventsManager)
    {
       $this->eventsManager = $eventsManager;
       return $this;
@@ -589,7 +591,10 @@ class View implements \Phalcon\Events\EventsAwareInterface, \Phalcon\DI\Injectio
 
    }
 
-   public function registerEngines($engines)
+    /**
+     * @param array $engines
+     */
+   public function registerEngines(array $engines)
    {
 
    }

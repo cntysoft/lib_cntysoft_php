@@ -49,7 +49,7 @@ class BootstrapListener implements ListenerAggregateInterface
     * @param \Phalcon\Events\Event $event
     * @param \Cntysoft\Phalcon\Mvc\Application $application
     */
-   public function afterStartModule($event, $application)
+   public function beforeStartModule($event, $application)
    {
       $this->setupTplMapHandler($event->getData());
    }
