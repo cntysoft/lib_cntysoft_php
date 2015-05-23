@@ -33,5 +33,9 @@ class ErrorType extends BaseErrorType
 
       'E_UPLOAD_DIR_NOT_ALLOWED' => array(10016, 'upload dir %s is not allowed'),
       'E_UPLOAD_PATH_EMPTY' => array(10017, 'upload path empty'),
+
+      //Qiniu
+      'E_QINIU_CALLBACK_TYPE_ERROR' => array(10018, 'qiniu callback type error'),
+      'E_QINIU'
    );
 }

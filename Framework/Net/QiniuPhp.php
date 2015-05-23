@@ -13,6 +13,7 @@ use Qiniu\Auth;
 use Qiniu\Storage\UploadManager;
 use Cntysoft\Kernel;
 use Cntysoft\Kernel\ConfigProxy;
+use Cntysoft\Framework\Core\FileRef\Manager as FileRefManager;
 
 class QiniuPhp
 {
@@ -52,6 +53,13 @@ class QiniuPhp
    protected $bucket = null;
 
    /**
+    * 七牛云中的回调配置
+    *
+    * @var null
+    */
+   protected $policy = null;
+
+   /**
     * 浏览图片的基础地址
     *
     * @var null
@@ -66,6 +74,7 @@ class QiniuPhp
       $this->secretKey = $qiniuConfig['qiniu']['secretKey'];
       $this->bucket = $qiniuConfig['qiniu']['bucket'];
       $this->baseUrl = $qiniuConfig['qiniu']['baseUrl'];
+      $this->policy = $qiniuConfig['qiniu']['policy'];
    }
 
    /**
@@ -75,7 +84,7 @@ class QiniuPhp
     */
    public function getAuth()
    {
-      if(null == self::$auth){
+      if (null == self::$auth) {
          self::$auth = new Auth($this->accessKey, $this->secretKey);
       }
 
@@ -85,15 +94,24 @@ class QiniuPhp
    /**
     * 获取上传凭证
     *
-    * @param $bucket
-    * @param null $key
     * @param int $expires
     * @param null $policy
     * @return string
     */
    public function getUpToken($expires = 3600, $policy = null)
    {
+      $policy = $policy ? $policy : $this->policy;
       return $this->getAuth()->uploadToken($this->bucket, null, $expires, $policy);
+   }
+
+   /**
+    *  获取当前Bucket对应的网址
+    *
+    * @return null | string
+    */
+   public function getBaseUrl()
+   {
+      return $this->baseUrl;
    }
 
    /**
@@ -105,6 +123,7 @@ class QiniuPhp
     * @param null $params
     * @param string $mime
     * @param bool $checkCrc
+    * @return array
     * @throws \Exception
     */
    public function uploadFile($upToken, $key, $filePath, $params = null, $mime = 'application/octet-stream', $checkCrc = false)
@@ -112,17 +131,46 @@ class QiniuPhp
       $uploadManager = new UploadManager();
       list($ret, $err) = $uploadManager->putFile($upToken, $key, $filePath, $params, $mime, $checkCrc);
 
-      if($err!==null){
+      if ($err !== null) {
          return array(
             'filename' => null,
             'code' => $err->code()
          );
-      }else{
+      } else {
          return array(
             'filename' => $this->baseUrl . '/' . $ret['key'],
             'code' => 200
          );
       }
+   }
+
+   /**
+    * 七牛云存储的回调函数，将上传的图片采取文件引用管理
+    *
+    * @param \Phalcon\Http\Request $request
+    * @return array
+    * @throws \Exception
+    */
+   public function handlerCallback($request)
+   {
+      if (!$request->isPost()) {
+         $errorType = ErrorType::getInstance();
+         Kernel\throw_exception(new Exception(
+            $errorType->msg('E_QINIU_CALLBACK_TYPE_ERROR'), $errorType->code('E_QINIU_CALLBACK_TYPE_ERROR')), $errorType);
+      }
+
+      $params = $request->getPost();
+      $manager = new FileRefManager();
+      $fileName = $params['key'];
+      $fileSize = $params['size'];
+      $rid = $manager->addTempFileRef(array(
+         'fileName' => $fileName,
+         'fileSize' => $fileSize
+      ));
+      return array(
+         'rid' => $rid,
+         'fileName' => $this->baseUrl . '/' . $fileName
+      );
    }
 
    /**
@@ -132,7 +180,7 @@ class QiniuPhp
     */
    protected function getAppCaller()
    {
-      if(null == self::$appCaller){
+      if (null == self::$appCaller) {
          $di = Kernel\get_global_di();
          self::$appCaller = $di->getShared('AppCaller');
       }
