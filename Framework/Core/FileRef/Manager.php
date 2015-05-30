@@ -16,6 +16,7 @@ use Cntysoft\Framework\Core\FileRef\Model\Entry as EntryModel;
 use Cntysoft\Framework\Core\FileRef\Model\Unused as UnusedModel;
 use Phalcon\Events\EventsAwareInterface;
 use Phalcon\Events\Manager as EventsManager;
+use Cntysoft\Framework\Net\QiniuPhp;
 
 /**
  * 文件引用管理器, 这个仅仅提供一套文件引用的机制
@@ -155,15 +156,17 @@ class Manager implements EventsAwareInterface
       $tableId = (int)$entry->getTableId();
       $refInfoCls = $this->getRefInfoModelCls($tableId);
       $refInfo = $refInfoCls::findFirst($rid);
-      $attachment = $refInfo->getAttachment();
-      $filename = CNTY_ROOT_DIR . DS . $attachment;
+      $filename = $refInfo->getFilename();
+      $manager = new QiniuPhp();
+//      $filename = CNTY_ROOT_DIR . DS . $attachment;
       $db = Kernel\get_db_adapter();
       try {
          $db->begin();
-         if (file_exists($filename)) {
-            //在这里文件要是不存在无所谓
-            Filesystem::deleteFile($filename);
-         }
+//         if (file_exists($filename)) {
+//            //在这里文件要是不存在无所谓
+//            Filesystem::deleteFile($filename);
+//         }
+         $manager->deleteFile($filename);
          $entry->delete();
          $refInfo->delete();
          $db->commit();

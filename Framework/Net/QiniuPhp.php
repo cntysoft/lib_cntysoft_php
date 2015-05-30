@@ -8,9 +8,11 @@
  */
 namespace Cntysoft\Framework\Net;
 
+use App\Sys\User\Exception;
 use Cntysoft\StdModel\Config;
 use Qiniu\Auth;
 use Qiniu\Storage\UploadManager;
+use Qiniu\Storage\BucketManager;
 use Cntysoft\Kernel;
 use Cntysoft\Kernel\ConfigProxy;
 use Cntysoft\Framework\Core\FileRef\Manager as FileRefManager;
@@ -171,6 +173,24 @@ class QiniuPhp
          'rid' => $rid,
          'fileName' => $this->baseUrl . '/' . $fileName
       );
+   }
+
+   /**
+    * 删除七牛云的一个文件
+    *
+    * @param $key
+    * @return \Qiniu\Storage\成功返回NULL
+    * @throws Exception
+    */
+   public function deleteFile($key)
+   {
+      $bucketManager = new BucketManager($this->getAuth());
+      $ret = $bucketManager->delete($this->bucket, $key);
+      if(!is_null($ret)) {//返回值不是NULL，表示删除出错
+         throw new Exception($ret);
+      }
+
+      return $ret;
    }
 
    /**
