@@ -6,16 +6,17 @@
  * @copyright  Copyright (c) 2010-2011 Cntysoft Technologies China Inc. <http://www.cntysoft.com>
  * @license    http://www.cntysoft.com/license/new-bsd     New BSD License
  */
-namespace Cntysoft\Framework\Core\FileRef;
+namespace Cntysoft\Framework\Core\QiniuFileRef;
 
 use Cntysoft\Kernel;
 use Cntysoft\Framework\Core\ErrorType as CoreErrorType;
 use Cntysoft\Stdlib\Filesystem;
 use Cntysoft\Kernel\StdDir;
-use Cntysoft\Framework\Core\FileRef\Model\Entry as EntryModel;
-use Cntysoft\Framework\Core\FileRef\Model\Unused as UnusedModel;
+use Cntysoft\Framework\Core\QiniuFileRef\Model\Entry as EntryModel;
+use Cntysoft\Framework\Core\QiniuFileRef\Model\Unused as UnusedModel;
 use Phalcon\Events\EventsAwareInterface;
 use Phalcon\Events\Manager as EventsManager;
+use Cntysoft\Framework\Net\QiniuPhp;
 
 /**
  * 文件引用管理器, 这个仅仅提供一套文件引用的机制
@@ -33,15 +34,15 @@ class Manager implements EventsAwareInterface
    /**
     * 文件引用详细信息对象模型
     */
-   CONST REF_INFO_M_CLS = 'Cntysoft\Framework\Core\FileRef\Model\RefInfo%d';
+   CONST REF_INFO_M_CLS = 'Cntysoft\Framework\Core\QiniuFileRef\Model\RefInfo%d';
    /**
     * 未确定的引用
     */
-   CONST UNUSED_M_CLS = 'Cntysoft\Framework\Core\FileRef\Model\Unused';
+   CONST UNUSED_M_CLS = 'Cntysoft\Framework\Core\QiniuFileRef\Model\Unused';
    /**
     * 文件引用类名称
     */
-   CONST ENTRY_M_CLS = 'Cntysoft\Framework\Core\FileRef\Model\Entry';
+   CONST ENTRY_M_CLS = 'Cntysoft\Framework\Core\QiniuFileRef\Model\Entry';
 
    /**
     * 每次执行操作的时候指定的数据表的ID
@@ -65,9 +66,10 @@ class Manager implements EventsAwareInterface
     *      'attachment' => '真实的文件地址'
     * );
     * </code>
-    * @param int $churchId
+    *
     * @param array $refInfo
-    * @return int 临时的文件引用ID
+    * @return mixed
+    * @throws \Exception
     */
    public function addTempFileRef(array $refInfo)
    {
@@ -100,7 +102,7 @@ class Manager implements EventsAwareInterface
     *
     * @param int $rid
     * @return int 确定的分表的id
-    * @throws \Cntysoft\Framework\Core\FileRef\Exception
+    * @throws \Cntysoft\Framework\Core\QiniuFileRef\Exception
     */
    public function confirmFileRef($rid)
    {
@@ -142,7 +144,7 @@ class Manager implements EventsAwareInterface
     *
     * @author Changwang <chenyongwang1104@163.com>
     * @param int $rid
-    * @throws \Cntysoft\Framework\Core\FileRef\Exception
+    * @throws \Cntysoft\Framework\Core\QiniuFileRef\Exception
     */
    public function removeFileRef($rid)
    {
@@ -155,15 +157,12 @@ class Manager implements EventsAwareInterface
       $tableId = (int)$entry->getTableId();
       $refInfoCls = $this->getRefInfoModelCls($tableId);
       $refInfo = $refInfoCls::findFirst($rid);
-      $attachment = $refInfo->getAttachment();
-      $filename = CNTY_ROOT_DIR . DS . $attachment;
+      $filename = $refInfo->getFilename();
+      $manager = new QiniuPhp();
       $db = Kernel\get_db_adapter();
       try {
          $db->begin();
-         if (file_exists($filename)) {
-            //在这里文件要是不存在无所谓
-            Filesystem::deleteFile($filename);
-         }
+         $manager->deleteFile($filename);
          $entry->delete();
          $refInfo->delete();
          $db->commit();
@@ -205,9 +204,9 @@ class Manager implements EventsAwareInterface
     * 设置事件管理器
     *
     * @param \Phalcon\Events\Manager $eventsManager
-    * @return \Cntysoft\Framework\Core\FileRef\Manager
+    * @return \Cntysoft\Framework\Core\QiniuFileRef\Manager
     */
-   public function setEventsManager(\Phalcon\Events\ManagerInterface $eventsManager)
+   public function setEventsManager($eventsManager)
    {
       $this->eventsManager = $eventsManager;
       return $this->eventsManager;
@@ -242,18 +241,15 @@ class Manager implements EventsAwareInterface
 
       if (count($refs) > 0) {
          $db = Kernel\get_db_adapter();
+         $manager = new QiniuPhp();
          try {
             $db->begin();
             $events = $this->getEventsManager();
 
             foreach ($refs as $ref) {
                $detail = UnusedModel::findFirst($ref->getRid());
-               $attachment = $detail->getAttachment();
-               $filename = CNTY_ROOT_DIR . DS . $attachment;
-               if (file_exists($filename)) {
-                  //在这里文件要是不存在无所谓
-                  Filesystem::deleteFile($filename);
-               }
+               $filename = $detail->getFilename();
+               $manager->deleteFile($filename);
                $detail->delete();
                $ref->delete();
                $events->fire('filerefmanager:clearUnusedFileRefs', $this, array($ref, $detail));
@@ -275,7 +271,7 @@ class Manager implements EventsAwareInterface
     */
    public function hasFileRef($rid)
    {
-      return false == EntryModel::findFirst((int)$rid) ? false : true ;
+      return false == EntryModel::findFirst((int)$rid) ? false : true;
    }
 
    /**
@@ -315,9 +311,9 @@ class Manager implements EventsAwareInterface
    public function getAttachmentFilename($filename)
    {
       if (PHP_OS == \Cntysoft\WINDOWS) {
-         $dirname = StdDir::getUploadFilesDir() . DS . date('Y' . DS . DS . 'm' . DS . DS . 'd');
+         $dirname = StdDir::getStdUploadDir() . DS . date('Y' . DS . DS . 'm' . DS . DS . 'd');
       } else {
-         $dirname = StdDir::getUploadFilesDir() . DS . date('Y' . DS . 'm' . DS . 'd');
+         $dirname = StdDir::getStdUploadDir() . DS . date('Y' . DS . 'm' . DS . 'd');
       }
       if (!file_exists($dirname)) {
          Filesystem::createDir($dirname, 0755, true);
