@@ -95,4 +95,14 @@ abstract class StdHtmlPath
    {
       return '/Modules';
    }
+
+   /**
+    * 获取系统文件上传路径
+    *
+    * @return string
+    */
+   public static function getUploadFilesPath()
+   {
+      return '/UploadFiles';
+   }
 }

@@ -9,12 +9,12 @@
 namespace Cntysoft;
 
 //定义一些重要的物理路经
-define('CNTY_UI_DIR', CNTY_ROOT_DIR.DS.'Ui');
-define('CNTY_TEMPLATE_DIR', CNTY_UI_DIR.DS.'Templates');
+define('CNTY_STATICS_DIR', CNTY_ROOT_DIR.DS.'Statics');
+define('CNTY_TEMPLATE_DIR', CNTY_STATICS_DIR.DS.'Templates');
 define('CNTY_TAG_DIR', CNTY_ROOT_DIR.DS.'TagLibrary');
 define('CNTY_JS_LIB_DIR', CNTY_ROOT_DIR.DS.'JsLibrary');
 define('CNTY_JS_SYS_DIR', CNTY_ROOT_DIR.DS.'SysManager');
-define('CNTY_SKIN_DIR', CNTY_UI_DIR.DS.'Skins');
+define('CNTY_SKIN_DIR', CNTY_STATICS_DIR.DS.'Skins');
 define('CNTY_DATA_DIR', CNTY_ROOT_DIR.DS.'Data');
 define('CNTY_CACHE_DIR', CNTY_DATA_DIR.DS.'Cache');
 define('CNTY_UPLOAD_DIR', CNTY_DATA_DIR.DS.'UploadFiles');

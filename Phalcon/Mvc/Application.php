@@ -34,11 +34,11 @@ class Application extends \Phalcon\Mvc\Application
       $globalConfig = ConfigProxy::getGlobalConfig();
       //设置当前系统的运行模式常量
       if(!isset($globalConfig->systemMode)){
-         define('SYS_MODE', SYS_M_PRODUCT);
+         define('SYS_MODE', DEPLOY_ENV_PRODUCT);
       }else{
          $mode = $globalConfig->systemMode;
-         if ($mode !== SYS_M_DEBUG && $mode !== SYS_M_PRODUCT) {
-            die(sprintf('sys run mode : %x is not support, SYS_M_PRODUCT : %x and SYS_M_DEBUG : %x', $mode, SYS_M_PRODUCT, SYS_M_DEBUG));
+         if ($mode !== DEPLOY_ENV_DEBUG && $mode !== DEPLOY_ENV_PRODUCT) {
+            die(sprintf('sys run mode : %x is not support, DEPLOY_ENV_PRODUCT : %x and DEPLOY_ENV_DEBUG : %x', $mode, DEPLOY_ENV_PRODUCT, DEPLOY_ENV_DEBUG));
          }
          define('SYS_MODE', $mode);
       }

@@ -1,15 +1,15 @@
 <?php
 /**
  * Cntysoft Cloud Software Team
- *
- * @author SOFTBOY <cntysoft@163.com>
- * @copyright  Copyright (c) 2010-2011 Cntysoft Technologies China Inc. <http://www.cntysoft.com>
- * @license    http://www.cntysoft.com/license/new-bsd     New BSD License
  */
 namespace Cntysoft\Kernel;
 
 /**
  * 系统文件夹路径，这个是后端系统使用，物理的文件系统路径
+ *
+ * @author SOFTBOY <cntysoft@163.com>
+ * @copyright  Copyright (c) 2010-2011 Cntysoft Technologies China Inc. <http://www.cntysoft.com>
+ * @license    http://www.cntysoft.com/license/new-bsd     New BSD License
  */
 abstract class StdDir
 {
@@ -49,9 +49,9 @@ abstract class StdDir
     *
     * @return string
     */
-   public static function getUiDir()
+   public static function getStaticsDir()
    {
-      return CNTY_UI_DIR;
+      return CNTY_STATICS_DIR;
    }
 
    /**
@@ -181,21 +181,12 @@ abstract class StdDir
    }
 
    /**
-    * 获取系统私有空间文件夹
+    * 获取系统上传根目录
     *
     * @return string
     */
-   public static function getPrivateSpaceDir()
+   public static function getUploadFilesDir()
    {
-      return CNTY_ROOT_DIR.DS.'PrivateSpace';
-   }
-   /**
-    * 获取系统上传路径
-    *
-    * @return string
-    */
-   public static function getStdUploadDir()
-   {
-      return self::getPrivateSpaceDir();
+      return CNTY_ROOT_DIR.DS.'UploadFiles';
    }
 }

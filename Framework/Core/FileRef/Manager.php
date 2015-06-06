@@ -207,7 +207,7 @@ class Manager implements EventsAwareInterface
     * @param \Phalcon\Events\Manager $eventsManager
     * @return \Cntysoft\Framework\Core\FileRef\Manager
     */
-   public function setEventsManager($eventsManager)
+   public function setEventsManager(\Phalcon\Events\ManagerInterface $eventsManager)
    {
       $this->eventsManager = $eventsManager;
       return $this->eventsManager;
@@ -315,9 +315,9 @@ class Manager implements EventsAwareInterface
    public function getAttachmentFilename($filename)
    {
       if (PHP_OS == \Cntysoft\WINDOWS) {
-         $dirname = StdDir::getStdUploadDir() . DS . date('Y' . DS . DS . 'm' . DS . DS . 'd');
+         $dirname = StdDir::getUploadFilesDir() . DS . date('Y' . DS . DS . 'm' . DS . DS . 'd');
       } else {
-         $dirname = StdDir::getStdUploadDir() . DS . date('Y' . DS . 'm' . DS . 'd');
+         $dirname = StdDir::getUploadFilesDir() . DS . date('Y' . DS . 'm' . DS . 'd');
       }
       if (!file_exists($dirname)) {
          Filesystem::createDir($dirname, 0755, true);
