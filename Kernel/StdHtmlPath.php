@@ -17,26 +17,6 @@ use Cntysoft\Kernel;
 abstract class StdHtmlPath
 {
    /**
-    * 获取Ui路径
-    *
-    * @return string
-    */
-   public static function getUiPath()
-   {
-      return '/Ui';
-   }
-
-   /**
-    * 前台共用Js路径
-    *
-    * @return string
-    */
-   public static function getFrontJsLibPath()
-   {
-      return self::getUiPath() . '/JsLib';
-   }
-
-   /**
     * 获取标准的Js路径
     *
     * @return string
@@ -53,7 +33,7 @@ abstract class StdHtmlPath
     */
    public static function getSkinPath()
    {
-      return '/Ui/Skins';
+      return '/Statics/Skins';
    }
 
    /**
@@ -63,7 +43,7 @@ abstract class StdHtmlPath
     */
    public static function getTemplatesPath()
    {
-      return '/Ui/Templates';
+      return '/Statics/Templates';
    }
 
    /**
@@ -103,6 +83,6 @@ abstract class StdHtmlPath
     */
    public static function getUploadFilesPath()
    {
-      return '/UploadFiles';
+      return '/PrivateSpace';
    }
 }
