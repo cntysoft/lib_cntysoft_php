@@ -192,6 +192,7 @@ class Filesystem
       $old = umask(0);
       //递归复制
       //复制本身
+
       $target = $target.DS.self::basename($source);
       $target = self::generateFileName($target);
       $self = '\\'.get_class();
@@ -434,14 +435,15 @@ class Filesystem
 
    /**
     * 获取文件路径的基本名称，这个原生的函数在WINDOWS下对中文支持有问题
+    *  Linux系统中的中文路径好像也有问题
     *
     * @param string $filename
     * @return string
     */
    public static function basename($filename)
    {
-      if(PHP_OS == \Cntysoft\WINDOWS){
-         $filename = Kernel\convert_2_utf8($filename); //确保编码是UTF8
+      $filename = Kernel\convert_2_utf8($filename); //确保编码是UTF8
+//      if(PHP_OS == \Cntysoft\WINDOWS){
          $pos = iconv_strrpos($filename, DS, 'utf-8');
          if(!$pos){
             return Kernel\real_path($filename);
@@ -449,8 +451,8 @@ class Filesystem
          $dir = iconv_substr($filename, 0, $pos+1, 'utf-8');
          $basename = str_replace($dir, '', $filename);
          return Kernel\real_path($basename);
-      }
-      return  Kernel\real_path( basename($filename));
+//      }
+      //return  Kernel\real_path( basename($filename));
    }
 
    /**
@@ -516,7 +518,8 @@ class Filesystem
    protected static function generateFileName($filename)
    {
       $filename = Kernel\real_path($filename);
-      while (file_exists($filename) && is_file($filename)) {
+      //加上文件夹是否存在的判断
+      if (file_exists($filename) && (is_file($filename) || is_dir($filename))) {
          $filename = Kernel\real_path(Kernel\convert_2_utf8($filename).'_副本');
       }
       return $filename;
