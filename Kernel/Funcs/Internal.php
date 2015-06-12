@@ -10,12 +10,13 @@ namespace Cntysoft\Kernel;
 
 use Phalcon\Http\Response;
 use Cntysoft\Phalcon\Mvc\Application;
+
 /**
  * 抛出异常
  *
  * @param \Exception $e
- * @param string $context
- *           异常上下文
+ * @param null $context
+ * @throws \Exception
  */
 function throw_exception(\Exception $e, $context = null)
 {

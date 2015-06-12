@@ -32,6 +32,7 @@ class ErrorType extends BaseErrorType
        'E_TAG_CATEGORY_NOT_EXIST' => array(10016, 'tag category is not exit'),
        'E_TAG_CLASS_EXIT' => array(10017, 'class %s is exit'),
        'E_TAG_DIR_FINDER_NOT_SET' => array(10018, 'tag dir finder is not set'),
-       'E_ASSET_DIR_FINDER_NOT_SET' => array(10019, 'asset dir finder is not set')
+       'E_ASSET_DIR_FINDER_NOT_SET' => array(10019, 'asset dir finder is not set'),
+       'E_TPL_MAP_KEY_NOT_EXIST'  => array(10020, 'template map key %s is not exist')
     );
  }

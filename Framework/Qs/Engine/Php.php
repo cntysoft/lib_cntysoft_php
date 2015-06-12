@@ -39,8 +39,15 @@ class Php implements EngineInterface
     {
         $tpl = Kernel\real_path($tpl);
         if (!file_exists($tpl)) {
-            $errorType = ErrorType::getInstance();
-            die($errorType->msg('E_TPL_FILE_NOT_EXIST', str_replace(CNTY_ROOT_DIR, '', $tpl)));
+           $errorType = ErrorType::getInstance();
+           if(DEPLOY_ENV_PRODUCT == SYS_MODE) {
+              Kernel\throw_exception(
+                 new Exception(
+                    $errorType->msg('E_TPL_FILE_NOT_EXIST'),
+                    $errorType->code('E_TPL_FILE_NOT_EXIST')),$errorType);
+           }else {
+              die($errorType->msg('E_TPL_FILE_NOT_EXIST', str_replace(CNTY_ROOT_DIR, '', $tpl)));
+           }
         }
         $this->setupRenderContext();
         //在模板解析的时候是不允许异常上浮

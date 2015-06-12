@@ -7,12 +7,14 @@
  * @license    http://www.cntysoft.com/license/new-bsd     New BSD License
  */
 namespace Cntysoft\Framework\Qs;
+
 use Phalcon\Events\Manager as EventsManager;
 use Cntysoft\Kernel;
 use Cntysoft\Kernel\StdDir;
 use Cntysoft\Stdlib\Filesystem;
 use Phalcon\Events\ManagerInterface;
 use Phalcon\DiInterface;
+
 /**
  * 系统模板显示引擎
  */
@@ -55,7 +57,7 @@ class View implements \Phalcon\Events\EventsAwareInterface, \Phalcon\DI\Injectio
    const M_NORMAL = 1;
    const M_BUILD = 2;
    /**
-    * @var \Phalcon\Events\ManagerInterface  $eventsManager
+    * @var \Phalcon\Events\ManagerInterface $eventsManager
     */
    protected $eventsManager = null;
    /**
@@ -128,6 +130,7 @@ class View implements \Phalcon\Events\EventsAwareInterface, \Phalcon\DI\Injectio
     * @var \Cntysoft\Framework\Qs\AssetResolverInterface
     */
    protected static $assetResolver = null;
+
    /**
     * @param \Phalcon\DiInterface $dependencyInjector
     * @return \Cntysoft\Framework\Qs\View
@@ -188,7 +191,7 @@ class View implements \Phalcon\Events\EventsAwareInterface, \Phalcon\DI\Injectio
       $renderOpt[self::KEY_ROUTE_PARAMS] = $params;
       $renderOpt += array(
          self::KEY_RESOLVE_TYPE => self::TPL_RESOLVE_DIRECT,
-         self::KEY_RENDER_CTRL  => true
+         self::KEY_RENDER_CTRL => true
       );
       if (!$renderOpt[self::KEY_RENDER_CTRL]) {
          return;
@@ -286,6 +289,7 @@ class View implements \Phalcon\Events\EventsAwareInterface, \Phalcon\DI\Injectio
       $this->routeInfo[$key] = $value;
       return $this;
    }
+
    /**
     * 模板寻找逻辑， 两种方式一种是直接指定一种是查表
     *
@@ -296,21 +300,29 @@ class View implements \Phalcon\Events\EventsAwareInterface, \Phalcon\DI\Injectio
    public function resolveTpl($resolveType, $resolveData)
    {
       //直接指定的话就不会去区分手机平板还是PC了
-      if(null == self::$deviceType){
+      if (null == self::$deviceType) {
          $deviceType = $this->detactDeviceType();
-      }else{
+      } else {
          $deviceType = self::$deviceType;
       }
       $baseDir = $this->tplRootDir;
       if (self::TPL_RESOLVE_DIRECT == $resolveType) {
          return $resolveData;
       } else if (self::TPL_RESOLVE_FINDER == $resolveType) {
-         return $baseDir.DS.$this->tplProject.DS.$deviceType.DS.$resolveData;
+         return $baseDir . DS . $this->tplProject . DS . $deviceType . DS . $resolveData;
       } else if (self::TPL_RESOLVE_MAP == $resolveType) {
-         if(!array_key_exists($resolveData, self::$tplMap)){
-            die('map : '.$resolveData.' is not exist');
+         if (!array_key_exists($resolveData, self::$tplMap)) {
+            if (DEPLOY_ENV_PRODUCT == SYS_MODE) {
+               $errorType = ErrorType::getInstance();
+               Kernel\throw_exception(
+                  new Exception(
+                     sprintf($errorType->msg('E_TPL_MAP_KEY_NOT_EXIST'), $resolveData),
+                     $errorType->code('E_TPL_MAP_KEY_NOT_EXIST')),$errorType);
+            } else {
+               die('map : ' . $resolveData . ' is not exist');
+            }
          }
-         return $baseDir.DS.$this->tplProject.DS.$deviceType.DS.self::$tplMap[$resolveData];
+         return $baseDir . DS . $this->tplProject . DS . $deviceType . DS . self::$tplMap[$resolveData];
       }
    }
 
@@ -340,6 +352,7 @@ class View implements \Phalcon\Events\EventsAwareInterface, \Phalcon\DI\Injectio
          return self::DEVICE_PC;
       }
    }
+
    /**
     * 设置模板映射，默认使用合并
     *
@@ -349,6 +362,7 @@ class View implements \Phalcon\Events\EventsAwareInterface, \Phalcon\DI\Injectio
    {
       self::$tplMap = array_merge(self::$tplMap, $map);
    }
+
    /**
     * 设置设备类型
     *
@@ -358,6 +372,7 @@ class View implements \Phalcon\Events\EventsAwareInterface, \Phalcon\DI\Injectio
    {
       self::$deviceType = $deviceType;
    }
+
    /**
     * @return  \Phalcon\Cache\Backend\File
     */
@@ -368,16 +383,18 @@ class View implements \Phalcon\Events\EventsAwareInterface, \Phalcon\DI\Injectio
       }
       return $this->cache;
    }
+
    /**
     * 删除所有模板引擎生成缓存文件
     */
    public static function clearCache()
    {
-      $cacheDir = \Cntysoft\Kernel\real_path(StdDir::getCacheDir().DS.'Qs');
+      $cacheDir = \Cntysoft\Kernel\real_path(StdDir::getCacheDir() . DS . 'Qs');
       if (file_exists($cacheDir)) {
          Filesystem::deleteDirRecusive($cacheDir);
       }
    }
+
    /**
     * 设置模板引擎的模式
     *
@@ -388,6 +405,7 @@ class View implements \Phalcon\Events\EventsAwareInterface, \Phalcon\DI\Injectio
       $this->mode = (int)$mode;
       return $this;
    }
+
    /**
     * @return int
     */
@@ -395,6 +413,7 @@ class View implements \Phalcon\Events\EventsAwareInterface, \Phalcon\DI\Injectio
    {
       return $this->mode;
    }
+
    /**
     * 获取模板变量
     *
@@ -403,21 +422,24 @@ class View implements \Phalcon\Events\EventsAwareInterface, \Phalcon\DI\Injectio
    public static function getTplVar($key = null)
    {
       $tplVar = isset(self::$renderOpt[self::KEY_TPL_VAR]) ? self::$renderOpt[self::KEY_TPL_VAR] : array();
-      if(null == $key){
+      if (null == $key) {
          return $tplVar;
       }
-      if(isset($tplVar[$key])){
+      if (isset($tplVar[$key])) {
          return $tplVar[$key];
       }
       return null;
    }
 
    /**
-    * @param int $tplProject
+    * 设置系统的模板选项
+    *
+    * @param $tplProject
+    * @return $this
     */
    public function setTplProject($tplProject)
    {
-      $this->tplProject = (int) $tplProject;
+      $this->tplProject = (int)$tplProject;
       return $this;
    }
 
@@ -427,7 +449,7 @@ class View implements \Phalcon\Events\EventsAwareInterface, \Phalcon\DI\Injectio
     */
    public static function setTagResolver(TagResolverInterface $finder)
    {
-      if(self::$tagResolver != $finder) {
+      if (self::$tagResolver != $finder) {
          self::$tagResolver = $finder;
       }
    }
@@ -437,12 +459,12 @@ class View implements \Phalcon\Events\EventsAwareInterface, \Phalcon\DI\Injectio
     */
    public static function getTagResolver()
    {
-      if(null == self::$tagResolver){
+      if (null == self::$tagResolver) {
          $errorType = ErrorType::getInstance();
          Kernel\throw_exception(
             new Exception(
                $errorType->msg('E_TAG_DIR_FINDER_NOT_SET'),
-               $errorType->code('E_TAG_DIR_FINDER_NOT_SET')),$errorType);
+               $errorType->code('E_TAG_DIR_FINDER_NOT_SET')), $errorType);
       }
       return self::$tagResolver;
    }
@@ -452,7 +474,7 @@ class View implements \Phalcon\Events\EventsAwareInterface, \Phalcon\DI\Injectio
     */
    public static function setAssetResolver(AssetResolverInterface $finder)
    {
-      if(self::$assetResolver != $finder) {
+      if (self::$assetResolver != $finder) {
          self::$assetResolver = $finder;
       }
    }
@@ -462,12 +484,12 @@ class View implements \Phalcon\Events\EventsAwareInterface, \Phalcon\DI\Injectio
     */
    public static function getAssetResolver()
    {
-      if(null == self::$assetResolver){
+      if (null == self::$assetResolver) {
          $errorType = ErrorType::getInstance();
          Kernel\throw_exception(
             new Exception(
                $errorType->msg('E_TAG_DIR_FINDER_NOT_SET'),
-               $errorType->code('E_TAG_DIR_FINDER_NOT_SET')),$errorType);
+               $errorType->code('E_TAG_DIR_FINDER_NOT_SET')), $errorType);
       }
       return self::$assetResolver;
    }
@@ -591,9 +613,9 @@ class View implements \Phalcon\Events\EventsAwareInterface, \Phalcon\DI\Injectio
 
    }
 
-    /**
-     * @param array $engines
-     */
+   /**
+    * @param array $engines
+    */
    public function registerEngines(array $engines)
    {
 
