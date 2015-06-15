@@ -57,7 +57,11 @@ class Php implements EngineInterface
             include $tpl;
             ErrorHandler::stop(true);
         } catch (\Exception $ex) {
-            echo 'unknow template parse error :  '.Kernel\filter_root_dir($ex->getMessage());
+           if (DEPLOY_ENV_PRODUCT == SYS_MODE) {
+               throw $ex;
+           } else {
+              echo 'unknow template parse error :  '.Kernel\filter_root_dir($ex->getMessage());
+           }
         }
     }
 
