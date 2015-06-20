@@ -227,7 +227,7 @@ class View implements \Phalcon\Events\EventsAwareInterface, \Phalcon\DI\Injectio
     * @param \Phalcon\Events\ManagerInterface $eventsManager
     * @return  \Cntysoft\Framework\Qs\View
     */
-   public function setEventsManager(\Phalcon\Events\ManagerInterface $eventsManager)
+   public function setEventsManager(\Phalcon\Events\ManagerInterface  $eventsManager)
    {
       $this->eventsManager = $eventsManager;
       return $this;
@@ -612,10 +612,9 @@ class View implements \Phalcon\Events\EventsAwareInterface, \Phalcon\DI\Injectio
    {
 
    }
-
-   /**
-    * @param array $engines
-    */
+    /**
+     * @param array $engines
+     */
    public function registerEngines(array $engines)
    {
 
