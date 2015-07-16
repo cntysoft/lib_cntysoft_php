@@ -77,7 +77,9 @@ class StdErrorType
       'E_HTML_IS_NOT_BUILD' => array(55, 'target html file : %s is not exist, maybe not be generated'),
       'E_APP_META_FILE_NOT_EXIST' => array(56, 'app meta file is not exist'),
 
-      'E_API_INVOKE_LEAK_SECURITY' => array(58, 'Api invoke leak security infomation')
+      'E_API_INVOKE_LEAK_SECURITY' => array(58, 'Api invoke leak security infomation'),
+      'E_MULTI_LOGIN_FAIL' => array(59, 'multi login fail'),
+      'E_AUTH_COOKIE_NOT_EXIST' => array(60, 'auth cookie is not exist')
    );
 
    /**
