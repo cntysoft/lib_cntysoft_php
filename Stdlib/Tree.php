@@ -202,6 +202,24 @@ class Tree
    }
 
    /**
+    * @param int $id
+    * @return string
+    */
+   public function getIdPath($id, $includeSelf = false)
+   {
+      $parts = array();
+      if($includeSelf){
+         $parts[] = $id;
+      }
+      $cur = $id;
+      while(null != ($cur = $this->getParent($cur))){
+         $parts[] = $cur;
+      }
+      $parts = array_reverse($parts);
+      return implode('/', $parts);
+   }
+
+   /**
     * 获取孩子节点
     *
     * @param int $id
