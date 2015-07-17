@@ -83,6 +83,6 @@ abstract class StdHtmlPath
     */
    public static function getUploadFilesPath()
    {
-      return '/PrivateSpace';
+      return self::getDataPath().DS.'UploadFiles';
    }
 }

@@ -187,6 +187,6 @@ abstract class StdDir
     */
    public static function getUploadFilesDir()
    {
-      return CNTY_ROOT_DIR.DS.'UploadFiles';
+      return CNTY_DATA_DIR.DS.'UploadFiles';
    }
 }
