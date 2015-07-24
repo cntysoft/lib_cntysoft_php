@@ -69,7 +69,7 @@ class StdErrorType
       'E_CONFIG_FILE_NOT_EXIST'              => array(47, 'config file : %s not exist'),
       'E_VENDER_FRAMEWORK_NAME_EMPTY'        => array(48, 'vender framework name can not be empty'),
       'E_EXTENSION_NOT_LOADED'               => array(49, 'extension %s is not loaded'),
-      'E_SPH_CONN_FAIL'                      => array(50, 'can not connect to sphinx server'),
+      'E_ARGUMENT_ERROR'                      => array(50, 'function invoke argument error : %s'),
       'E_SPH_DISABLED' => array(51, 'sphinx search server current is disabled'),
       'E_REQUIRED_CONFIG_KEY_NOT_EXIST'        => array(52, 'require config key s%s is not exist'),
       'E_API_INVOKE_NEED_LOGIN' => array(53, 'api invoke need login'),
