@@ -43,7 +43,7 @@ abstract class FileRefDownload
     * @param int $siteId
     * @param string $fileUrl
     */
-   public function download($siteId, $fileUrl)
+   public function download($fileUrl)
    {
       if (null == $this->curl) {
          $this->curl = curl_init();
