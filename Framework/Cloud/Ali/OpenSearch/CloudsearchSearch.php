@@ -215,11 +215,11 @@ class CloudsearchSearch {
    */
   private $customParams = array();
 
-  private $scrollId = null;
+   private $scrollId = null;
 
-  private $searchType = '';
+   private $searchType = '';
 
-  private $scroll = null;
+   private $scroll = null;
 
   /**
    * 请求API的部分path。
