@@ -424,7 +424,7 @@ function get_server_env($key)
  */
 function get_sys_version_str()
 {
-    return 'v'.OPEN_ENGINE_VERSION.'-'.OPEN_ENGINE_RELEASE;
+    return ZHUCHAO_VERSION;
 }
 
 /**
