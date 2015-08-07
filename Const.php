@@ -66,14 +66,14 @@ const CATEGORY_ID = 'category'; //节点树类型
 //标准分页大小
 const STD_PAGE_SIZE = 15;
 
-const CATEGORY_ROUTE_N_PAGE = '/Category/:CategoryId';
-const CATEGORY_ITEM_ROUTE_N_PAGE = '/Item/:ItemId';
+const CATEGORY_ROUTE_N_PAGE = '/category/:CategoryId';
+const CATEGORY_ITEM_ROUTE_N_PAGE = '/item/:ItemId';
 
-const CATEGORY_ROUTE_W_PAGE = '/Category/:CategoryId/Page/:PageId';
-const CATEGORY_ITEM_ROUTE_W_PAGE = '/Item/:ItemId/Page/:PageId';
+const CATEGORY_ROUTE_W_PAGE = '/category/:CategoryId/page/:PageId';
+const CATEGORY_ITEM_ROUTE_W_PAGE = '/item/:ItemId/page/:PageId';
 //列表静态模板
 const LIST_HTML_URL_FORMAT = '%s/List_%d.html';
-const ITEM_HTML_URL_FORMAT = '%s/Items/%s/%s.html';
+const ITEM_HTML_URL_FORMAT = '%s/items/%s/%s.html';
 //标准内容分页符号
 const CONTENT_PAGE_SEPARATOR = '<div style="page-break-after: always;"><span style="display:none">&nbsp;</span></div>';
 //一些重要的全局键值
