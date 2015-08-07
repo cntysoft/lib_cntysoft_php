@@ -625,7 +625,7 @@ class View implements \Phalcon\Events\EventsAwareInterface, \Phalcon\DI\Injectio
 
    }
 
-   public function partial($partialPath)
+   public function partial($partialPath, $params = null)
    {
 
    }
@@ -674,6 +674,8 @@ class View implements \Phalcon\Events\EventsAwareInterface, \Phalcon\DI\Injectio
    {
 
    }
+   public function getBasePath()
+   {}
 
 }
 //给Qs名称空间定义几个常量
