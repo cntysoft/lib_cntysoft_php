@@ -3,7 +3,6 @@
  * Cntysoft Cloud Software Team
  */
 namespace Cntysoft\Framework\Cloud\Ali\OpenSearch;
-use Cntysoft\Framework\Cloud\Ali\Ots\Msg\Error;
 use Cntysoft\Kernel;
 use Zend\Http\Client as HttpClient;
 use Zend\Http\Header\AcceptEncoding;
