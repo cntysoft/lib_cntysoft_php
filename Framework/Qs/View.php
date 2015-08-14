@@ -625,7 +625,7 @@ class View implements \Phalcon\Events\EventsAwareInterface, \Phalcon\DI\Injectio
 
    }
 
-   public function partial($partialPath)
+   public function partial($partialPath, $params=null)
    {
 
    }
@@ -673,6 +673,10 @@ class View implements \Phalcon\Events\EventsAwareInterface, \Phalcon\DI\Injectio
    public function isDisabled()
    {
 
+   }
+   public function getBasePath()
+   {
+      
    }
 
 }
