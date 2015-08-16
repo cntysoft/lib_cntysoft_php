@@ -62,5 +62,11 @@ class AbstractController extends \Phalcon\Mvc\Controller
     {
         header("location:$url");
     }
-
+    /**
+     * @return \Phalcon\Mvc\Router
+     */
+    protected function getRouter()
+    {
+       return $this->getDI()->get('router');
+    }
 }
