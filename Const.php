@@ -37,10 +37,6 @@ const API_CALL_EXP_KEY = 'ApiCallException';
 const SESSION_NS = 'CNTYSOFT_S_NS';
 const SYS_AUTH_CODE_KEY = 'SYS_AUTH_CODE_KEY';
 
-
-const PLATFORM_S_KEY_CHK_CODE = 'platform_s_key_chk_code';
-const PLATFORM_S_KEY_SYS_USER_INFO = 'platform_key_user_info';
-
 const STD_DATE_FORMAT = 'Y-m-d H:i:s';
 //站点状态
 const SITE_RUNNING = 1;
