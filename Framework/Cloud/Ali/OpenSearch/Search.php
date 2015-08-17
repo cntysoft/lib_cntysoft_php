@@ -130,11 +130,17 @@ class Search
          $msg = '';
          foreach ($ret['errors'] as $error){
             $msg .= $error['message'];
+            if(6501 == $error['code']){
+               $ret['status'] = 'SUCCESS';
+               $ret['errors'] = array();
+               goto ret;
+            }
          }
          $errorType = ErrorType::getInstance();
          Kernel\throw_exception(new Exception(
             $errorType->msg('QUERY_ERROR', $msg),$errorType->code('QUERY_ERROR')));
       }
+      ret:
       return $ret;
    }
 
