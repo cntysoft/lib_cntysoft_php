@@ -7,25 +7,25 @@
  * @license    http://www.cntysoft.com/license/new-bsd     New BSD License
  */
 namespace Cntysoft\Framework\Qs;
-
 use Phalcon\Events\Manager as EventsManager;
 use Cntysoft\Kernel;
 use Cntysoft\Kernel\StdDir;
 use Cntysoft\Stdlib\Filesystem;
 use Phalcon\Events\ManagerInterface;
 use Phalcon\DiInterface;
-
 /**
  * 系统模板显示引擎
  */
 class View implements \Phalcon\Events\EventsAwareInterface, \Phalcon\DI\InjectionAwareInterface, \Phalcon\Mvc\ViewInterface
 {
+
    const KEY_RESOLVE_TYPE = '_RESOLVE_TYPE_'; //相关控制器的模板寻找方法KEY
    const KEY_RESOLVE_DATA = '_RESOLVE_DATA_'; //模板寻找数据的键KEY
    const KEY_TPL_VAR = '_TPL_VARS_';
    const KEY_ROUTE_PARAMS = '_ROUTE_PARAMS_'; //路由传递的参数
    const KEY_RENDER_CTRL = '_RENDER_CTRL_'; //渲染控制
    const KEY_DISABLED_VIEW = '_DISABLED_KEY_';
+
    /**
     * 这个常量主要用在从控制器向模板引擎传递渲染参数，我们使用全局变量进行传递
     */
@@ -36,6 +36,7 @@ class View implements \Phalcon\Events\EventsAwareInterface, \Phalcon\DI\Injectio
    const TPL_RESOLVE_FINDER = 3;
    const ENGINE_MODE_NORMAL = 1;
    const ENGINE_MODE_BUILD = 2;
+
    /**
     * 支持的标签种类
     */
@@ -45,75 +46,89 @@ class View implements \Phalcon\Events\EventsAwareInterface, \Phalcon\DI\Injectio
    const TAG_DS_FIELD = 'DsField';
    const TAG_SITE_CONFIG = 'SiteConfig';
    const TAG_SYS = 'Sys';
+
    /**
     * 系统访问类型
     */
    const DEVICE_PC = 'Pc';
    const DEVICE_PAD = 'Pad';
    const DEVICE_MOBILE = 'Mobile';
+
    /**
     * 模板引擎两种模式
     */
    const M_NORMAL = 1;
    const M_BUILD = 2;
+
    /**
     * @var \Phalcon\Events\ManagerInterface $eventsManager
     */
    protected $eventsManager = null;
+
    /**
     * @var \Phalcon\DiInterface $di
     */
    protected $di = null;
+
    /**
     * @var \Cntysoft\Framework\Qs\Engine\EngineInterface $renderEngine
     */
    protected $renderEngine = null;
+
    /**
     * 模板储存目录
     *
     * @var string $tplRootDir
     */
    protected $tplRootDir = null;
+
    /**
     * 本次解析模板结果
     *
     * @var string $content
     */
    protected $content = '';
+
    /**
     * 当前渲染选项数据
     *
     * @var array $renderOpt
     */
    public static $renderOpt = null;
+
    /**
     * 本次请求的路由信息
     *
     * @var array $routeInfo
     */
    protected $routeInfo = array();
+
    /**
     * @var  \Phalcon\Cache\Backend\File $cache
     */
    protected $cache = null;
+
    /**
     *  设备类型，如果没有设置那么我们就自动探测
     *
     * @var string $deviceType
     */
    protected static $deviceType = null;
+
    /**
     * 设置模板映射
     *
     * @var array $tplMap
     */
    protected static $tplMap = array();
+
    /**
     * 模板引擎的模式，分为正常模式和生成模式
     *
     * @var int $mode
     */
    protected $mode = self::ENGINE_MODE_NORMAL;
+
    /**
     * 系统模板方案编号
     *
@@ -196,13 +211,15 @@ class View implements \Phalcon\Events\EventsAwareInterface, \Phalcon\DI\Injectio
       if (!$renderOpt[self::KEY_RENDER_CTRL]) {
          return;
       }
-      Kernel\ensure_array_has_fields($renderOpt, array(
+      Kernel\ensure_array_has_fields($renderOpt,
+         array(
          self::KEY_RESOLVE_DATA
-      ), 'controller action render params need require keys : %s');
+         ), 'controller action render params need require keys : %s');
       $params['controller'] = $controllerName;
       $params['action'] = $actionName;
       $this->routeInfo = array_merge($this->routeInfo, $params);
-      $tpl = $this->resolveTpl($renderOpt[self::KEY_RESOLVE_TYPE], $renderOpt[self::KEY_RESOLVE_DATA]);
+      $tpl = $this->resolveTpl($renderOpt[self::KEY_RESOLVE_TYPE],
+         $renderOpt[self::KEY_RESOLVE_DATA]);
       $engine = $this->getRenderEngine();
       $this->content = $engine->render($tpl);
    }
@@ -227,7 +244,7 @@ class View implements \Phalcon\Events\EventsAwareInterface, \Phalcon\DI\Injectio
     * @param \Phalcon\Events\ManagerInterface $eventsManager
     * @return  \Cntysoft\Framework\Qs\View
     */
-   public function setEventsManager(\Phalcon\Events\ManagerInterface  $eventsManager)
+   public function setEventsManager(\Phalcon\Events\ManagerInterface $eventsManager)
    {
       $this->eventsManager = $eventsManager;
       return $this;
@@ -316,8 +333,9 @@ class View implements \Phalcon\Events\EventsAwareInterface, \Phalcon\DI\Injectio
                $errorType = ErrorType::getInstance();
                Kernel\throw_exception(
                   new Exception(
-                     sprintf($errorType->msg('E_TPL_MAP_KEY_NOT_EXIST'), $resolveData),
-                     $errorType->code('E_TPL_MAP_KEY_NOT_EXIST')),$errorType);
+                  sprintf($errorType->msg('E_TPL_MAP_KEY_NOT_EXIST'),
+                     $resolveData), $errorType->code('E_TPL_MAP_KEY_NOT_EXIST')),
+                  $errorType);
             } else {
                die('map : ' . $resolveData . ' is not exist');
             }
@@ -402,7 +420,7 @@ class View implements \Phalcon\Events\EventsAwareInterface, \Phalcon\DI\Injectio
     */
    public function setMode($mode)
    {
-      $this->mode = (int)$mode;
+      $this->mode = (int) $mode;
       return $this;
    }
 
@@ -439,10 +457,9 @@ class View implements \Phalcon\Events\EventsAwareInterface, \Phalcon\DI\Injectio
     */
    public function setTplProject($tplProject)
    {
-      $this->tplProject = (int)$tplProject;
+      $this->tplProject = (int) $tplProject;
       return $this;
    }
-
 
    /**
     * @param TagResolverInterface $finder
@@ -463,8 +480,8 @@ class View implements \Phalcon\Events\EventsAwareInterface, \Phalcon\DI\Injectio
          $errorType = ErrorType::getInstance();
          Kernel\throw_exception(
             new Exception(
-               $errorType->msg('E_TAG_DIR_FINDER_NOT_SET'),
-               $errorType->code('E_TAG_DIR_FINDER_NOT_SET')), $errorType);
+            $errorType->msg('E_TAG_DIR_FINDER_NOT_SET'),
+            $errorType->code('E_TAG_DIR_FINDER_NOT_SET')), $errorType);
       }
       return self::$tagResolver;
    }
@@ -488,8 +505,8 @@ class View implements \Phalcon\Events\EventsAwareInterface, \Phalcon\DI\Injectio
          $errorType = ErrorType::getInstance();
          Kernel\throw_exception(
             new Exception(
-               $errorType->msg('E_TAG_DIR_FINDER_NOT_SET'),
-               $errorType->code('E_TAG_DIR_FINDER_NOT_SET')), $errorType);
+            $errorType->msg('E_TAG_DIR_FINDER_NOT_SET'),
+            $errorType->code('E_TAG_DIR_FINDER_NOT_SET')), $errorType);
       }
       return self::$assetResolver;
    }
@@ -505,177 +522,181 @@ class View implements \Phalcon\Events\EventsAwareInterface, \Phalcon\DI\Injectio
    //暂时不用的接口
    public function setViewsDir($viewsDir)
    {
-
+      
    }
 
    public function getViewsDir()
    {
-
+      
    }
 
    public function setLayoutsDir($layoutsDir)
    {
-
+      
    }
 
    public function getLayoutsDir()
    {
-
+      
    }
 
    public function setPartialsDir($partialsDir)
    {
-
+      
    }
 
    public function getPartialsDir()
    {
-
+      
    }
 
    public function setBasePath($basePath)
    {
-
+      
    }
 
    public function setRenderLevel($level)
    {
-
+      
    }
 
    public function setMainView($viewPath)
    {
-
+      
    }
 
    public function getMainView()
    {
-
+      
    }
 
    public function setLayout($layout)
    {
-
+      
    }
 
    public function getLayout()
    {
-
+      
    }
 
    public function setTemplateBefore($templateBefore)
    {
-
+      
    }
 
    public function cleanTemplateBefore()
    {
-
+      
    }
 
    public function setTemplateAfter($templateAfter)
    {
-
+      
    }
 
    public function cleanTemplateAfter()
    {
-
+      
    }
 
    public function setParamToView($key, $value)
    {
-
+      
    }
 
    public function setVar($key, $value)
    {
-
+      
    }
 
    public function getParamsToView()
    {
-
+      
    }
 
    public function getControllerName()
    {
-
+      
    }
 
    public function getActionName()
    {
-
+      
    }
 
    public function getParams()
    {
-
+      
    }
+
    /**
     * @param array $engines
     */
    public function registerEngines(array $engines)
    {
-
+      
    }
 
    public function pick($renderView)
    {
-
+      
    }
 
    public function partial($partialPath, $params = null)
    {
-
+      
    }
 
    public function cache($options = null)
    {
-
+      
    }
 
    public function setContent($content)
    {
-
+      
    }
 
    public function getActiveRenderPath()
    {
-
+      
    }
 
    public function disable()
    {
-
+      
    }
 
    public function enable()
    {
-
+      
    }
 
    public function reset()
    {
-
+      
    }
 
    public function getCurrentRenderLevel()
    {
-
+      
    }
 
    public function getRenderLevel()
    {
-
+      
    }
 
    public function isDisabled()
    {
-
+      
    }
+
    public function getBasePath()
-   {}
+   {
+      
+   }
 
 }
 //给Qs名称空间定义几个常量
