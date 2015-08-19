@@ -47,19 +47,19 @@ class Document
    public function add($tableName, array $docs)
    {
       $docs = $this->generate($docs, self::DOC_ADD);
-      $this->upload($tableName, $docs);
+      return $this->upload($tableName, $docs);
    }
 
    public function update($tableName, array $docs)
    {
       $docs = $this->generate($docs, self::DOC_UPDATE);
-      $this->upload($tableName, $docs);
+      return $this->upload($tableName, $docs);
    }
 
    public function delete($tableName, array $docs)
    {
       $docs = $this->generate($docs, self::DOC_REMOVE);
-      $this->upload($tableName, $docs);
+      return $this->upload($tableName, $docs);
    }
 
    protected function upload($tableName, array $docs, $signMode = self::SIGN_MODE)
