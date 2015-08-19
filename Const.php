@@ -62,11 +62,11 @@ const CATEGORY_ID = 'category'; //节点树类型
 //标准分页大小
 const STD_PAGE_SIZE = 15;
 
-const CATEGORY_ROUTE_N_PAGE = '/category/:CategoryId';
-const CATEGORY_ITEM_ROUTE_N_PAGE = '/item/:ItemId';
+const CATEGORY_ROUTE_N_PAGE = '/category/{CategoryId}.html';
+const CATEGORY_ITEM_ROUTE_N_PAGE = '/item/{ItemId}.html';
 
-const CATEGORY_ROUTE_W_PAGE = '/category/:CategoryId/page/:PageId';
-const CATEGORY_ITEM_ROUTE_W_PAGE = '/item/:ItemId/page/:PageId';
+const CATEGORY_ROUTE_W_PAGE = '/category/{CategoryId}/page/{PageId}.html';
+const CATEGORY_ITEM_ROUTE_W_PAGE = '/item/:ItemId/page/{PageId}.html';
 //列表静态模板
 const LIST_HTML_URL_FORMAT = '%s/List_%d.html';
 const ITEM_HTML_URL_FORMAT = '%s/items/%s/%s.html';
