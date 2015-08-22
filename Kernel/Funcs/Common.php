@@ -417,15 +417,6 @@ function get_server_env($key)
     return null;
 }
 
-/**
- * 获取一个简便的版本字符串
- * 
- * @return string
- */
-function get_sys_version_str()
-{
-    return ZHUCHAO_VERSION;
-}
 
 /**
  * 移除xss跨站攻击代码
