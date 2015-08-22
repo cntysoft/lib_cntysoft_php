@@ -36,6 +36,7 @@ class Search
 
    const D_START = 0;
    const D_HITS = 20;
+   const STATUS_FAIL = 'FAIL';
    /**
     * @var \Cntysoft\Framework\Cloud\Ali\OpenSearch\ApiCaller $apiCaller
     */
@@ -124,7 +125,23 @@ class Search
    public function search(array $opts = array())
    {
       $this->extraOpts($opts);
-      return $this->call(self::QUERY_TYPE_SEARCH);
+      $ret = $this->call(self::QUERY_TYPE_SEARCH);
+      if($ret['status'] == self::STATUS_FAIL){
+         $msg = '';
+         foreach ($ret['errors'] as $error){
+            $msg .= $error['message'];
+            if(6501 == $error['code']){
+               $ret['status'] = 'SUCCESS';
+               $ret['errors'] = array();
+               goto ret;
+            }
+         }
+         $errorType = ErrorType::getInstance();
+         Kernel\throw_exception(new Exception(
+            $errorType->msg('QUERY_ERROR', $msg),$errorType->code('QUERY_ERROR')));
+      }
+      ret:
+      return $ret;
    }
 
    /**

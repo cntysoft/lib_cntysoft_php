@@ -3,7 +3,6 @@
  * Cntysoft Cloud Software Team
  */
 namespace Cntysoft\Framework\Core;
-use Cntysoft\Kernel;
 use Zend\Http\Client;
  /**
  * @author SOFTBOY <cntysoft@163.com>
