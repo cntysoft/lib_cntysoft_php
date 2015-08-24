@@ -34,13 +34,13 @@ class Application extends \Phalcon\Mvc\Application
       $globalConfig = ConfigProxy::getGlobalConfig();
       //设置当前系统的运行模式常量
       if(!isset($globalConfig->systemMode)){
-         define('SYS_MODE', DEPLOY_ENV_PRODUCT);
+         define('SYS_RUNTIME_MODE', SYS_RUNTIME_MODE_PRODUCT);
       }else{
          $mode = $globalConfig->systemMode;
-         if ($mode !== DEPLOY_ENV_DEBUG && $mode !== DEPLOY_ENV_PRODUCT) {
-            die(sprintf('sys run mode : %x is not support, DEPLOY_ENV_PRODUCT : %x and DEPLOY_ENV_DEBUG : %x', $mode, DEPLOY_ENV_PRODUCT, DEPLOY_ENV_DEBUG));
+         if ($mode !== SYS_RUNTIME_MODE_DEBUG && $mode !== SYS_RUNTIME_MODE_PRODUCT) {
+            die(sprintf('sys run mode : %x is not support, SYS_RUNTIME_MODE_PRODUCT : %x and SYS_RUNTIME_MODE_DEBUG : %x', $mode, SYS_RUNTIME_MODE_PRODUCT, SYS_RUNTIME_MODE_DEBUG));
          }
-         define('SYS_MODE', $mode);
+         define('SYS_RUNTIME_MODE', $mode);
       }
       self::$globalDi = $dependencyInjector;
       parent::__construct($dependencyInjector);

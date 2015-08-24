@@ -329,7 +329,7 @@ class View implements \Phalcon\Events\EventsAwareInterface, \Phalcon\DI\Injectio
          return $baseDir . DS . $this->tplProject . DS . $deviceType . DS . $resolveData;
       } else if (self::TPL_RESOLVE_MAP == $resolveType) {
          if (!array_key_exists($resolveData, self::$tplMap)) {
-            if (DEPLOY_ENV_PRODUCT == SYS_MODE) {
+            if (SYS_RUNTIME_MODE_PRODUCT == SYS_RUNTIME_MODE) {
                $errorType = ErrorType::getInstance();
                Kernel\throw_exception(
                   new Exception(

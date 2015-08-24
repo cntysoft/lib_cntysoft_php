@@ -108,9 +108,9 @@ class ApiCaller
     */
    public function call($api, array $params = array(), $method = self::M_GET)
    {
-      if(SYS_MODE == DEPLOY_ENV_DEBUG){
+      if(SYS_RUNTIME_MODE == SYS_RUNTIME_MODE_DEBUG){
          $entry = self::API_PUB_ENTRY;
-      }else if(SYS_MODE == DEPLOY_ENV_PRODUCT){
+      }else if(SYS_RUNTIME_MODE == SYS_RUNTIME_MODE_PRODUCT){
          $entry = self::API_INTERNAL_ENTRY;
       }
       $requestUrl = $entry .'/'.$api;

@@ -40,7 +40,7 @@ class Php implements EngineInterface
         $tpl = Kernel\real_path($tpl);
         if (!file_exists($tpl)) {
            $errorType = ErrorType::getInstance();
-           if(DEPLOY_ENV_PRODUCT == SYS_MODE) {
+           if(SYS_RUNTIME_MODE_PRODUCT == SYS_RUNTIME_MODE) {
               Kernel\throw_exception(
                  new Exception(
                     $errorType->msg('E_TPL_FILE_NOT_EXIST'),
@@ -57,7 +57,7 @@ class Php implements EngineInterface
             include $tpl;
             ErrorHandler::stop(true);
         } catch (\Exception $ex) {
-           if (DEPLOY_ENV_PRODUCT == SYS_MODE) {
+           if (SYS_RUNTIME_MODE_PRODUCT == SYS_RUNTIME_MODE) {
                throw $ex;
            } else {
               echo 'unknow template parse error :  '.Kernel\filter_root_dir($ex->getMessage());
