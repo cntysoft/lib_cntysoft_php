@@ -86,3 +86,4 @@ const GB2312 = 'gb2312';
 const CSS = 'Css';
 const IMAGE = 'Images';
 const JS = 'Js';
+
