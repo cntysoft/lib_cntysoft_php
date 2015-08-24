@@ -417,7 +417,6 @@ function get_server_env($key)
     return null;
 }
 
-
 /**
  * 移除xss跨站攻击代码
  * 
