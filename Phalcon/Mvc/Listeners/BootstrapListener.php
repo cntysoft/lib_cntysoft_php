@@ -108,7 +108,7 @@ class BootstrapListener implements ListenerAggregateInterface
          //Handle 404 exceptions
          //派发异常
          if ($exception instanceof DispatchException) {
-            if (SYS_MODE == DEPLOY_ENV_DEBUG) {
+            if (SYS_RUNTIME_MODE == SYS_RUNTIME_MODE_DEBUG) {
                if ('HtmlController' == $dispatcher->getHandlerClass()) {
                   Kernel\throw_exception(new Exception(
                      StdErrorType::msg('E_HTML_IS_NOT_BUILD', $_SERVER['REQUEST_URI']), StdErrorType::code('E_HTML_IS_NOT_BUILD')));
@@ -126,7 +126,7 @@ class BootstrapListener implements ListenerAggregateInterface
          }
          //Alternative way, controller or action doesn't exist
          if ($event->getType() == 'beforeException') {
-            if (SYS_MODE == DEPLOY_ENV_DEBUG) {
+            if (SYS_RUNTIME_MODE == SYS_RUNTIME_MODE_DEBUG) {
                throw $exception;
             } else {
                switch ($exception->getCode()) {
