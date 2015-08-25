@@ -87,3 +87,7 @@ const CSS = 'Css';
 const IMAGE = 'Images';
 const JS = 'Js';
 
+//站点状态相关常量
+const SITE_STATUS_RUNNING = 1;
+const SITE_STATUS_UPGRADING = 2;
+const SITE_STATUS_CLOSED = 3;
