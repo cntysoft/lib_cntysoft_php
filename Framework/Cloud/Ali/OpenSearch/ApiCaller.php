@@ -15,8 +15,6 @@ class ApiCaller
 {
    const KEY_TYPE_ALIYUN = 'aliyun';
    const KEY_TYPE_OPENSEARCH = 'opensearch';
-   const API_PUB_ENTRY = 'http://opensearch-cn-beijing.aliyuncs.com';
-   const API_INTERNAL_ENTRY = 'http://intranet.opensearch-cn-beijing.aliyuncs.com';
    const M_GET = 'GET';
    const M_POST = 'POST';
    /**
@@ -109,9 +107,9 @@ class ApiCaller
    public function call($api, array $params = array(), $method = self::M_GET)
    {
       if(SYS_RUNTIME_MODE == SYS_RUNTIME_MODE_DEBUG){
-         $entry = self::API_PUB_ENTRY;
+         $entry = \Cntysoft\ALI_SEARCH_API_PUB_ENTRY;
       }else if(SYS_RUNTIME_MODE == SYS_RUNTIME_MODE_PRODUCT){
-         $entry = self::API_INTERNAL_ENTRY;
+         $entry = \Cntysoft\ALI_SEARCH_INTERNAL_ENTRY;
       }
       $requestUrl = $entry .'/'.$api;
       if($this->keyType == self::KEY_TYPE_OPENSEARCH){
