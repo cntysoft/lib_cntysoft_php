@@ -622,3 +622,14 @@ function generate_password($password)
     $encrypt = get_global_di()->getShared('security');
     return $encrypt->hash(hash('sha256', $password));
 }
+
+/**
+ * 获取服务器根域名, 这个暂时只对二级域名正确
+ * 
+ * @return string
+ */
+function get_server_root_domain()
+{
+   $url = $_SERVER['SERVER_NAME'];
+   return substr($url, strpos($url, '.') + 1);
+}
