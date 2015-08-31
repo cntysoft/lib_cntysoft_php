@@ -12,16 +12,11 @@ use Zend\Http\Client as HttpClient;
 use Zend\Http\Headers as HttpHeaders;
 use Cntysoft\Kernel\ConfigProxy;
 use Cntysoft\Kernel;
-
 /**
  * 封装阿里巴巴NO-SQL服务客户端
  */
 class Client
 {
-   const INTERNAL_API = 'http://gzy-ots.cn-hangzhou.ots-internal.aliyuncs.com';
-   const PUB_API = 'http://gzy-ots.cn-hangzhou.ots.aliyuncs.com';
-   const MSG_CLS_FILENAME = __DIR__.DS.'Msg'.DS.'pb_proto_ots.php';
-
    const API_LIST_TABLE = 'ListTable';
    const API_CREATE_TABLE = 'CreateTable';
    const API_DELETE_TABLE = 'DeleteTable';
@@ -34,22 +29,24 @@ class Client
    const API_GET_RANGE = 'GetRange';
    const API_BATCH_GET_ROW = 'BatchGetRow';
    const API_BATCH_WRITE_ROW = 'BatchWriteRow';
-
-   protected $useInternalApi = false;
+   protected $entry;
    protected $accessKey;
    protected $accessKeySecret;
    protected $instanceName;
+
    /**
     * @var \Zend\Http\Client $client
     */
    protected $client;
    private static $clsLoaded = false;
 
-   public function __construct($instanceName = null, $accessKey = null, $accessKeySecret = null)
+   public function __construct($entry, $instanceName, $accessKey, $accessKeySecret)
    {
       $this->instanceName = $instanceName;
       $this->accessKey = $accessKey;
       $this->accessKeySecret = $accessKeySecret;
+      $this->useInternalApi = $useInternalApi;
+      $this->entry = $entry;
       if (null == $instanceName || null == $accessKey || null == $accessKeySecret) {
          $this->setupDefaultAccessCfg();
       }
@@ -62,7 +59,8 @@ class Client
     */
    public function getTableNames()
    {
-      $response = $this->requestOtsApi(self::API_LIST_TABLE, new Msg\ListTableRequest());
+      $response = $this->requestOtsApi(self::API_LIST_TABLE,
+         new Msg\ListTableRequest());
       $responseBuf = new Msg\ListTableResponse();
       $responseBuf->parseFromString($response->getBody());
       return $responseBuf->getTableNames();
@@ -86,7 +84,7 @@ class Client
    {
       $tableMeta = new Msg\TableMeta();
       $tableMeta->setTableName($tableName);
-      foreach($primaryKeys as $primaryKey){
+      foreach ($primaryKeys as $primaryKey) {
          $keyMsg = new Msg\ColumnSchema();
          $keyMsg->setName($primaryKey['name']);
          $keyMsg->setType($primaryKey['type']);
@@ -100,7 +98,8 @@ class Client
       $createTableRequest = new Msg\CreateTableRequest();
       $createTableRequest->setTableMeta($tableMeta);
       $createTableRequest->setReservedThroughput($reservedThroughput);
-      $response = $this->requestOtsApi(self::API_CREATE_TABLE, $createTableRequest);
+      $response = $this->requestOtsApi(self::API_CREATE_TABLE,
+         $createTableRequest);
       $buf = new Msg\CreateTableResponse();
       $buf->parseFromString($response->getBody());
       return $buf;
@@ -158,10 +157,10 @@ class Client
    {
       $requestMsg = new Msg\GetRowRequest();
       $requestMsg->setTableName($tableName);
-      foreach($primaryKeys as $key){
+      foreach ($primaryKeys as $key) {
          $requestMsg->appendPrimaryKey($key);
       }
-      foreach($columns as $col){
+      foreach ($columns as $col) {
          $requestMsg->appendColumnsToGet($col);
       }
       $response = $this->requestOtsApi(self::API_GET_ROW, $requestMsg);
@@ -182,10 +181,10 @@ class Client
       $requestMsg = new Msg\PutRowRequest();
       $requestMsg->setTableName($tableName);
       $requestMsg->setCondition($condition);
-      foreach($primaryKeys as $key){
+      foreach ($primaryKeys as $key) {
          $requestMsg->appendPrimaryKey($key);
       }
-      foreach($attributeColumns as $col){
+      foreach ($attributeColumns as $col) {
          $requestMsg->appendAttributeColumns($col);
       }
       $response = $this->requestOtsApi(self::API_PUT_ROW, $requestMsg);
@@ -206,10 +205,10 @@ class Client
       $requestMsg = new Msg\UpdateRowRequest();
       $requestMsg->setTableName($tableName);
       $requestMsg->setCondition($condition);
-      foreach($primaryKeys as $key){
+      foreach ($primaryKeys as $key) {
          $requestMsg->appendPrimaryKey($key);
       }
-      foreach($attributeColumns as $col){
+      foreach ($attributeColumns as $col) {
          $requestMsg->appendAttributeColumns($col);
       }
       $response = $this->requestOtsApi(self::API_UPDATE_ROW, $requestMsg);
@@ -231,7 +230,7 @@ class Client
       $requestMsg = new Msg\DeleteRowRequest();
       $requestMsg->setTableName($tableName);
       $requestMsg->setCondition($condition);
-      foreach($primaryKeys as $key){
+      foreach ($primaryKeys as $key) {
          $requestMsg->appendPrimaryKey($key);
       }
       $response = $this->requestOtsApi(self::API_DELETE_ROW, $requestMsg);
@@ -251,18 +250,18 @@ class Client
     * @param int $limit
     * @return Msg\GetRangeResponse
     */
-   public function getRange($tableName, $direction, array $columnsToGet, array $inclusiveStartPrimaryKey, array  $exclusiveEndPrimaryKey , $limit = 1)
+   public function getRange($tableName, $direction, array $columnsToGet, array $inclusiveStartPrimaryKey, array $exclusiveEndPrimaryKey, $limit = 1)
    {
       $requestMsg = new Msg\GetRangeRequest();
       $requestMsg->setTableName($tableName);
       $requestMsg->setDirection($direction);
-      foreach($columnsToGet as $col){
+      foreach ($columnsToGet as $col) {
          $requestMsg->appendColumnsToGet($col);
       }
-      foreach($inclusiveStartPrimaryKey as $key){
+      foreach ($inclusiveStartPrimaryKey as $key) {
          $requestMsg->appendColumnsToGet($key);
       }
-      foreach($exclusiveEndPrimaryKey as $key){
+      foreach ($exclusiveEndPrimaryKey as $key) {
          $requestMsg->appendColumnsToGet($key);
       }
       $requestMsg->setLimit($limit);
@@ -279,7 +278,7 @@ class Client
    public function batchGetRow(array $tableRequests)
    {
       $requestMsg = new Msg\BatchGetRowRequest();
-      foreach($tableRequests as $request){
+      foreach ($tableRequests as $request) {
          $requestMsg->appendTables($request);
       }
       $response = $this->requestOtsApi(self::API_BATCH_GET_ROW, $requestMsg);
@@ -295,7 +294,7 @@ class Client
    public function batchWriteRow(array $tableRequests)
    {
       $requestMsg = new Msg\BatchWriteRowRequest();
-      foreach($tableRequests as $request){
+      foreach ($tableRequests as $request) {
          $requestMsg->appendTables($request);
       }
       $response = $this->requestOtsApi(self::API_BATCH_WRITE_ROW, $requestMsg);
@@ -334,7 +333,8 @@ class Client
       $headers = $request->getHeaders();
       $body = $message->serializeToString();
       $request->setContent($body);
-      $headers->addHeaderLine('x-ots-contentmd5', base64_encode(md5($body, true)));
+      $headers->addHeaderLine('x-ots-contentmd5',
+         base64_encode(md5($body, true)));
       $signatureHeaderNames = array(
          'x-ots-accesskeyid',
          'x-ots-apiversion',
@@ -347,16 +347,14 @@ class Client
          $canonicalHeaders .= $hname . ':' . trim($headers->get($hname)->getFieldValue()) . "\n";
       }
       $strToSignature = '/' . $api . "\n" . 'POST' . "\n\n" . $canonicalHeaders;
-      $signature = base64_encode(hash_hmac('sha1',$strToSignature, $this->accessKeySecret, true));
+      $signature = base64_encode(hash_hmac('sha1', $strToSignature,
+            $this->accessKeySecret, true));
       $headers->addHeaderLine('x-ots-signature', $signature);
       $httpClient->setHeaders($headers);
-      if ($this->useInternalApi) {
-         $request->setUri(self::INTERNAL_API . '/' . $api);
-      } else {
-         $request->setUri(self::PUB_API . '/' . $api);
-      }
+      $request->setUri($this->entry . '/' . $api);
+
       $response = $httpClient->send($request);
-      if(200 != $response->getStatusCode()){
+      if (200 != $response->getStatusCode()) {
          $errorType = ErrorType::getInstance();
          Kernel\throw_exception(new Exception(
             $errorType->msg('E_API_REQUEST_ERROR', $response->getBody()),
@@ -403,10 +401,10 @@ class Client
 
    public static function loadMsgCls()
    {
-      if(!self::$clsLoaded){
-         include self::MSG_CLS_FILENAME;
+      if (!self::$clsLoaded) {
+         include __DIR__ . DS . 'Msg' . DS . 'pb_proto_ots.php';
          self::$clsLoaded = true;
       }
-
    }
+
 }
