@@ -17,6 +17,7 @@ use Cntysoft\Kernel;
  */
 class Client
 {
+
    const API_LIST_TABLE = 'ListTable';
    const API_CREATE_TABLE = 'CreateTable';
    const API_DELETE_TABLE = 'DeleteTable';
@@ -29,6 +30,7 @@ class Client
    const API_GET_RANGE = 'GetRange';
    const API_BATCH_GET_ROW = 'BatchGetRow';
    const API_BATCH_WRITE_ROW = 'BatchWriteRow';
+
    protected $entry;
    protected $accessKey;
    protected $accessKeySecret;
@@ -333,8 +335,13 @@ class Client
       $headers = $request->getHeaders();
       $body = $message->serializeToString();
       $request->setContent($body);
-      $headers->addHeaderLine('x-ots-contentmd5',
-         base64_encode(md5($body, true)));
+      if (!$headers->has('x-ots-contentmd5')) {
+         $headers->addHeaderLine('x-ots-contentmd5',
+            base64_encode(md5($body, true)));
+      } else {
+         $contentHeader = $headers->get('x-ots-contentmd5');
+         $contentHeader->setFieldValue(base64_encode(md5($body, true)));
+      }
       $signatureHeaderNames = array(
          'x-ots-accesskeyid',
          'x-ots-apiversion',
@@ -349,10 +356,14 @@ class Client
       $strToSignature = '/' . $api . "\n" . 'POST' . "\n\n" . $canonicalHeaders;
       $signature = base64_encode(hash_hmac('sha1', $strToSignature,
             $this->accessKeySecret, true));
-      $headers->addHeaderLine('x-ots-signature', $signature);
+      if (!$headers->has('x-ots-signature')) {
+         $headers->addHeaderLine('x-ots-signature', $signature);
+      } else {
+         $signatureHeader = $headers->get('x-ots-signature');
+         $signatureHeader->setFieldValue($signature);
+      }
       $httpClient->setHeaders($headers);
       $request->setUri($this->entry . '/' . $api);
-
       $response = $httpClient->send($request);
       if (200 != $response->getStatusCode()) {
          $errorType = ErrorType::getInstance();
