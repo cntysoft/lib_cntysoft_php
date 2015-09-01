@@ -45,11 +45,11 @@ class Client
       $this->instanceName = $instanceName;
       $this->accessKey = $accessKey;
       $this->accessKeySecret = $accessKeySecret;
-      $this->useInternalApi = $useInternalApi;
       $this->entry = $entry;
       if (null == $instanceName || null == $accessKey || null == $accessKeySecret) {
          $this->setupDefaultAccessCfg();
       }
+      self::loadMsgCls();
    }
 
    /**
