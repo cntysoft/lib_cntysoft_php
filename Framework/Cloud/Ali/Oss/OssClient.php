@@ -196,6 +196,23 @@ class OssClient
    }
 
    /**
+    * 删除指定的文件
+    * 
+    * @param string $bucket
+    * @param string $object
+    * @param array $options
+    */
+   public function deleteObject($bucket, $object, array $options = array())
+   {
+      $this->precheckBucket($bucket);
+      $this->precheckObject($object);
+      $options[OSS_CONST::OSS_OPT_BUCKET] = $bucket;
+      $options[OSS_CONST::OSS_OPT_METHOD] = OSS_CONST::OSS_HTTP_DELETE;
+      $options[OSS_CONST::OSS_OPT_OBJECT] = $object;
+      return $this->requestOssApi($options);
+   }
+
+   /**
     * 获取value
     * 
     * @param array $options
