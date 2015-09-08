@@ -439,16 +439,17 @@ class OssClient
       $httpHeaders->addHeader(new Header\UserAgent($userAgent));
       // Streaming uploads
       if (isset($opts[OSS_CONST::OSS_OPT_FILE_UPLOAD])) {
-         $httpClient->setFileUpload($opts[OSS_CONST::OSS_OPT_FILE_UPLOAD], '');
+         $fstrem = fopen($opts[OSS_CONST::OSS_OPT_FILE_UPLOAD], 'r');
+         $request->setContent($fstrem);
          $headers[OSS_CONST::OSS_HEADER_CONTENT_TYPE] = 'application/x-www-form-urlencoded';
          $length = filesize($opts[OSS_CONST::OSS_OPT_FILE_UPLOAD]);
-//         if (isset($opts[OSS_CONST::OSS_OPT_CONTENT_LENGTH])) {
-//            $length = $opts[OSS_CONST::OSS_OPT_CONTENT_LENGTH];
-//         }
-//         if (isset($headers[OSS_CONST::OSS_OPT_CONTENT_TYPE]) && ($headers[OSS_CONST::OSS_OPT_CONTENT_TYPE] === 'application/x-www-form-urlencoded')) {
-//            $mimeType = $this->getMimeType($opts[OSS_CONST::OSS_OPT_FILE_UPLOAD]);
-//            $headers[OSS_CONST::OSS_OPT_CONTENT_TYPE] = $mimeType;
-//         }
+         if (isset($opts[OSS_CONST::OSS_OPT_CONTENT_LENGTH])) {
+            $length = $opts[OSS_CONST::OSS_OPT_CONTENT_LENGTH];
+         }
+         if (isset($headers[OSS_CONST::OSS_OPT_CONTENT_TYPE]) && ($headers[OSS_CONST::OSS_OPT_CONTENT_TYPE] === 'application/x-www-form-urlencoded')) {
+            $mimeType = $this->getMimeType($opts[OSS_CONST::OSS_OPT_FILE_UPLOAD]);
+            $headers[OSS_CONST::OSS_OPT_CONTENT_TYPE] = $mimeType;
+         }
          $headers[OSS_CONST::OSS_HEADER_CONTENT_LENGTH] = $length;
       }
 
@@ -508,7 +509,7 @@ class OssClient
       } elseif (isset($opts[OSS_CONST::OSS_OPT_PREAUTH])) {
          return $this->requestUrl;
       }
-      var_dump($httpHeaders->toString());
+      //var_dump($httpHeaders->toString());
       $request->setHeaders($httpHeaders);
       $httpClient->setRequest($request);
       $response = $httpClient->send();
@@ -530,7 +531,7 @@ class OssClient
       }
 
       $this->redirects = 0;
-      var_dump($response);
+      //var_dump($response);
       return $response;
    }
 
@@ -541,9 +542,6 @@ class OssClient
    {
       if (null == $this->httpClient) {
          $this->httpClient = new HttpClient();
-//         $curlAdapter = new HttpCurl();
-//         $curlAdapter->setCurlOption(CURLOPT_READFUNCTION, array($this, 'xiuxiu'));
-//         $this->httpClient->setAdapter($curlAdapter);
       }
       return $this->httpClient;
    }
