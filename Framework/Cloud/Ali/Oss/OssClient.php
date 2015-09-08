@@ -213,6 +213,42 @@ class OssClient
    }
 
    /**
+    * 批量删除指定的objects
+    * 
+    * @param string $bucket
+    * @param string $objects
+    * @param array $options
+    */
+   public function deleteObjects($bucket, array $objects, array $options = array())
+   {
+      $this->precheckBucket($bucket);
+      $options[OSS_CONST::OSS_OPT_METHOD] = OSS_CONST::OSS_HTTP_POST;
+      $options[OSS_CONST::OSS_OPT_BUCKET] = $bucket;
+      $options[OSS_CONST::OSS_OPT_OBJECT] = '/';
+      $options[OSS_CONST::OSS_OPT_SUB_RESOURCE] = 'delete';
+      $options[OSS_CONST::OSS_OPT_CONTENT_TYPE] = 'application/xml';
+      $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="utf-8"?><Delete></Delete>');
+      // Quiet mode
+      if (isset($options['quiet'])) {
+         $quiet = 'false';
+         if (is_bool($options['quiet'])) { //Boolean
+            $quiet = $options['quiet'] ? 'true' : 'false';
+         } elseif (is_string($options['quiet'])) { // String
+            $quiet = ($options['quiet'] === 'true') ? 'true' : 'false';
+         }
+         $xml->addChild('Quiet', $quiet);
+      }
+      // Add the objects
+      foreach ($objects as $object) {
+         $sub_object = $xml->addChild('Object');
+         $object = OssUtils::xmlEntityReplace($object);
+         $sub_object->addChild('Key', $object);
+      }
+      $options[OSS_CONST::OSS_OPT_CONTENT] = $xml->asXML();
+      return $this->requestOssApi($options);
+   }
+
+   /**
     * 获取value
     * 
     * @param array $options
@@ -401,6 +437,8 @@ class OssClient
       if (isset($opts[OSS_CONST::OSS_OPT_OBJECT]) && '/' !== $opts[OSS_CONST::OSS_OPT_OBJECT]) {
          $signableResource = '/' . str_replace(array('%2F', '%25'),
                array('/', '%'), rawurlencode($opts[OSS_CONST::OSS_OPT_OBJECT]));
+      }else{
+         $signableResource = '/';
       }
       if (isset($opts[OSS_CONST::OSS_OPT_QUERY_STRING])) {
          $queryStringParams = array_merge($queryStringParams,
@@ -450,6 +488,7 @@ class OssClient
       $httpClient = $this->getHttpClient();
       $request = new HttpRequest();
       $httpHeaders = $request->getHeaders();
+      //var_dump($signableResource);
       $this->requestUrl = $scheme . $hostname . $signableResource . $signableQueryString . $nonSignableResource;
       $request->setUri($this->requestUrl);
       $userAgent = 'cntysoft-oss-client' . " (" . php_uname('s') . "/" . php_uname('r') . "/" . php_uname('m') . ";" . PHP_VERSION . ")";
@@ -526,6 +565,7 @@ class OssClient
       } elseif (isset($opts[OSS_CONST::OSS_OPT_PREAUTH])) {
          return $this->requestUrl;
       }
+      //var_dump($this->requestUrl);
       //var_dump($httpHeaders->toString());
       $request->setHeaders($httpHeaders);
       $httpClient->setRequest($request);

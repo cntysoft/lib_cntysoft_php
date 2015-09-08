@@ -110,7 +110,7 @@ class Utils
       return base64_encode($result);
    }
 
-   public static function s_replace($subject)
+   public static function xmlEntityReplace($subject)
    {
       $search = array('<', '>', '&', '\'', '"');
       $replace = array('&lt;', '&gt;', '&amp;', '&apos;', '&quot;');
