@@ -73,6 +73,10 @@ final class Constant
    const OSS_URL_ACCESS_KEY_ID = 'OSSAccessKeyId';
    const OSS_URL_EXPIRES = 'Expires';
    const OSS_URL_SIGNATURE = 'Signature';
+   //sub resource常量
+   const OSS_SUB_RESOURCE_ACL = 'acl';
+   const OSS_SUB_RESOURCE_DELETE = 'delete';
+   const OSS_SUB_RESOURCE_UPLOADS = 'uploads';
    //常规常量
    const OSS_MAX_PART_SIZE = 524288000;
    const OSS_MID_PART_SIZE = 52428800;

@@ -336,18 +336,19 @@ class OssClient
          if ($file->isFile()) {
             $filename = $file->getPathname();
             $ext = $file->getExtension();
-            if(!$targetDir){
+            if (!$targetDir) {
                $objectName = substr($filename, 1);
-            }else{
+            } else {
                $objectName = str_replace($sourceDir, $targetDir, $filename);
             }
-            if(!in_array($ext, $excludes)){
-               try{
+            if (!in_array($ext, $excludes)) {
+               try {
                   $response = $self->uploadFileByMultipartUpload($bucket,
-                                          $objectName, array(
-                                          OSS_CONST::OSS_OPT_FILE_UPLOAD => $filename
-                                          ));
-                  if(!$self->responseIsOk($response)){
+                     $objectName,
+                     array(
+                     OSS_CONST::OSS_OPT_FILE_UPLOAD => $filename
+                  ));
+                  if (!$self->responseIsOk($response)) {
                      $errors[] = $filename;
                      $isUploadOk = false;
                   }
@@ -362,6 +363,34 @@ class OssClient
          'status' => $isUploadOk,
          'errors' => $errors
       );
+   }
+
+   /**
+    * 拷贝object
+    * 
+    * @param string $fromBucket (Required)
+    * @param string $fromObject (Required)
+    * @param string $toBucket (Required)
+    * @param string $toObject (Required)
+    * @param array $options (Optional)
+    * @return \Zend\Http\Response
+    * @throws \Cntysoft\Framework\Cloud\Ali\Oss\Exception
+    */
+   public function copyObject($fromBucket, $fromObject, $toBucket, $toObject, array $options = array())
+   {
+      $this->precheckBucket($fromBucket);
+      $this->precheckObject($fromObject);
+      $this->precheckBucket($toBucket);
+      $this->precheckObject($toObject);
+      $options[OSS_CONST::OSS_OPT_BUCKET] = $toBucket;
+      $options[OSS_CONST::OSS_OPT_METHOD] = OSS_CONST::OSS_HTTP_PUT;
+      $options[OSS_CONST::OSS_OPT_OBJECT] = $toObject;
+      if (isset($options[OSS_CONST::OSS_OPT_HEADERS])) {
+         $options[OSS_CONST::OSS_OPT_HEADERS][OSS_CONST::OSS_HEADER_OBJECT_COPY_SOURCE] = '/' . $fromBucket . '/' . $fromObject;
+      } else {
+         $options[OSS_CONST::OSS_OPT_HEADERS] = array(OSS_CONST::OSS_HEADER_OBJECT_COPY_SOURCE => '/' . $fromBucket . '/' . $fromObject);
+      }
+      return $this->requestOssApi($options);
    }
 
    /**
@@ -415,7 +444,7 @@ class OssClient
       $options[OSS_CONST::OSS_OPT_METHOD] = OSS_CONST::OSS_HTTP_POST;
       $options[OSS_CONST::OSS_OPT_BUCKET] = $bucket;
       $options[OSS_CONST::OSS_OPT_OBJECT] = '/';
-      $options[OSS_CONST::OSS_OPT_SUB_RESOURCE] = 'delete';
+      $options[OSS_CONST::OSS_OPT_SUB_RESOURCE] = OSS_CONST::OSS_SUB_RESOURCE_DELETE;
       $options[OSS_CONST::OSS_OPT_CONTENT_TYPE] = 'application/xml';
       $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="utf-8"?><Delete></Delete>');
       // Quiet mode
@@ -521,6 +550,38 @@ class OssClient
       return $this->requestOssApi($options);
    }
 
+   /**
+    * 获取指定的Object的权限
+    * 
+    * @param string $bucket
+    * @param string $object
+    * @param array $options
+    * @return \Zend\Http\Response
+    */
+   public function getObjectAcl($bucket, $object, array $options = array())
+   {
+      $this->precheckBucket($bucket);
+      $this->precheckObject($object);
+      $options[OSS_CONST::OSS_OPT_METHOD] = OSS_CONST::OSS_HTTP_GET;
+      $options[OSS_CONST::OSS_OPT_BUCKET] = $bucket;
+      $options[OSS_CONST::OSS_OPT_OBJECT] = $object;
+      $options[OSS_CONST::OSS_OPT_SUB_RESOURCE] = OSS_CONST::OSS_SUB_RESOURCE_ACL;
+      return $this->requestOssApi($options);
+   }
+   
+   /**
+    * 设置指定Object权限
+    * 
+    * @param string $bucket
+    * @param string $object
+    * @param string $acl
+    * @param array $options
+    * @return \Zend\Http\Response
+    */
+   public function putObjectAcl($bucket, $object, $acl, array $options = array())
+   {
+   }
+   
    //Multi Part相关操作
 
    /**
@@ -538,7 +599,7 @@ class OssClient
       $options[OSS_CONST::OSS_OPT_METHOD] = OSS_CONST::OSS_HTTP_POST;
       $options[OSS_CONST::OSS_OPT_BUCKET] = $bucket;
       $options[OSS_CONST::OSS_OPT_OBJECT] = $object;
-      $options[OSS_CONST::OSS_OPT_SUB_RESOURCE] = 'uploads';
+      $options[OSS_CONST::OSS_OPT_SUB_RESOURCE] = OSS_CONST::OSS_SUB_RESOURCE_UPLOADS;
       if (!isset($options[OSS_CONST::OSS_OPT_HEADERS])) {
          $options[OSS_CONST::OSS_OPT_HEADERS] = array();
       }
@@ -651,7 +712,7 @@ class OssClient
       $options[OSS_CONST::OSS_OPT_METHOD] = OSS_CONST::OSS_HTTP_GET;
       $options[OSS_CONST::OSS_OPT_BUCKET] = $bucket;
       $options[OSS_CONST::OSS_OPT_OBJECT] = '/';
-      $options[OSS_CONST::OSS_OPT_SUB_RESOURCE] = 'uploads';
+      $options[OSS_CONST::OSS_OPT_SUB_RESOURCE] = OSS_CONST::OSS_SUB_RESOURCE_UPLOADS;
       foreach (array('delimiter', 'key-marker', 'max-uploads', 'prefix', 'upload-id-marker') as $param) {
          if (isset($options[$param])) {
             $options[OSS_CONST::OSS_OPT_QUERY_STRING][$param] = $options[$param];
