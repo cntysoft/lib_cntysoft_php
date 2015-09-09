@@ -73,15 +73,6 @@ class OssClient
    protected $redirects = 0;
 
    /**
-    * @var array $allowOssAclTypes
-    */
-   protected static $allowOssAclTypes = array(
-      OSS_CONST::OSS_ACL_TYPE_PRIVATE,
-      OSS_CONST::OSS_ACL_TYPE_PUBLIC_READ,
-      OSS_CONST::OSS_ACL_TYPE_PUBLIC_READ_WRITE
-   );
-
-   /**
     * @var array $successCodes 操作成功代码
     */
    protected static $successCodes = array(200, 201, 204, 206);
@@ -293,7 +284,7 @@ class OssClient
             $partOptions[OSS_CONST::OSS_OPT_CONTENT_MD5] = $contentMd5;
          }
          $response = $this->uploadPart($bucket, $object, $uploadId, $partOptions);
-         if ($this->responseIsOk($response)) {
+         if (OssUtils::responseIsOk($response)) {
             OssUtils::throwException('E_OSS_MULTI_PART_UPLOAD_ERROR');
          }
          $responseUploadParts[] = array('ETag' => $response->getHeaders()->get('ETag')->getFieldValue(), 'PartNumber' => $partNum);
@@ -316,6 +307,7 @@ class OssClient
     */
    public function uploadDirByMultipartUpload($bucket, $sourceDir, $targetDir = null, $recursive = false, array $excludes = array(), array $options = array())
    {
+
       $this->precheckBucket($bucket);
       if (!is_dir($sourceDir)) {
          OssUtils::throwException('E_OSS_G_ERROR',
@@ -348,7 +340,7 @@ class OssClient
                      array(
                      OSS_CONST::OSS_OPT_FILE_UPLOAD => $filename
                   ));
-                  if (!$self->responseIsOk($response)) {
+                  if (!OssUtils::responseIsOk($response)) {
                      $errors[] = $filename;
                      $isUploadOk = false;
                   }
@@ -568,7 +560,7 @@ class OssClient
       $options[OSS_CONST::OSS_OPT_SUB_RESOURCE] = OSS_CONST::OSS_SUB_RESOURCE_ACL;
       return $this->requestOssApi($options);
    }
-   
+
    /**
     * 设置指定Object权限
     * 
@@ -577,11 +569,30 @@ class OssClient
     * @param string $acl
     * @param array $options
     * @return \Zend\Http\Response
+    * @throws \Cntysoft\Framework\Cloud\Ali\Oss\Exception
     */
    public function putObjectAcl($bucket, $object, $acl, array $options = array())
    {
+      $this->precheckBucket($bucket);
+      $this->precheckObject($object);
+      if (!in_array($acl,
+            array(
+            OSS_CONST::OSS_ACL_TYPE_PRIVATE,
+            OSS_CONST::OSS_ACL_TYPE_PUBLIC_READ,
+            OSS_CONST::OSS_ACL_TYPE_PUBLIC_READ_WRITE
+         ))) {
+         OssUtils::throwException('E_OSS_ACL_INVALID');
+      }
+      $options[OSS_CONST::OSS_OPT_METHOD] = OSS_CONST::OSS_HTTP_PUT;
+      $options[OSS_CONST::OSS_OPT_BUCKET] = $bucket;
+      $options[OSS_CONST::OSS_OPT_OBJECT] = $object;
+      $options[OSS_CONST::OSS_OPT_SUB_RESOURCE] = OSS_CONST::OSS_SUB_RESOURCE_ACL;
+      $options[OSS_CONST::OSS_OPT_HEADERS] = array(
+         OSS_CONST::OSS_HEADER_OBJECT_ACL => $acl
+      );
+      return $this->requestOssApi($options);
    }
-   
+
    //Multi Part相关操作
 
    /**
@@ -615,7 +626,7 @@ class OssClient
    public function initMultiPartUploadForUploadId($bucket, $object, array $options = array())
    {
       $response = $this->initiateMultipartUpload($bucket, $object, $options);
-      if (!$this->responseIsOk($response)) {
+      if (!OssUtils::responseIsOk($response)) {
          OssUtils::throwException('E_OSS_INIT_MULTI_PARTUPLOAD_FAIL');
       }
       $xml = new \SimpleXmlIterator($response->getContent());
@@ -845,6 +856,7 @@ class OssClient
             $opts[OSS_CONST::OSS_OPT_BUCKET]
          ));
       }
+
       //验证Object
       if (isset($opts[OSS_CONST::OSS_OPT_OBJECT]) && !OssUtils::validateObject($opts[OSS_CONST::OSS_OPT_OBJECT])) {
          OssUtils::throwException('E_OSS_OBJECT_NAME_INVALID',
@@ -858,7 +870,7 @@ class OssClient
          if (OssUtils::isGb2312($opts[OSS_CONST::OSS_OPT_OBJECT])) {
             $tmpObject = iconv('GB2312', "UTF-8//IGNORE",
                $opts[OSS_CONST::OSS_OPT_OBJECT]);
-         } elseif (OssUtils::check_char($opts[OSS_CONST::OSS_OPT_OBJECT], true)) {
+         } elseif (OssUtils::checkChar($opts[OSS_CONST::OSS_OPT_OBJECT], true)) {
             $tmpObject = iconv('GBK', "UTF-8//IGNORE",
                $opts[OSS_CONST::OSS_OPT_OBJECT]);
          }
@@ -1063,15 +1075,6 @@ class OssClient
       $this->redirects = 0;
       //var_dump($response);
       return $response;
-   }
-
-   /**
-    * @param HttpResponse $response
-    * @return boolean
-    */
-   protected function responseIsOk(HttpResponse $response)
-   {
-      return in_array($response->getStatusCode(), self::$successCodes) ? true : false;
    }
 
    /**

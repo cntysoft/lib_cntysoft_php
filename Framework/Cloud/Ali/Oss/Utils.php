@@ -8,16 +8,22 @@
  */
 namespace Cntysoft\Framework\Cloud\Ali\Oss;
 use Cntysoft\Kernel;
+use Cntysoft\Stdlib\XML2Array;
 use Cntysoft\Framework\Cloud\Ali\Oss\Constant as OSS_CONST;
+use Zend\Http\Response;
 /**
  * OSS工具类
  */
 class Utils
 {
-   const OSS_MAX_OBJECT_GROUP_VALUE = 1000;
-   const OSS_MAX_PART_SIZE = 524288000;
-   const OSS_MID_PART_SIZE = 52428800;
-   const OSS_MIN_PART_SIZE = 5242880;
+   /**
+    * @var array $allowOssAclTypes
+    */
+   protected static $allowOssAclTypes = array(
+      OSS_CONST::OSS_ACL_TYPE_PRIVATE,
+      OSS_CONST::OSS_ACL_TYPE_PUBLIC_READ,
+      OSS_CONST::OSS_ACL_TYPE_PUBLIC_READ_WRITE
+   );
 
    //oss默认响应头
    static $OSS_DEFAULT_REAPONSE_HEADERS = array(
@@ -44,35 +50,40 @@ class Utils
          $errorMsg, $errorType->code($key)));
    }
 
-   public static function get_object_list_marker_from_xml($xml, &$marker)
+   public static function getObjectListMarkerFromXml($xml, &$marker)
    {
-      $xml = new SimpleXMLElement($xml);
-      $is_truncated = $xml->IsTruncated;
-      $object_list = array();
+      $xml = new \SimpleXMLElement($xml);
+      $isTruncated = $xml->IsTruncated;
+      $objectList = array();
       $marker = $xml->NextMarker;
       foreach ($xml->Contents as $content) {
-         array_push($object_list, $content->Key);
+         array_push($objectList, $content->Key);
       }
-      return $object_list;
+      return $objectList;
    }
-
-   public static function print_res($response, $msg = "", $is_simple_print = true)
+   /**
+    * 
+    * @param \Zend\Http\Response $response
+    * @param type $msg
+    * @param type $isSimplePrint
+    */
+   public static function printResponse($response, $msg = "", $isSimplePrint = true)
    {
-      if ($is_simple_print) {
-         if ((int) ($response->status / 100) == 2) {
+      if ($isSimplePrint) {
+         if ((int) ($response->getStatusCode() / 100) == 2) {
             echo $msg . " OK\n";
          } else {
-            echo "ret:" . $response->status . "\n";
+            echo "ret:" . $response->getStatusCode() . "\n";
             echo $msg . " FAIL\n";
          }
       } else {
          echo '|-----------------------Start---------------------------------------------------------------------------------------------------' . "\n";
-         echo '|-Status:' . $response->status . "\n";
+         echo '|-Status:' . $response->getStatusCode() . "\n";
          echo '|-Body:' . "\n";
-         $body = $response->body . "\n";
+         $body = $response->getContent() . "\n";
          echo $body . "\n";
          echo "|-Header:\n";
-         print_r($response->header);
+         print_r($response->getHeaders()->toArray());
          echo '-----------------------End-----------------------------------------------------------------------------------------------------' . "\n\n";
       }
    }
@@ -101,7 +112,7 @@ class Utils
     * @param $str
     * @return string
     */
-   public static function hex_to_base64($str)
+   public static function hexToBase64($str)
    {
       $result = '';
       for ($i = 0; $i < strlen($str); $i += 2) {
@@ -121,7 +132,7 @@ class Utils
     * @param $subject
     * @return mixed
     */
-   public static function replace_invalid_xml_char($subject)
+   public static function replaceInvalidXmlChar($subject)
    {
       $search = array(
          '&#01;', '&#02;', '&#03;', '&#04;', '&#05;', '&#06;', '&#07;', '&#08;', '&#09;', '&#10;', '&#11;', '&#12;', '&#13;',
@@ -178,7 +189,7 @@ class Utils
     * @since 2012-06-04
     * @return boolean 
     */
-   public static function check_char($str, $gbk = true)
+   public static function checkChar($str, $gbk = true)
    {
       for ($i = 0; $i < strlen($str); $i++) {
          $v = ord($str[$i]);
@@ -196,7 +207,7 @@ class Utils
             }
          }
       }
-      return $gbk ? TRUE : FALSE;
+      return $gbk ? true : false;
    }
 
    /**
@@ -264,6 +275,7 @@ class Utils
 
    /**
     * 设置http header
+    * 
     * @param string $key (Required)
     * @param string $value (Required)
     * @param array $options (Required)
@@ -281,84 +293,6 @@ class Utils
          $options[self::OSS_HEADERS] = array();
       }
       $options[self::OSS_HEADERS][$key] = $value;
-   }
-
-   /**
-    * 仅供测试使用的接口,请勿使用
-    */
-   public static function generate_file($filename, $size)
-   {
-      if (file_exists($filename) && $size == filesize($filename)) {
-         echo $filename . " already exists, no need to create again. ";
-         return;
-      }
-      $part_size = 1 * 1024 * 1024;
-      $write_size = 0;
-      $fp = fopen($filename, "w");
-      $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-      $charactersLength = strlen($characters);
-      if ($fp) {
-         while ($size > 0) {
-            if ($size < $part_size) {
-               $write_size = $size;
-            } else {
-               $write_size = $part_size;
-            }
-            $size -= $write_size;
-            $a = $characters[rand(0, $charactersLength - 1)];
-            $content = str_repeat($a, $write_size);
-            $flag = fwrite($fp, $content);
-            if (!$flag) {
-               echo "write to " . $filename . " failed. <br>";
-               break;
-            }
-         }
-      } else {
-         echo "open " . $filename . " failed. <br>";
-      }
-      fclose($fp);
-   }
-
-   public static function get_content_md5_of_file($filename, $from_pos, $to_pos)
-   {
-      $content_md5 = "";
-      if (($to_pos - $from_pos) > self::OSS_MAX_PART_SIZE) {
-         return $content_md5;
-      }
-      $filesize = filesize($filename);
-      if ($from_pos >= $filesize || $to_pos >= $filesize || $from_pos < 0 || $to_pos < 0) {
-         return $content_md5;
-      }
-
-      $total_length = $to_pos - $from_pos + 1;
-      $buffer = 8192;
-      $left_length = $total_length;
-      if (!file_exists($filename)) {
-         return $content_md5;
-      }
-
-      if (false === $fh = fopen($filename, 'rb')) {
-         return $content_md5;
-      }
-
-      fseek($fh, $from_pos);
-      $data = '';
-      while (!feof($fh)) {
-         if ($left_length >= $buffer) {
-            $read_length = $buffer;
-         } else {
-            $read_length = $left_length;
-         }
-         if ($read_length <= 0) {
-            break;
-         } else {
-            $data .= fread($fh, $read_length);
-            $left_length = $left_length - $read_length;
-         }
-      }
-      fclose($fh);
-      $content_md5 = base64_encode(md5($data, true));
-      return $content_md5;
    }
 
    /**
@@ -385,17 +319,17 @@ class Utils
    }
 
    /**
-    * 转换响应
-    * @param $response
+    * 将字符串表示的response对象转换成数组形式
+    * 
+    * @param \Zend\Http\Response $response
     * @return array
     * @throws Exception
     */
-   public static function parse_response($response, $format = "array")
+   public static function parseResponse($response, $format = "array")
    {
       //如果启用响应结果转换，则进行转换，否则原样返回
-      $body = $response->body;
-      $headers = $response->header;
-
+      $body = $response->getContent();
+      $headers = $response->getHeaders()->toArray();
       switch (strtolower($format)) {
          case 'array':
             $body = empty($body) ? $body : XML2Array::createArray($body);
@@ -408,12 +342,19 @@ class Utils
       }
 
       return array(
-         'success' => $response->isOk(),
-         'status' => $response->status,
+         'success' => self::responseIsOk($response),
+         'status' => $response->getStatusCode(),
          'header' => $headers,
          'body' => $body
       );
-      return $response;
    }
-
+   
+    /**
+    * @param HttpResponse $response
+    * @return boolean
+    */
+   public static function responseIsOk(HttpResponse $response)
+   {
+      return in_array($response->getStatusCode(), self::$successCodes) ? true : false;
+   }
 }

@@ -48,8 +48,10 @@ final class Constant
    const OSS_OPT_MARKER = 'marker';
    const OSS_OPT_MAX_KEYS = 'max-keys';
    const OSS_OPT_MAX_KEYS_VALUE = 100;
+   
    //http请求头相关常量
    const OSS_HEADER_ACL = 'x-oss-acl';
+   const OSS_HEADER_OBJECT_ACL = 'x-oss-object-acl';
    const OSS_HEADER_OBJECT_GROUP = 'x-oss-file-group';
    const OSS_HEADER_SECURITY_TOKEN = "x-oss-security-token";
    const OSS_HEADER_CONTENT_MD5 = 'Content-Md5';
