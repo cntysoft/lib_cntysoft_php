@@ -10,6 +10,7 @@ namespace Cntysoft\Framework\Cloud\Ali\Oss;
 use Cntysoft\Framework\Cloud\Ali\Oss\Utils as OssUtils;
 use Cntysoft\Framework\Cloud\Ali\Oss\Constant as OSS_CONST;
 use Zend\Http\Request as HttpRequest;
+use Zend\Http\Response as HttpResponse;
 use Zend\Http\Client as HttpClient;
 use Zend\Http\Header;
 use Zend\Http\Client\Adapter\Curl as HttpCurl;
@@ -78,6 +79,11 @@ class OssClient
       OSS_CONST::OSS_ACL_TYPE_PUBLIC_READ,
       OSS_CONST::OSS_ACL_TYPE_PUBLIC_READ_WRITE
    );
+
+   /**
+    * @var array $successCodes 操作成功代码
+    */
+   protected static $successCodes = array(200, 201, 204, 206);
 
    /**
     * 是否使用安全连接
@@ -331,6 +337,46 @@ class OssClient
       return $this->requestOssApi($options);
    }
 
+   //Multi Part相关操作
+
+   /**
+    * 初始化multi-part upload
+    * 
+    * @param string $bucket (Required) Bucket名称
+    * @param string $object (Required) Object名称
+    * @param array $options (Optional) Key-Value数组
+    * @return \Zend\Http\Response
+    */
+   public function initiateMultipartUpload($bucket, $object, array $options = array())
+   {
+      $this->precheckBucket($bucket);
+      $this->precheckObject($object);
+      $options[OSS_CONST::OSS_OPT_METHOD] = OSS_CONST::OSS_HTTP_POST;
+      $options[OSS_CONST::OSS_OPT_BUCKET] = $bucket;
+      $options[OSS_CONST::OSS_OPT_OBJECT] = $object;
+      $options[OSS_CONST::OSS_OPT_SUB_RESOURCE] = 'uploads';
+      if (!isset($options[OSS_CONST::OSS_OPT_HEADERS])) {
+         $options[OSS_CONST::OSS_OPT_HEADERS] = array();
+      }
+      return $this->requestOssApi($options);
+   }
+
+   /**
+    * 
+    * @param type $bucket
+    * @param type $object
+    * @param array $options
+    */
+   public function initMultiPartUploadForUploadId($bucket, $object, array $options = array())
+   {
+      $response = $this->initiateMultipartUpload($bucket, $object, $options);
+      if (!$this->responseIsOk($response)) {
+         OssUtils::throwException('E_INIT_MULTI_PARTUPLOAD_FAIL');
+      }
+      $xml = new \SimpleXmlIterator($response->getContent());
+      return (string) $xml->UploadId;
+   }
+
    /**
     * 检查bucket是否为空
     * 
@@ -437,7 +483,7 @@ class OssClient
       if (isset($opts[OSS_CONST::OSS_OPT_OBJECT]) && '/' !== $opts[OSS_CONST::OSS_OPT_OBJECT]) {
          $signableResource = '/' . str_replace(array('%2F', '%25'),
                array('/', '%'), rawurlencode($opts[OSS_CONST::OSS_OPT_OBJECT]));
-      }else{
+      } else {
          $signableResource = '/';
       }
       if (isset($opts[OSS_CONST::OSS_OPT_QUERY_STRING])) {
@@ -554,7 +600,6 @@ class OssClient
       $stringToSign .= '/' . $opts[OSS_CONST::OSS_OPT_BUCKET];
       $stringToSign .= $this->enableDomainStyle ? ($opts[OSS_CONST::OSS_OPT_BUCKET] != '' ? ($opts[OSS_CONST::OSS_OPT_OBJECT] == '/' ? '/' : '') : '') : '';
       $stringToSign .= rawurldecode($signableResource) . urldecode($signableQueryString);
-
       $signature = base64_encode(hash_hmac('sha1', $stringToSign,
             $this->accessKeySecret, true));
       $httpHeaders->addHeaderLine('Authorization',
@@ -565,8 +610,8 @@ class OssClient
       } elseif (isset($opts[OSS_CONST::OSS_OPT_PREAUTH])) {
          return $this->requestUrl;
       }
-      //var_dump($this->requestUrl);
-      //var_dump($httpHeaders->toString());
+//      var_dump($this->requestUrl);
+//      var_dump($httpHeaders->toString());
       $request->setHeaders($httpHeaders);
       $httpClient->setRequest($request);
       $response = $httpClient->send();
@@ -586,10 +631,18 @@ class OssClient
             $response = $this->requestOssApi($opts);
          }
       }
-
       $this->redirects = 0;
       //var_dump($response);
       return $response;
+   }
+
+   /**
+    * @param HttpResponse $response
+    * @return boolean
+    */
+   protected function responseIsOk(HttpResponse $response)
+   {
+      return in_array($response->getStatusCode(), self::$successCodes) ? true : false;
    }
 
    /**

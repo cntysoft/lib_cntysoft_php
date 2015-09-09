@@ -23,6 +23,7 @@ class ErrorType extends BaseErrorType
       'E_OSS_OBJECT_IS_NOT_ALLOWED_EMPTY' => array(10009, 'Object不允许为空'),
       'E_OSS_BUCKET_IS_NOT_ALLOWED_EMPTY' => array(10010, 'Bucket不允许为空'),
       'E_OSS_FILE_PATH_IS_NOT_ALLOWED_EMPTY' => array(10011, '上传文件路径为空'),
-      'E_OSS_FILE_NOT_EXIST'=> array(10012 , '文件不存在')
+      'E_OSS_FILE_NOT_EXIST'=> array(10012 , '文件不存在'),
+      'E_INIT_MULTI_PARTUPLOAD_FAIL' => array(10013, '初始化分块上传失败')
    );
 }
