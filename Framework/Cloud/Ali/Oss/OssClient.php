@@ -14,8 +14,9 @@ use Zend\Http\Response as HttpResponse;
 use Zend\Http\Client as HttpClient;
 use Zend\Http\Header;
 use Cntysoft\Kernel;
+use Cntysoft\Stdlib\Filesystem;
 /**
- * Oss客户端类
+ * Oss客户端类,对阿里云OSS服务进行封装
  */
 class OssClient
 {
@@ -123,6 +124,7 @@ class OssClient
    /**
     * 获取bucket列表
     * @param array $options (Optional)
+    * @return \Zend\Http\Response
     */
    public function listBucket(array $options = array())
    {
@@ -134,6 +136,23 @@ class OssClient
    }
 
    //object操作
+   /**
+    * 获得object的meta信息
+    * 
+    * @param string $bucket (Required)
+    * @param string $object (Required)
+    * @param string $options (Optional)
+    * @return \Zend\Http\Response
+    */
+   public function getObjectMeta($bucket, $object, array $options = array())
+   {
+      $this->precheckBucket($bucket);
+      $this->precheckObject($object);
+      $options[OSS_CONST::OSS_OPT_BUCKET] = $bucket;
+      $options[OSS_CONST::OSS_OPT_METHOD] = OSS_CONST::OSS_HTTP_HEAD;
+      $options[OSS_CONST::OSS_OPT_OBJECT] = $object;
+      return $this->requestOssApi($options);
+   }
 
    /**
     * 通过在http body中添加内容来上传文件，适合比较小的文件
@@ -141,6 +160,7 @@ class OssClient
     * @param string $bucket (Required)
     * @param string $object (Required)
     * @param array $options (Optional)
+    * @return \Zend\Http\Response
     */
    public function uploadFileByContent($bucket, $object, array $options = array())
    {
@@ -169,6 +189,7 @@ class OssClient
     * @param string $object (Required)
     * @param string $file (Required)
     * @param array $options (Optional)
+    * @return \Zend\Http\Response
     */
    public function uploadFileByFile($bucket, $object, $file, array $options = array())
    {
@@ -202,11 +223,173 @@ class OssClient
    }
 
    /**
+    * multipart上传统一封装，从初始化到完成multipart，以及出错后中止动作
+    * 
+    * @param string $bucket (Required)
+    * @param string $object (Required)
+    * @param array $options (Optional) Key-Value数组
+    * @return \Zend\Http\Response
+    * @throws \Cntysoft\Framework\Cloud\Ali\Oss\Exception
+    */
+   public function uploadFileByMultipartUpload($bucket, $object, array $options = array())
+   {
+      $this->precheckBucket($bucket);
+      $this->precheckObject($object);
+      if (isset($options[OSS_CONST::OSS_OPT_LENGTH])) {
+         $options[OSS_CONST::OSS_OPT_CONTENT_LENGTH] = $options[OSS_CONST::OSS_OPT_LENGTH];
+         unset($options[OSS_CONST::OSS_OPT_LENGTH]);
+      }
+      if (isset($options[OSS_CONST::OSS_OPT_FILE_UPLOAD])) {
+         //Windows系统下进行转码
+         $options[OSS_CONST::OSS_OPT_FILE_UPLOAD] = OssUtils::encodingPath($options[OSS_CONST::OSS_OPT_FILE_UPLOAD]);
+      }
+      $this->precheckParam($options,
+         array(
+         OSS_CONST::OSS_OPT_FILE_UPLOAD
+      ));
+      if (isset($options[OSS_CONST::OSS_OPT_CONTENT_LENGTH])) {
+         $uploadFileSize = (integer) $options[OSS_CONST::OSS_OPT_CONTENT_LENGTH];
+      } else {
+         $filename = $options[OSS_CONST::OSS_OPT_FILE_UPLOAD];
+         $uploadFileSize = filesize($filename);
+      }
+      // 处理partSize
+      if (isset($options[OSS_CONST::OSS_OPT_PART_SIZE])) {
+         $options[OSS_CONST::OSS_OPT_PART_SIZE] = $this->getPartSize($options[OSS_CONST::OSS_OPT_PART_SIZE]);
+      } else {
+         $options[OSS_CONST::OSS_OPT_PART_SIZE] = OSS_CONST::OSS_MID_PART_SIZE;
+      }
+
+      $isCheckMd5 = $this->isCheckMd5($options);
+      // 如果上传的文件小于partSize,则直接使用普通方式上传
+      if ($uploadFileSize < $options[OSS_CONST::OSS_OPT_PART_SIZE] && !isset($options[OSS_CONST::OSS_OPT_UPLOAD_ID])) {
+         $localFile = $options[OSS_CONST::OSS_OPT_FILE_UPLOAD];
+         $options = array(
+            OSS_CONST::OSS_OPT_CHECK_MD5 => $isCheckMd5,
+         );
+         return $this->uploadFileByFile($bucket, $object, $localFile, $options);
+      }
+
+      // 初始化multipart
+      if (isset($options[OSS_CONST::OSS_OPT_UPLOAD_ID])) {
+         $uploadId = $options[OSS_CONST::OSS_OPT_UPLOAD_ID];
+      } else {
+         //初始化
+         $uploadId = $this->initMultiPartUploadForUploadId($bucket, $object,
+            array());
+      }
+      $responseUploadParts = array();
+      $fstream = fopen($options[OSS_CONST::OSS_OPT_FILE_UPLOAD], 'r');
+      $chunkSize = $options[OSS_CONST::OSS_OPT_PART_SIZE];
+      $partNum = 1;
+      while ($data = fread($fstream, $chunkSize)) {
+         $partOptions = array(
+            OSS_CONST::OSS_OPT_CONTENT => $data,
+            OSS_CONST::OSS_OPT_PART_NUM => $partNum,
+            OSS_CONST::OSS_OPT_CHECK_MD5 => $isCheckMd5
+         );
+         if ($isCheckMd5) {
+            $contentMd5 = base64_encode(md5_file($options[OSS_CONST::OSS_OPT_FILE_UPLOAD]));
+            $partOptions[OSS_CONST::OSS_OPT_CONTENT_MD5] = $contentMd5;
+         }
+         $response = $this->uploadPart($bucket, $object, $uploadId, $partOptions);
+         if ($this->responseIsOk($response)) {
+            OssUtils::throwException('E_OSS_MULTI_PART_UPLOAD_ERROR');
+         }
+         $responseUploadParts[] = array('ETag' => $response->getHeaders()->get('ETag')->getFieldValue(), 'PartNumber' => $partNum);
+         $partNum++;
+      }
+      return $this->completeMultipartUpload($bucket, $object, $uploadId,
+            $responseUploadParts);
+   }
+
+   /**
+    * 上传指定的文件夹
+    * 
+    * @param string $bucket
+    * @param string $sourceDir 需要复制的文件夹
+    * @param string $targetDir 
+    * @param boolean $recursive
+    * @param array $excludes 排除在外的
+    * @param array $options
+    * @return array
+    */
+   public function uploadDirByMultipartUpload($bucket, $sourceDir, $targetDir = null, $recursive = false, array $excludes = array(), array $options = array())
+   {
+      $this->precheckBucket($bucket);
+      if (!is_dir($sourceDir)) {
+         OssUtils::throwException('E_OSS_G_ERROR',
+            array(
+            '指定的文件夹不是真正的文件夹，请确认'
+         ));
+      }
+      $errors = array();
+      if ($recursive) {
+         $depth = 0;
+      } else {
+         $depth = 1;
+      }
+      $self = $this;
+      $isUploadOk = true;
+      Filesystem::traverseFs($sourceDir, $depth,
+         function($file)use($excludes, $sourceDir, $targetDir, $bucket, $self, $errors) {
+         if ($file->isFile()) {
+            $filename = $file->getPathname();
+            $ext = $file->getExtension();
+            if(!$targetDir){
+               $objectName = substr($filename, 1);
+            }else{
+               $objectName = str_replace($sourceDir, $targetDir, $filename);
+            }
+            if(!in_array($ext, $excludes)){
+               try{
+                  $response = $self->uploadFileByMultipartUpload($bucket,
+                                          $objectName, array(
+                                          OSS_CONST::OSS_OPT_FILE_UPLOAD => $filename
+                                          ));
+                  if(!$self->responseIsOk($response)){
+                     $errors[] = $filename;
+                     $isUploadOk = false;
+                  }
+               } catch (\Exception $ex) {
+                  $errors[] = $filename;
+                  $isUploadOk = false;
+               }
+            }
+         }
+      });
+      return array(
+         'status' => $isUploadOk,
+         'errors' => $errors
+      );
+   }
+
+   /**
+    * 获取分片大小
+    * 
+    * @param int $partSize (Required)
+    * @return int
+    */
+   protected function getPartSize($partSize)
+   {
+      $partSize = (integer) $partSize;
+      if ($partSize <= OSS_CONST::OSS_MIN_PART_SIZE) {
+         $partSize = OSS_CONST::OSS_MIN_PART_SIZE;
+      } elseif ($partSize > OSS_CONST::OSS_MAX_PART_SIZE) {
+         $partSize = OSS_CONST::OSS_MAX_PART_SIZE;
+      } else {
+         $partSize = OSS_CONST::OSS_MID_PART_SIZE;
+      }
+      return $partSize;
+   }
+
+   /**
     * 删除指定的文件
     * 
     * @param string $bucket
     * @param string $object
     * @param array $options
+    * @return \Zend\Http\Response
     */
    public function deleteObject($bucket, $object, array $options = array())
    {
@@ -224,6 +407,7 @@ class OssClient
     * @param string $bucket
     * @param string $objects
     * @param array $options
+    * @return \Zend\Http\Response
     */
    public function deleteObjects($bucket, array $objects, array $options = array())
    {
@@ -326,13 +510,13 @@ class OssClient
    {
       $this->precheckBucket($bucket);
       $options[OSS_CONST::OSS_OPT_BUCKET] = $bucket;
-      $options[OSS_CONST::OSS_OPT_METHOD] = self::OSS_HTTP_GET;
+      $options[OSS_CONST::OSS_OPT_METHOD] = OSS_CONST::OSS_HTTP_GET;
       $options[OSS_CONST::OSS_OPT_OBJECT] = '/';
       $options[OSS_CONST::OSS_OPT_HEADERS] = array(
-         self::OSS_DELIMITER => isset($options[self::OSS_DELIMITER]) ? $options[self::OSS_DELIMITER] : '/',
-         self::OSS_PREFIX => isset($options[self::OSS_PREFIX]) ? $options[self::OSS_PREFIX] : '',
-         self::OSS_MAX_KEYS => isset($options[self::OSS_MAX_KEYS]) ? $options[self::OSS_MAX_KEYS] : self::OSS_MAX_KEYS_VALUE,
-         self::OSS_MARKER => isset($options[self::OSS_MARKER]) ? $options[self::OSS_MARKER] : '',
+         OSS_CONST::OSS_OPT_DELIMITER => isset($options[OSS_CONST::OSS_OPT_DELIMITER]) ? $options[OSS_CONST::OSS_OPT_DELIMITER] : '/',
+         OSS_CONST::OSS_OPT_PREFIX => isset($options[OSS_CONST::OSS_OPT_PREFIX]) ? $options[OSS_CONST::OSS_OPT_PREFIX] : '',
+         OSS_CONST::OSS_OPT_MAX_KEYS => isset($options[OSS_CONST::OSS_OPT_MAX_KEYS]) ? $options[OSS_CONST::OSS_OPT_MAX_KEYS] : OSS_CONST::OSS_OPT_MAX_KEYS_VALUE,
+         OSS_CONST::OSS_OPT_MARKER => isset($options[OSS_CONST::OSS_OPT_MARKER]) ? $options[OSS_CONST::OSS_OPT_MARKER] : '',
       );
       return $this->requestOssApi($options);
    }
@@ -371,7 +555,7 @@ class OssClient
    {
       $response = $this->initiateMultipartUpload($bucket, $object, $options);
       if (!$this->responseIsOk($response)) {
-         OssUtils::throwException('E_INIT_MULTI_PARTUPLOAD_FAIL');
+         OssUtils::throwException('E_OSS_INIT_MULTI_PARTUPLOAD_FAIL');
       }
       $xml = new \SimpleXmlIterator($response->getContent());
       return (string) $xml->UploadId;
@@ -384,6 +568,7 @@ class OssClient
     * @param string $object (Required) Object名称
     * @param string $uploadId (Required) uploadId
     * @param array $options (Optional) Key-Value数组
+    * @return \Zend\Http\Response
     */
    public function uploadPart($bucket, $object, $uploadId, array $options = array())
    {
@@ -412,6 +597,7 @@ class OssClient
     * @param string $uploadId (Required) uploadId
     * @param array  $parts 可以是一个上传成功part的数组
     * @param array $options (Optional) Key-Value数组
+    * @return \Zend\Http\Response
     */
    public function completeMultipartUpload($bucket, $object, $uploadId, array $parts, array $options = array())
    {
@@ -439,16 +625,106 @@ class OssClient
     * @param string $object (Required) Object名称
     * @param string $uploadId (Required) uploadId
     * @param array $options (Optional) Key-Value数组
-    * @return ResponseCore
+    * @return \Zend\Http\Response
     */
    public function abortMultipartUpload($bucket, $object, $uploadId, array $options = array())
    {
       $this->precheckBucket($bucket);
       $this->precheckObject($object);
-      $options[OSS_CONST::OSS_OPT_METHOD] = self::OSS_HTTP_DELETE;
+      $options[OSS_CONST::OSS_OPT_METHOD] = OSS_CONST::OSS_HTTP_DELETE;
       $options[OSS_CONST::OSS_OPT_BUCKET] = $bucket;
       $options[OSS_CONST::OSS_OPT_OBJECT] = $object;
       $options[OSS_CONST::OSS_OPT_UPLOAD_ID] = $uploadId;
+      return $this->requestOssApi($options);
+   }
+
+   /**
+    * 列出multipart上传
+    * 
+    * @param string $bucket (Requeired) bucket 
+    * @param array $options (Optional) 关联数组
+    * @return \Zend\Http\Response
+    */
+   public function listMultipartUploads($bucket, array $options = array())
+   {
+      $this->precheckBucket($bucket);
+      $options[OSS_CONST::OSS_OPT_METHOD] = OSS_CONST::OSS_HTTP_GET;
+      $options[OSS_CONST::OSS_OPT_BUCKET] = $bucket;
+      $options[OSS_CONST::OSS_OPT_OBJECT] = '/';
+      $options[OSS_CONST::OSS_OPT_SUB_RESOURCE] = 'uploads';
+      foreach (array('delimiter', 'key-marker', 'max-uploads', 'prefix', 'upload-id-marker') as $param) {
+         if (isset($options[$param])) {
+            $options[OSS_CONST::OSS_OPT_QUERY_STRING][$param] = $options[$param];
+            unset($options[$param]);
+         }
+      }
+      return $this->requestOssApi($options);
+   }
+
+   /**
+    * 获取已成功上传的part
+    * 
+    * @param string $bucket (Required) Bucket名称
+    * @param string $object (Required) Object名称
+    * @param string $uploadId (Required) uploadId
+    * @param array $options (Optional) Key-Value数组
+    * @return \Zend\Http\Response
+    */
+   public function listParts($bucket, $object, $uploadId, array $options = array())
+   {
+      $this->precheckBucket($bucket);
+      $this->precheckObject($object);
+      $options[OSS_CONST::OSS_OPT_METHOD] = OSS_CONST::OSS_HTTP_GET;
+      $options[OSS_CONST::OSS_OPT_BUCKET] = $bucket;
+      $options[OSS_CONST::OSS_OPT_OBJECT] = $object;
+      $options[OSS_CONST::OSS_OPT_UPLOAD_ID] = $uploadId;
+      $options[OSS_CONST::OSS_OPT_QUERY_STRING] = array();
+      foreach (array('max-parts', 'part-number-marker') as $param) {
+         if (isset($options[$param])) {
+            $options[self::OSS_QUERY_STRING][$param] = $options[$param];
+            unset($options[$param]);
+         }
+      }
+      return $this->requestOssApi($options);
+   }
+
+   /**
+    * 从已存在的object拷贝part
+    * 
+    * @param string $fromBucket (Required)
+    * @param string $fromObject (Required)
+    * @param string $toBucket (Required)
+    * @param string $toObject (Required)
+    * @param int $partNumber (Required)
+    * @param string $uploadId (Required)
+    * @param array $options (Optional) Key-Value数组
+    * @return \Zend\Http\Response
+    */
+   public function copyUploadPart($fromBucket, $fromObject, $toBucket, $toObject, $partNumber, $uploadId, array $options = array())
+   {
+      $this->precheckBucket($fromBucket);
+      $this->precheckBucket($toBucket);
+      $this->precheckObject($fromObject);
+      $this->precheckObject($toObject);
+      //如果没有设置$options['isFullCopy']，则需要强制判断copy的起止位置
+      $startRange = "0";
+      if (isset($options['start'])) {
+         $startRange = $options['start'];
+      }
+      $endRange = "";
+      if (isset($options['end'])) {
+         $endRange = $options['end'];
+      }
+      $options[OSS_CONST::OSS_METHOD] = OSS_CONST::OSS_HTTP_PUT;
+      $options[OSS_CONST::OSS_BUCKET] = $toBucket;
+      $options[OSS_CONST::OSS_OBJECT] = $toObject;
+      $options[OSS_CONST::OSS_PART_NUM] = $partNumber;
+      $options[OSS_CONST::OSS_UPLOAD_ID] = $uploadId;
+      if (!isset($options[OSS_CONST::OSS_OPT_HEADERS])) {
+         $options[OSS_CONST::OSS_OPT_HEADERS] = array();
+      }
+      $options[OSS_CONST::OSS_OPT_HEADERS][OSS_CONST::OSS_HEADER_OBJECT_COPY_SOURCE] = '/' . $fromBucket . '/' . $fromObject;
+      $options[OSS_CONST::OSS_OPT_HEADERS][OSS_CONST::OSS_HEADER_OBJECT_COPY_SOURCE_RANGE] = "bytes=" . $startRange . "-" . $endRange;
       return $this->requestOssApi($options);
    }
 
@@ -462,7 +738,7 @@ class OssClient
       $leak = array();
       Kernel\array_has_requires($options, $requires, $leak);
       if (!empty($leak)) {
-         OssUtils::throwException('E_OPTION_REQUIRE_FILED',
+         OssUtils::throwException('E_OSS_OPTION_REQUIRE_FILED',
             array(implode(',', $leak)));
       }
    }

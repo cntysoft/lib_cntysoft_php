@@ -43,11 +43,14 @@ final class Constant
    const OSS_OPT_CONTENT_LENGTH = 'Content-Length';
    const OSS_OPT_CHECK_MD5 = 'checkmd5';
    const OSS_OPT_MIME_TYPE = 'mime_type';
+   const OSS_OPT_PREFIX = 'prefix';
+   const OSS_OPT_DELIMITER = 'delimiter';
+   const OSS_OPT_MARKER = 'marker';
+   const OSS_OPT_MAX_KEYS = 'max-keys';
+   const OSS_OPT_MAX_KEYS_VALUE = 100;
    //http请求头相关常量
    const OSS_HEADER_ACL = 'x-oss-acl';
    const OSS_HEADER_OBJECT_GROUP = 'x-oss-file-group';
-   const OSS_HEADER_OBJECT_COPY_SOURCE = 'x-oss-copy-source';
-   const OSS_HEADER_OBJECT_COPY_SOURCE_RANGE = "x-oss-copy-source-range";
    const OSS_HEADER_SECURITY_TOKEN = "x-oss-security-token";
    const OSS_HEADER_CONTENT_MD5 = 'Content-Md5';
    const OSS_HEADER_CONTENT_TYPE = 'Content-Type';
@@ -59,6 +62,8 @@ final class Constant
    const OSS_HEADER_CACHE_CONTROL = 'Cache-Control';
    const OSS_HEADER_HOST = 'Host';
    const OSS_HEADER_DATE = 'Date';
+   const OSS_HEADER_OBJECT_COPY_SOURCE = 'x-oss-copy-source';
+   const OSS_HEADER_OBJECT_COPY_SOURCE_RANGE = "x-oss-copy-source-range";
    //oss权限相关常量
    const OSS_ACL_TYPE_PRIVATE = 'private';
    const OSS_ACL_TYPE_PUBLIC_READ = 'public-read';
@@ -68,4 +73,8 @@ final class Constant
    const OSS_URL_ACCESS_KEY_ID = 'OSSAccessKeyId';
    const OSS_URL_EXPIRES = 'Expires';
    const OSS_URL_SIGNATURE = 'Signature';
+   //常规常量
+   const OSS_MAX_PART_SIZE = 524288000;
+   const OSS_MID_PART_SIZE = 52428800;
+   const OSS_MIN_PART_SIZE = 5242880;
 }

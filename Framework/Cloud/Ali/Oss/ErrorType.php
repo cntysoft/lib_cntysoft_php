@@ -24,7 +24,9 @@ class ErrorType extends BaseErrorType
       'E_OSS_BUCKET_IS_NOT_ALLOWED_EMPTY' => array(10010, 'Bucket不允许为空'),
       'E_OSS_FILE_PATH_IS_NOT_ALLOWED_EMPTY' => array(10011, '上传文件路径为空'),
       'E_OSS_FILE_NOT_EXIST'=> array(10012 , '文件不存在'),
-      'E_INIT_MULTI_PARTUPLOAD_FAIL' => array(10013, '初始化分块上传失败'),
-      'E_OPTION_REQUIRE_FILED' => array(10014, 'option配置参数缺少：%s')
+      'E_OSS_INIT_MULTI_PARTUPLOAD_FAIL' => array(10013, '初始化分块上传失败'),
+      'E_OSS_OPTION_REQUIRE_FILED' => array(10014, 'option配置参数缺少：%s'),
+      'E_OSS_MULTI_PART_UPLOAD_ERROR' => array(10015, '分段上传某个部分出错，请重试'),
+      'E_OSS_G_ERROR' => array(10016, '操作出现错误 : %s')
    );
 }
