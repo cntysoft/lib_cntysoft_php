@@ -42,6 +42,7 @@ final class Constant
    const OSS_OPT_PREAUTH = 'preauth';
    const OSS_OPT_CONTENT_LENGTH = 'Content-Length';
    const OSS_OPT_CHECK_MD5 = 'checkmd5';
+   const OSS_OPT_MIME_TYPE = 'mime_type';
    //http请求头相关常量
    const OSS_HEADER_ACL = 'x-oss-acl';
    const OSS_HEADER_OBJECT_GROUP = 'x-oss-file-group';

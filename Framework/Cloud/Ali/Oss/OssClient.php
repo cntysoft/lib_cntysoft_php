@@ -13,7 +13,7 @@ use Zend\Http\Request as HttpRequest;
 use Zend\Http\Response as HttpResponse;
 use Zend\Http\Client as HttpClient;
 use Zend\Http\Header;
-use Zend\Http\Client\Adapter\Curl as HttpCurl;
+use Cntysoft\Kernel;
 /**
  * Oss客户端类
  */
@@ -302,7 +302,7 @@ class OssClient
     * @param string $object
     * @return string
     */
-   protected function getMimeType($object)
+   public function getMimeType($object)
    {
       $extension = explode('.', $object);
       $extension = array_pop($extension);
@@ -378,9 +378,100 @@ class OssClient
    }
 
    /**
+    * 开始分块的上传
+    * 
+    * @param string $bucket (Required) Bucket名称
+    * @param string $object (Required) Object名称
+    * @param string $uploadId (Required) uploadId
+    * @param array $options (Optional) Key-Value数组
+    */
+   public function uploadPart($bucket, $object, $uploadId, array $options = array())
+   {
+      $this->precheckBucket($bucket);
+      $this->precheckObject($object);
+      $this->precheckParam($options,
+         array(
+         OSS_CONST::OSS_OPT_CONTENT,
+         OSS_CONST::OSS_OPT_PART_NUM
+      ));
+      $options[OSS_CONST::OSS_OPT_METHOD] = OSS_CONST::OSS_HTTP_PUT;
+      $options[OSS_CONST::OSS_OPT_BUCKET] = $bucket;
+      $options[OSS_CONST::OSS_OPT_OBJECT] = $object;
+      $options[OSS_CONST::OSS_OPT_UPLOAD_ID] = $uploadId;
+      if (isset($options[OSS_CONST::OSS_OPT_LENGTH])) {
+         $options[OSS_CONST::OSS_OPT_CONTENT_LENGTH] = $options[OSS_CONST::OSS_OPT_LENGTH];
+      }
+      return $this->requestOssApi($options);
+   }
+
+   /**
+    * 完成multi-part上传
+    * 
+    * @param string $bucket (Required) Bucket名称
+    * @param string $object (Required) Object名称
+    * @param string $uploadId (Required) uploadId
+    * @param array  $parts 可以是一个上传成功part的数组
+    * @param array $options (Optional) Key-Value数组
+    */
+   public function completeMultipartUpload($bucket, $object, $uploadId, array $parts, array $options = array())
+   {
+      $this->precheckBucket($bucket);
+      $this->precheckObject($object);
+      $options[OSS_CONST::OSS_OPT_METHOD] = OSS_CONST::OSS_HTTP_POST;
+      $options[OSS_CONST::OSS_OPT_BUCKET] = $bucket;
+      $options[OSS_CONST::OSS_OPT_OBJECT] = $object;
+      $options[OSS_CONST::OSS_OPT_UPLOAD_ID] = $uploadId;
+      $options[OSS_CONST::OSS_OPT_CONTENT_TYPE] = 'application/xml';
+      $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="utf-8"?><CompleteMultipartUpload></CompleteMultipartUpload>');
+      foreach ($parts as $node) {
+         $part = $xml->addChild('Part');
+         $part->addChild('PartNumber', $node['PartNumber']);
+         $part->addChild('ETag', $node['ETag']);
+      }
+      $options[OSS_CONST::OSS_OPT_CONTENT] = $xml->asXML();
+      return $this->requestOssApi($options);
+   }
+
+   /**
+    * 中止上传mulit-part upload
+    * 
+    * @param string $bucket (Required) Bucket名称
+    * @param string $object (Required) Object名称
+    * @param string $uploadId (Required) uploadId
+    * @param array $options (Optional) Key-Value数组
+    * @return ResponseCore
+    */
+   public function abortMultipartUpload($bucket, $object, $uploadId, array $options = array())
+   {
+      $this->precheckBucket($bucket);
+      $this->precheckObject($object);
+      $options[OSS_CONST::OSS_OPT_METHOD] = self::OSS_HTTP_DELETE;
+      $options[OSS_CONST::OSS_OPT_BUCKET] = $bucket;
+      $options[OSS_CONST::OSS_OPT_OBJECT] = $object;
+      $options[OSS_CONST::OSS_OPT_UPLOAD_ID] = $uploadId;
+      return $this->requestOssApi($options);
+   }
+
+   /**
+    * @param array $options
+    * @param array $requires
+    * @throws \Cntysoft\Framework\Cloud\Ali\Oss\Exception
+    */
+   protected function precheckParam(array $options, array $requires)
+   {
+      $leak = array();
+      Kernel\array_has_requires($options, $requires, $leak);
+      if (!empty($leak)) {
+         OssUtils::throwException('E_OPTION_REQUIRE_FILED',
+            array(implode(',', $leak)));
+      }
+   }
+
+   /**
     * 检查bucket是否为空
     * 
     * @param string $bucket
+    * @throws \Cntysoft\Framework\Cloud\Ali\Oss\Exception
     */
    protected function precheckBucket($bucket)
    {
@@ -393,6 +484,7 @@ class OssClient
     * 检查object是否为空
     * 
     * @param array $object
+    * @throws \Cntysoft\Framework\Cloud\Ali\Oss\Exception
     */
    protected function precheckObject($object)
    {
@@ -545,12 +637,12 @@ class OssClient
          $request->setContent($fstrem);
          $headers[OSS_CONST::OSS_HEADER_CONTENT_TYPE] = 'application/x-www-form-urlencoded';
          $length = filesize($opts[OSS_CONST::OSS_OPT_FILE_UPLOAD]);
-         if (isset($opts[OSS_CONST::OSS_OPT_CONTENT_LENGTH])) {
-            $length = $opts[OSS_CONST::OSS_OPT_CONTENT_LENGTH];
-         }
          if (isset($headers[OSS_CONST::OSS_OPT_CONTENT_TYPE]) && ($headers[OSS_CONST::OSS_OPT_CONTENT_TYPE] === 'application/x-www-form-urlencoded')) {
             $mimeType = $this->getMimeType($opts[OSS_CONST::OSS_OPT_FILE_UPLOAD]);
             $headers[OSS_CONST::OSS_OPT_CONTENT_TYPE] = $mimeType;
+         }
+         if (isset($opts[OSS_CONST::OSS_OPT_CONTENT_LENGTH])) {
+            $length = $opts[OSS_CONST::OSS_OPT_CONTENT_LENGTH];
          }
          $headers[OSS_CONST::OSS_HEADER_CONTENT_LENGTH] = $length;
       }
