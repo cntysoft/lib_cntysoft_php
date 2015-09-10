@@ -17,13 +17,10 @@ use Zend\Http\Response;
 class Utils
 {
    /**
-    * @var array $allowOssAclTypes
+    * @var array $successCodes 操作成功代码
     */
-   protected static $allowOssAclTypes = array(
-      OSS_CONST::OSS_ACL_TYPE_PRIVATE,
-      OSS_CONST::OSS_ACL_TYPE_PUBLIC_READ,
-      OSS_CONST::OSS_ACL_TYPE_PUBLIC_READ_WRITE
-   );
+   protected static $successCodes = array(200, 201, 204, 206);
+  
 
    //oss默认响应头
    static $OSS_DEFAULT_REAPONSE_HEADERS = array(
@@ -350,10 +347,10 @@ class Utils
    }
    
     /**
-    * @param HttpResponse $response
+    * @param \Zend\Http\Response $response
     * @return boolean
     */
-   public static function responseIsOk(HttpResponse $response)
+   public static function responseIsOk($response)
    {
       return in_array($response->getStatusCode(), self::$successCodes) ? true : false;
    }

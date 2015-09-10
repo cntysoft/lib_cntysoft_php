@@ -72,10 +72,14 @@ class OssClient
     */
    protected $redirects = 0;
 
-   /**
-    * @var array $successCodes 操作成功代码
+    /**
+    * @var array $allowOssAclTypes
     */
-   protected static $successCodes = array(200, 201, 204, 206);
+   protected static $allowOssAclTypes = array(
+      OSS_CONST::OSS_ACL_TYPE_PRIVATE,
+      OSS_CONST::OSS_ACL_TYPE_PUBLIC_READ,
+      OSS_CONST::OSS_ACL_TYPE_PUBLIC_READ_WRITE
+   );
 
    /**
     * 是否使用安全连接
@@ -575,12 +579,7 @@ class OssClient
    {
       $this->precheckBucket($bucket);
       $this->precheckObject($object);
-      if (!in_array($acl,
-            array(
-            OSS_CONST::OSS_ACL_TYPE_PRIVATE,
-            OSS_CONST::OSS_ACL_TYPE_PUBLIC_READ,
-            OSS_CONST::OSS_ACL_TYPE_PUBLIC_READ_WRITE
-         ))) {
+      if (!in_array($acl, self::$allowOssAclTypes)) {
          OssUtils::throwException('E_OSS_ACL_INVALID');
       }
       $options[OSS_CONST::OSS_OPT_METHOD] = OSS_CONST::OSS_HTTP_PUT;
@@ -798,6 +797,14 @@ class OssClient
       $options[OSS_CONST::OSS_OPT_HEADERS][OSS_CONST::OSS_HEADER_OBJECT_COPY_SOURCE] = '/' . $fromBucket . '/' . $fromObject;
       $options[OSS_CONST::OSS_OPT_HEADERS][OSS_CONST::OSS_HEADER_OBJECT_COPY_SOURCE_RANGE] = "bytes=" . $startRange . "-" . $endRange;
       return $this->requestOssApi($options);
+   }
+   /**
+    * @param \Zend\Http\Response $response
+    * @return boolean
+    */
+   public function responseIsOk($response)
+   {
+      return OssUtils::responseIsOk($response);
    }
 
    /**
@@ -1076,6 +1083,7 @@ class OssClient
       //var_dump($response);
       return $response;
    }
+   
 
    /**
     * @return \Zend\Http\Client
