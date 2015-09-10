@@ -9,6 +9,7 @@
 namespace Cntysoft\Framework\Net\Sms;
 
 use Cntysoft\Kernel\ConfigProxy;
+use Zend\Json\Json;
 
 class YunPian
 {
@@ -16,13 +17,14 @@ class YunPian
    
    public function __construct($apikey = null)
    {
-      $this->apikey = $apikey;
       if(null == $apikey){
          $config = new ConfigProxy();
          $cfg = $config::getFrameworkConfig('Net');
          if($cfg['yunpian'] && $cfg['yunpian']['apikey']){
             $this->apikey = $cfg['yunpian']['apikey'];
          }
+      }else {
+         $this->apikey = $apikey;
       }
    }
    
@@ -64,9 +66,13 @@ class YunPian
     * 使用已有的模板发送短信
     * 
     * @param integer $tplId
-    * @param string $tplValue
-    * @param array $phones
-    * @return type
+    * @param string $tplValue <p>
+    * 参数的格式  #key1#=value1&#key2#=value2
+    * </p>
+    * @param array $phones <p>
+    * 发送短信的手机号码, 支持多个同时发送
+    * </p>
+    * @return array
     */
    public function tplSendSms($tplId, $tplValue, array $phones)
    {
@@ -75,7 +81,8 @@ class YunPian
       $mobile = implode(',', $phones);
       $query = "apikey=" . $this->getApiKey() . '&tpl_id=' . $tplId . '&mobile=' .$mobile .'&tpl_value=' . $tplValue;
       
-      return $this->sockPost($url, $query);
+      $ret =  $this->sockPost($url, $query);
+      return Json::decode($ret, Json::TYPE_ARRAY);
    }
    
    /**
