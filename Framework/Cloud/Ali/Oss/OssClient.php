@@ -197,7 +197,7 @@ class OssClient
       $file = OssUtils::encodingPath($file);
       $options[OSS_CONST::OSS_OPT_FILE_UPLOAD] = $file;
       if (!file_exists($options[OSS_CONST::OSS_OPT_FILE_UPLOAD])) {
-         OssUtils::throwException('OSS_FILE_NOT_EXIST',
+         OssUtils::throwException('E_OSS_FILE_NOT_EXIST',
             array(
             $options[OSS_CONST::OSS_OPT_FILE_UPLOAD]
          ));
