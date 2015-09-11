@@ -633,3 +633,20 @@ function get_server_root_domain()
    $url = $_SERVER['SERVER_NAME'];
    return substr($url, strpos($url, '.') + 1);
 }
+
+/**
+ * 检查上传的目录是否合法
+ * 
+ * @param string $uploadDir
+ * @param array $allowUploadDirs
+ * @return boolean
+ */
+function check_target_upload_is_valid($uploadDir, array $allowUploadDirs)
+{
+   foreach ($allowUploadDirs as $allowDir){
+      if(substr($uploadDir, 0, strlen($allowDir)) == $allowDir){
+         return true;
+      }
+   }
+   return false;
+}

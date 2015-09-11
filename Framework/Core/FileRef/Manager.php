@@ -7,7 +7,6 @@
  * @license    http://www.cntysoft.com/license/new-bsd     New BSD License
  */
 namespace Cntysoft\Framework\Core\FileRef;
-
 use Cntysoft\Kernel;
 use Cntysoft\Framework\Core\ErrorType as CoreErrorType;
 use Cntysoft\Stdlib\Filesystem;
@@ -16,28 +15,32 @@ use Cntysoft\Framework\Core\FileRef\Model\Entry as EntryModel;
 use Cntysoft\Framework\Core\FileRef\Model\Unused as UnusedModel;
 use Phalcon\Events\EventsAwareInterface;
 use Phalcon\Events\Manager as EventsManager;
-
 /**
  * 文件引用管理器, 这个仅仅提供一套文件引用的机制
  */
 class Manager implements EventsAwareInterface
 {
+
    /**
     * 临时文件引用的表ID
     */
    CONST UNUSED_TABLE_ID = 127;
+
    /**
     * 表数量的掩码
     */
    CONST TABLE_MASK = 10;
+
    /**
     * 文件引用详细信息对象模型
     */
    CONST REF_INFO_M_CLS = 'Cntysoft\Framework\Core\FileRef\Model\RefInfo%d';
+
    /**
     * 未确定的引用
     */
    CONST UNUSED_M_CLS = 'Cntysoft\Framework\Core\FileRef\Model\Unused';
+
    /**
     * 文件引用类名称
     */
@@ -49,6 +52,7 @@ class Manager implements EventsAwareInterface
     * @var int $currentTableId
     */
    protected $currentTableId;
+
    /**
     * @var \Phalcon\Events\Manager $eventsManager
     */
@@ -86,7 +90,8 @@ class Manager implements EventsAwareInterface
          $detail->create($refInfo);
          $db->commit();
          $events = $this->getEventsManager();
-         $events->fire('filerefmanager:addTempFileRef', $this, array($entry, $detail));
+         $events->fire('filerefmanager:addTempFileRef', $this,
+            array($entry, $detail));
          return $rid;
       } catch (\Exception $ex) {
          $errorType = CoreErrorType::getInstance();
@@ -108,9 +113,10 @@ class Manager implements EventsAwareInterface
       if (!$entry) {
          $errorType = CoreErrorType::getInstance();
          Kernel\throw_exception(new Exception(
-            $errorType->msg('E_FILE_REF_ENTRY_NOT_EXIST', $rid), $errorType->code('E_FILE_REF_ENTRY_NOT_EXIST')), $errorType);
+            $errorType->msg('E_FILE_REF_ENTRY_NOT_EXIST', $rid),
+            $errorType->code('E_FILE_REF_ENTRY_NOT_EXIST')), $errorType);
       }
-      $tableId = (int)$entry->getTableId();
+      $tableId = (int) $entry->getTableId();
       if ($tableId !== self::UNUSED_TABLE_ID) {
          //已经正常了
          return $tableId;
@@ -129,7 +135,8 @@ class Manager implements EventsAwareInterface
          $detail->create($refValues);
          $db->commit();
          $events = $this->getEventsManager();
-         $events->fire('filerefmanager:confirmFileRef', $this, array($entry, $detail));
+         $events->fire('filerefmanager:confirmFileRef', $this,
+            array($entry, $detail));
       } catch (\Exception $ex) {
          $errorType = CoreErrorType::getInstance();
          $db->rollback();
@@ -150,9 +157,10 @@ class Manager implements EventsAwareInterface
       if (!$entry) {
          $errorType = CoreErrorType::getInstance();
          Kernel\throw_exception(new Exception(
-            $errorType->msg('E_FILE_REF_ENTRY_NOT_EXIST', $rid), $errorType->code('E_FILE_REF_ENTRY_NOT_EXIST')), $errorType);
+            $errorType->msg('E_FILE_REF_ENTRY_NOT_EXIST', $rid),
+            $errorType->code('E_FILE_REF_ENTRY_NOT_EXIST')), $errorType);
       }
-      $tableId = (int)$entry->getTableId();
+      $tableId = (int) $entry->getTableId();
       $refInfoCls = $this->getRefInfoModelCls($tableId);
       $refInfo = $refInfoCls::findFirst($rid);
       $attachment = $refInfo->getAttachment();
@@ -168,7 +176,8 @@ class Manager implements EventsAwareInterface
          $refInfo->delete();
          $db->commit();
          $events = $this->getEventsManager();
-         $events->fire('filerefmanager:removeFileRef', $this, array($entry, $refInfo));
+         $events->fire('filerefmanager:removeFileRef', $this,
+            array($entry, $refInfo));
       } catch (\Exception $ex) {
          $errorType = CoreErrorType::getInstance();
          $db->rollback();
@@ -188,15 +197,17 @@ class Manager implements EventsAwareInterface
       if (!$entry) {
          $errorType = CoreErrorType::getInstance();
          Kernel\throw_exception(new Exception(
-            $errorType->msg('E_FILE_REF_ENTRY_NOT_EXIST', $rid), $errorType->code('E_FILE_REF_ENTRY_NOT_EXIST')), $errorType);
+            $errorType->msg('E_FILE_REF_ENTRY_NOT_EXIST', $rid),
+            $errorType->code('E_FILE_REF_ENTRY_NOT_EXIST')), $errorType);
       }
-      $tableId = (int)$entry->getTableId();
+      $tableId = (int) $entry->getTableId();
       $refInfoCls = self::getRefInfoModelCls($tableId);
       $refInfo = $refInfoCls::findFirst($rid);
       if (!$refInfo) {
          $errorType = CoreErrorType::getInstance();
          Kernel\throw_exception(new Exception(
-            $errorType->msg('E_FILE_REF_ENTRY_NOT_EXIST', $rid), $errorType->code('E_FILE_REF_ENTRY_NOT_EXIST')), $errorType);
+            $errorType->msg('E_FILE_REF_ENTRY_NOT_EXIST', $rid),
+            $errorType->code('E_FILE_REF_ENTRY_NOT_EXIST')), $errorType);
       }
       return $refInfo->getAttachment();
    }
@@ -224,7 +235,6 @@ class Manager implements EventsAwareInterface
       return $this->eventsManager;
    }
 
-
    /**
     * 清理不用的文件引用
     *
@@ -233,11 +243,11 @@ class Manager implements EventsAwareInterface
    public function clearUnusedFileRefs($limit = 20)
    {
       $refs = EntryModel::find(array(
-         'tableId = ?0',
-         'bind' => array(
-            0 => self::UNUSED_TABLE_ID
-         ),
-         'limit' => $limit
+            'tableId = ?0',
+            'bind' => array(
+               0 => self::UNUSED_TABLE_ID
+            ),
+            'limit' => $limit
       ));
 
       if (count($refs) > 0) {
@@ -256,7 +266,8 @@ class Manager implements EventsAwareInterface
                }
                $detail->delete();
                $ref->delete();
-               $events->fire('filerefmanager:clearUnusedFileRefs', $this, array($ref, $detail));
+               $events->fire('filerefmanager:clearUnusedFileRefs', $this,
+                  array($ref, $detail));
             }
             $db->commit();
          } catch (\Exception $ex) {
@@ -275,7 +286,7 @@ class Manager implements EventsAwareInterface
     */
    public function hasFileRef($rid)
    {
-      return false == EntryModel::findFirst((int)$rid) ? false : true ;
+      return false == EntryModel::findFirst((int) $rid) ? false : true;
    }
 
    /**
@@ -286,10 +297,10 @@ class Manager implements EventsAwareInterface
    public function getUnusedFileCount()
    {
       return EntryModel::count(array(
-         'tableId = ?0',
-         'bind' => array(
-            0 => self::UNUSED_TABLE_ID
-         )));
+            'tableId = ?0',
+            'bind' => array(
+               0 => self::UNUSED_TABLE_ID
+      )));
    }
 
    /**
@@ -319,6 +330,23 @@ class Manager implements EventsAwareInterface
       } else {
          $dirname = StdDir::getUploadFilesDir() . DS . date('Y' . DS . 'm' . DS . 'd');
       }
+      if (!file_exists($dirname)) {
+         Filesystem::createDir($dirname, 0755, true);
+      }
+      $ext = Kernel\get_file_ext($filename);
+      $filename = md5($filename . time()) . '.' . $ext;
+      return Kernel\real_path($dirname . DS . $filename);
+   }
+
+   /**
+    * 根据目标文件夹获取文件夹名称
+    * 
+    * @param string $filename
+    * @param string $targetDir
+    */
+   public function getAttachmentFilenameByTargetDir($filename, $targetDir)
+   {
+      $dirname = CNTY_ROOT_DIR.DS.$targetDir. DS . date('Y' . DS . 'm' . DS . 'd');
       if (!file_exists($dirname)) {
          Filesystem::createDir($dirname, 0755, true);
       }

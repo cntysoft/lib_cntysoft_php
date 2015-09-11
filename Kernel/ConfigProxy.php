@@ -125,7 +125,7 @@ class ConfigProxy
      * 
      * @param string $name 框架的名称
      * @param int $type 框架的类型
-     * @return array
+     * @return \Phalcon\Config
      */
     public static function getFrameworkConfig($name, $type = self::C_TYPE_FRAMEWORK_SYS) {
         //获取特定的路径

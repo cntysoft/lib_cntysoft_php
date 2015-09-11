@@ -180,6 +180,7 @@ class OssClient
 
    /**
     * 上传文件，适合比较大的文件
+    * 
     * @param string $bucket (Required)
     * @param string $object (Required)
     * @param string $file (Required)
@@ -214,6 +215,31 @@ class OssClient
       $options[OSS_CONST::OSS_OPT_CONTENT_TYPE] = $this->getMimeType($file);
       $options[OSS_CONST::OSS_OPT_CONTENT_LENGTH] = filesize($options[OSS_CONST::OSS_OPT_FILE_UPLOAD]);
       $response = $this->requestOssApi($options);
+      return $response;
+   }
+   
+    /**
+    * 上传文件，适合比较大的文件, 失败了会尝试三次
+    * 
+    * @param string $bucket (Required)
+    * @param string $object (Required)
+    * @param string $file (Required)
+    * @param array $options (Optional)
+    * @return \Zend\Http\Response
+    */
+   public function uploadFileByFileRetryForFail($bucket, $object, $file, $retryTimes = 3, array $options = array())
+   {
+      $isOk = false;
+      while($retryTimes){
+         $response = $this->uploadFileByFile($bucket, $object, $file,$options);
+         if($this->responseIsOk($response)){
+            $isOk = true;
+            break;
+         }
+      }
+      if(!$isOk){
+         OssUtils::throwException('E_OSS_UPLOAD_ERROR');
+      }
       return $response;
    }
 

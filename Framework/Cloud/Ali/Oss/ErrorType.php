@@ -27,6 +27,7 @@ class ErrorType extends BaseErrorType
       'E_OSS_INIT_MULTI_PARTUPLOAD_FAIL' => array(10013, '初始化分块上传失败'),
       'E_OSS_OPTION_REQUIRE_FILED' => array(10014, 'option配置参数缺少：%s'),
       'E_OSS_MULTI_PART_UPLOAD_ERROR' => array(10015, '分段上传某个部分出错，请重试'),
-      'E_OSS_G_ERROR' => array(10016, '操作出现错误 : %s')
+      'E_OSS_G_ERROR' => array(10016, '操作出现错误 : %s'),
+      'E_OSS_UPLOAD_ERROR' => array(10017, '上传文件失败')
    );
 }

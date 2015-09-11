@@ -31,11 +31,10 @@ class ErrorType extends BaseErrorType
       'E_CURL_FTP_NO_ACTIVE_CONN' => array(10014, 'curl ftp no active connection'),
       'E_CURL_ERROR' => array(10015, 'curl error : %s'),
 
-      'E_UPLOAD_DIR_NOT_ALLOWED' => array(10016, 'upload dir %s is not allowed'),
+      'E_UPLOAD_DIR_NOT_ALLOWED' => array(10016, 'target dir %s is not allowed'),
       'E_UPLOAD_PATH_EMPTY' => array(10017, 'upload path empty'),
 
       //Qiniu
       'E_QINIU_CALLBACK_TYPE_ERROR' => array(10018, 'qiniu callback type error'),
-      'E_QINIU'
    );
 }
