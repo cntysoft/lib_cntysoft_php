@@ -81,7 +81,12 @@ class Upload extends AbstractOption
     * @var boolean $enableFileRef
     */
    protected $enableFileRef = null;
-
+   /**
+    * 是否使用开放储存
+    * 
+    * @var boolean $useOss
+    */
+   protected $useOss = true;
    /**
     * 上传组件配置信息
     *
@@ -258,7 +263,7 @@ class Upload extends AbstractOption
 
    public function setEnableFileRef($flag)
    {
-      $this->enableFileRef = $flag;
+      $this->enableFileRef = (boolean)$flag;
       return $this;
    }
 
@@ -266,4 +271,16 @@ class Upload extends AbstractOption
    {
       return $this->enableFileRef;
    }
+   
+   function getUseOss()
+   {
+      return $this->useOss;
+   }
+
+   function setUseOss($useOss)
+   {
+      $this->useOss = (boolean)$useOss;
+   }
+
+
 }

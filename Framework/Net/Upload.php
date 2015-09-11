@@ -81,6 +81,7 @@ abstract class Upload
    {
       $sourceFile = $uploadFile->getTempName();
       $targetFile = Kernel\real_path($this->getTargetFileName($uploadFile));
+      
       if (!file_exists($sourceFile) || $sourceFile == $targetFile) {
          $errorType = ErrorType::getInstance();
          Kernel\throw_exception(new Exception(
