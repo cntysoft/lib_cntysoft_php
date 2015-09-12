@@ -451,6 +451,26 @@ class OssClient
       $options[OSS_CONST::OSS_OPT_OBJECT] = $object;
       return $this->requestOssApi($options);
    }
+   
+   /**
+    * 删除指定的文件
+    * 
+    * @param string $bucket
+    * @param string $object
+    * @param array $options
+    * @return \Zend\Http\Response
+    */
+   public function deleteObjectByRetry($bucket, $object, $retryTimes = 3, array $options = array())
+   {
+      while($retryTimes > 0){
+         $response = $this->deleteObject($bucket, $object, $options);
+         if($this->responseIsOk($response)){
+            break;
+         }
+         $retryTimes--;
+      }
+      return $response;
+   }
 
    /**
     * 批量删除指定的objects

@@ -163,15 +163,10 @@ class Manager implements EventsAwareInterface
       $tableId = (int) $entry->getTableId();
       $refInfoCls = $this->getRefInfoModelCls($tableId);
       $refInfo = $refInfoCls::findFirst($rid);
-      $attachment = $refInfo->getAttachment();
-      $filename = CNTY_ROOT_DIR . DS . $attachment;
       $db = Kernel\get_db_adapter();
       try {
          $db->begin();
-         if (file_exists($filename)) {
-            //在这里文件要是不存在无所谓
-            Filesystem::deleteFile($filename);
-         }
+         $this->doDeleteAttachment($refInfo->getAttachment());
          $entry->delete();
          $refInfo->delete();
          $db->commit();
@@ -183,6 +178,15 @@ class Manager implements EventsAwareInterface
          $db->rollback();
          Kernel\throw_exception($ex, $errorType);
       }
+   }
+   /**
+    * 删除文件引用的文件
+    * 
+    * @param string $attachment
+    */
+   protected function doDeleteAttachment($attachment)
+   {
+      
    }
 
    /**
@@ -346,7 +350,7 @@ class Manager implements EventsAwareInterface
     */
    public function getAttachmentFilenameByTargetDir($filename, $targetDir)
    {
-      $dirname = CNTY_ROOT_DIR.DS.$targetDir. DS . date('Y' . DS . 'm' . DS . 'd');
+      $dirname = CNTY_ROOT_DIR . DS . $targetDir . DS . date('Y' . DS . 'm' . DS . 'd');
       if (!file_exists($dirname)) {
          Filesystem::createDir($dirname, 0755, true);
       }
