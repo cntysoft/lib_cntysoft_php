@@ -9,6 +9,7 @@
 namespace Cntysoft\Kernel;
 use Cntysoft\Phalcon\Mvc\Application;
 use Cntysoft\Stdlib\Filesystem;
+
 /**
  * 注销数组指定的key关联的数据
  * 
@@ -17,11 +18,11 @@ use Cntysoft\Stdlib\Filesystem;
  */
 function unset_array_values(array &$data, array $fields)
 {
-    foreach ($fields as $key) {
-        if (array_key_exists($key, $data)) {
-            unset($data[$key]);
-        }
-    }
+   foreach ($fields as $key) {
+      if (array_key_exists($key, $data)) {
+         unset($data[$key]);
+      }
+   }
 }
 
 /**
@@ -33,14 +34,14 @@ function unset_array_values(array &$data, array $fields)
  */
 function array_has_requires(array &$data, array $requires, array &$leak = array())
 {
-    $isOk = true;
-    foreach ($requires as $key) {
-        if (!array_key_exists($key, $data)) {
-            $leak[] = $key;
-            $isOk = false;
-        }
-    }
-    return $isOk;
+   $isOk = true;
+   foreach ($requires as $key) {
+      if (!array_key_exists($key, $data)) {
+         $leak[] = $key;
+         $isOk = false;
+      }
+   }
+   return $isOk;
 }
 
 /**
@@ -53,18 +54,19 @@ function array_has_requires(array &$data, array $requires, array &$leak = array(
 function ensure_array_has_fields(array &$data, array $requires, $throwMsg = null, $errorCode = null)
 {
 
-    $leak = array();
-    if (!array_has_requires($data, $requires, $leak)) {
-        if (!$throwMsg) {
-            $throwMsg = StdErrorType::msg('E_ARRAY_KEYS_NOT_EXIST', implode(', ', $leak));
-        } else {
-            $throwMsg = sprintf($throwMsg, implode(', ', $leak));
-        }
-        if (!$errorCode) {
-            $errorCode = StdErrorType::code('E_ARRAY_KEYS_NOT_EXIST');
-        }
-        throw new Exception($throwMsg, $errorCode);
-    }
+   $leak = array();
+   if (!array_has_requires($data, $requires, $leak)) {
+      if (!$throwMsg) {
+         $throwMsg = StdErrorType::msg('E_ARRAY_KEYS_NOT_EXIST',
+               implode(', ', $leak));
+      } else {
+         $throwMsg = sprintf($throwMsg, implode(', ', $leak));
+      }
+      if (!$errorCode) {
+         $errorCode = StdErrorType::code('E_ARRAY_KEYS_NOT_EXIST');
+      }
+      throw new Exception($throwMsg, $errorCode);
+   }
 }
 
 /**
@@ -74,11 +76,11 @@ function ensure_array_has_fields(array &$data, array $requires, $throwMsg = null
  */
 function get_global_di()
 {
-    static $di = null;
-    if (null == $di) {
-        $di = Application::getGlobalDi();
-    }
-    return $di;
+   static $di = null;
+   if (null == $di) {
+      $di = Application::getGlobalDi();
+   }
+   return $di;
 }
 
 /**
@@ -86,8 +88,8 @@ function get_global_di()
  */
 function get_db_adapter()
 {
-    $di = get_global_di();
-    return $di->getShared('db');
+   $di = get_global_di();
+   return $di->getShared('db');
 }
 
 /**
@@ -97,8 +99,8 @@ function get_db_adapter()
  */
 function get_transaction_manager()
 {
-    $di = get_global_di();
-    return $di->getShared('transactionManager');
+   $di = get_global_di();
+   return $di->getShared('transactionManager');
 }
 
 /**
@@ -108,12 +110,12 @@ function get_transaction_manager()
  */
 function get_models_manager()
 {
-    static $manager = null;
-    if (null == $manager) {
-        $di = get_global_di();
-        $manager = $di->getShared('modelsManager');
-    }
-    return $manager;
+   static $manager = null;
+   if (null == $manager) {
+      $di = get_global_di();
+      $manager = $di->getShared('modelsManager');
+   }
+   return $manager;
 }
 
 /**
@@ -124,39 +126,39 @@ function get_models_manager()
  */
 function real_path($path)
 {
-    //去掉多余的斜杠
-    $len = strlen($path);
-    if (0 == $len) {
-        return '';
-    }
-    $current = '';
-    $filtered = '';
-    $readedDp = false;
-    for ($i = 0; $i < $len; $i++) {
-        $current = $path[$i];
-        if ('/' !== $current && '\\' !== $current) {
-            $readedDp = false;
-        }
-        if (!$readedDp) {
-            if ('/' == $current || '\\' == $current) {
-                $current = DS;
-            }
-            $filtered .= $current;
-            if ('/' == $current || '\\' == $current) {
-                $readedDp = true;
-            }
-        }
-    }
-    $len = strlen($filtered);
-    $lastChar = $filtered[$len - 1];
-    if ($lastChar == '\\' || $lastChar == '/') {
-        $filtered = substr($filtered, 0, $len - 1);
-    }
-    $path = $filtered;
-    if ((PHP_OS == \Cntysoft\WINDOWS) && is_utf8($path)) { //加了判断，只有编码为UTF-8的时候才会转变编码
-        $path = iconv('UTF-8', 'GBK', $path);
-    }
-    return $path;
+   //去掉多余的斜杠
+   $len = strlen($path);
+   if (0 == $len) {
+      return '';
+   }
+   $current = '';
+   $filtered = '';
+   $readedDp = false;
+   for ($i = 0; $i < $len; $i++) {
+      $current = $path[$i];
+      if ('/' !== $current && '\\' !== $current) {
+         $readedDp = false;
+      }
+      if (!$readedDp) {
+         if ('/' == $current || '\\' == $current) {
+            $current = DS;
+         }
+         $filtered .= $current;
+         if ('/' == $current || '\\' == $current) {
+            $readedDp = true;
+         }
+      }
+   }
+   $len = strlen($filtered);
+   $lastChar = $filtered[$len - 1];
+   if ($lastChar == '\\' || $lastChar == '/') {
+      $filtered = substr($filtered, 0, $len - 1);
+   }
+   $path = $filtered;
+   if ((PHP_OS == \Cntysoft\WINDOWS) && is_utf8($path)) { //加了判断，只有编码为UTF-8的时候才会转变编码
+      $path = iconv('UTF-8', 'GBK', $path);
+   }
+   return $path;
 }
 
 /**
@@ -167,11 +169,14 @@ function real_path($path)
  */
 function is_utf8($string)
 {
-    if (preg_match("/^([".chr(228)."-".chr(233)."]{1}[".chr(128)."-".chr(191)."]{1}[".chr(128)."-".chr(191)."]{1}){1}/", $string) == true || preg_match("/([".chr(228)."-".chr(233)."]{1}[".chr(128)."-".chr(191)."]{1}[".chr(128)."-".chr(191)."]{1}){1}$/", $string) == true || preg_match("/([".chr(228)."-".chr(233)."]{1}[".chr(128)."-".chr(191)."]{1}[".chr(128)."-".chr(191)."]{1}){2,}/", $string) == true) {
-        return true;
-    } else {
-        return false;
-    }
+   if (preg_match("/^([" . chr(228) . "-" . chr(233) . "]{1}[" . chr(128) . "-" . chr(191) . "]{1}[" . chr(128) . "-" . chr(191) . "]{1}){1}/",
+         $string) == true || preg_match("/([" . chr(228) . "-" . chr(233) . "]{1}[" . chr(128) . "-" . chr(191) . "]{1}[" . chr(128) . "-" . chr(191) . "]{1}){1}$/",
+         $string) == true || preg_match("/([" . chr(228) . "-" . chr(233) . "]{1}[" . chr(128) . "-" . chr(191) . "]{1}[" . chr(128) . "-" . chr(191) . "]{1}){2,}/",
+         $string) == true) {
+      return true;
+   } else {
+      return false;
+   }
 }
 
 /**
@@ -182,7 +187,7 @@ function is_utf8($string)
  */
 function filter_root_dir($path)
 {
-    return str_replace(CNTY_ROOT_DIR, '', $path);
+   return str_replace(CNTY_ROOT_DIR, '', $path);
 }
 
 /**
@@ -194,19 +199,20 @@ function filter_root_dir($path)
  */
 function make_cache_object($dir = null, $lifetime = 3600)
 {
-    $frontCache = new \Phalcon\Cache\Frontend\Data(array(
-       "lifetime" => $lifetime
-    ));
-    $cacheDir = CNTY_DATA_DIR.DS.'Cache';
-    if ($dir) {
-        $cacheDir .= DS.$dir;
-    }
-    if (!file_exists($cacheDir)) {
-        Filesystem::createDir($cacheDir, 0755, true);
-    }
-    return new \Phalcon\Cache\Backend\File($frontCache, array(
-       "cacheDir" => $cacheDir.DS
-    ));
+   $frontCache = new \Phalcon\Cache\Frontend\Data(array(
+      "lifetime" => $lifetime
+   ));
+   $cacheDir = CNTY_DATA_DIR . DS . 'Cache';
+   if ($dir) {
+      $cacheDir .= DS . $dir;
+   }
+   if (!file_exists($cacheDir)) {
+      Filesystem::createDir($cacheDir, 0755, true);
+   }
+   return new \Phalcon\Cache\Backend\File($frontCache,
+      array(
+      "cacheDir" => $cacheDir . DS
+   ));
 }
 
 /**
@@ -219,30 +225,31 @@ function make_cache_object($dir = null, $lifetime = 3600)
  */
 function call_fn_with_params($handler, $fn, array $params = array())
 {
-    // 提供5个参数的快捷调用
-    switch (count($params)) {
-        case 0:
-            return $handler->$fn();
-            break;
-        case 1:
-            return $handler->$fn($params[0]);
-            break;
-        case 2:
-            return $handler->$fn($params[0], $params[1]);
-            break;
-        case 3:
-            return $handler->$fn($params[0], $params[1], $params[2]);
-            break;
-        case 4:
-            return $handler->$fn($params[0], $params[1], $params[2], $params[3]);
-            break;
-        case 5:
-            return $handler->$fn($params[0], $params[1], $params[2], $params[3], $params[4]);
-            break;
-        default:
-            return \call_user_func_array(array($handler, $fn), $params);
-            break;
-    }
+   // 提供5个参数的快捷调用
+   switch (count($params)) {
+      case 0:
+         return $handler->$fn();
+         break;
+      case 1:
+         return $handler->$fn($params[0]);
+         break;
+      case 2:
+         return $handler->$fn($params[0], $params[1]);
+         break;
+      case 3:
+         return $handler->$fn($params[0], $params[1], $params[2]);
+         break;
+      case 4:
+         return $handler->$fn($params[0], $params[1], $params[2], $params[3]);
+         break;
+      case 5:
+         return $handler->$fn($params[0], $params[1], $params[2], $params[3],
+               $params[4]);
+         break;
+      default:
+         return \call_user_func_array(array($handler, $fn), $params);
+         break;
+   }
 }
 
 /**
@@ -254,15 +261,16 @@ function call_fn_with_params($handler, $fn, array $params = array())
  */
 function invoke_setter($object, array $data)
 {
-    foreach ($data as $key => $value) {
-        $setter = 'set'. ucfirst($key);
-        if (!method_exists($object, $setter)) {
-            throw_exception(new Exception(
-                    StdErrorType::msg('E_METHOD_NOT_EXIST', get_class($object), $setter)), \Cntysoft\STD_EXCEPTION_CONTEXT);
-        }
-        $object->{$setter}($value);
-    }
-    return $object;
+   foreach ($data as $key => $value) {
+      $setter = 'set' . ucfirst($key);
+      if (!method_exists($object, $setter)) {
+         throw_exception(new Exception(
+            StdErrorType::msg('E_METHOD_NOT_EXIST', get_class($object), $setter)),
+            \Cntysoft\STD_EXCEPTION_CONTEXT);
+      }
+      $object->{$setter}($value);
+   }
+   return $object;
 }
 
 /**
@@ -272,23 +280,23 @@ function invoke_setter($object, array $data)
  */
 function get_client_ip()
 {
-    static $ip = null;
-    if ($ip !== null)
-        return $ip;
-    if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-        $arr = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-        $pos = array_search('unknown', $arr);
-        if (false !== $pos)
-            unset($arr[$pos]);
-        $ip = trim($arr[0]);
-    }elseif (isset($_SERVER['HTTP_CLIENT_IP'])) {
-        $ip = $_SERVER['HTTP_CLIENT_IP'];
-    } elseif (isset($_SERVER['REMOTE_ADDR'])) {
-        $ip = $_SERVER['REMOTE_ADDR'];
-    }
-    // IP地址合法验证
-    $ip = (false !== ip2long($ip)) ? $ip : '0.0.0.0';
-    return $ip;
+   static $ip = null;
+   if ($ip !== null)
+      return $ip;
+   if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+      $arr = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+      $pos = array_search('unknown', $arr);
+      if (false !== $pos)
+         unset($arr[$pos]);
+      $ip = trim($arr[0]);
+   }elseif (isset($_SERVER['HTTP_CLIENT_IP'])) {
+      $ip = $_SERVER['HTTP_CLIENT_IP'];
+   } elseif (isset($_SERVER['REMOTE_ADDR'])) {
+      $ip = $_SERVER['REMOTE_ADDR'];
+   }
+   // IP地址合法验证
+   $ip = (false !== ip2long($ip)) ? $ip : '0.0.0.0';
+   return $ip;
 }
 
 /**
@@ -299,8 +307,9 @@ function get_client_ip()
  */
 function get_date_string(\DateTime $date = null, $format = \Cntysoft\STD_DATE_FORMAT)
 {
-    return $date ? $date->format($format) : '';
+   return $date ? $date->format($format) : '';
 }
+
 /**
  * 将timestamp转换成字符串的形式
  * 
@@ -309,8 +318,9 @@ function get_date_string(\DateTime $date = null, $format = \Cntysoft\STD_DATE_FO
  */
 function format_timestamp($timestamp)
 {
-    return date(\Cntysoft\STD_DATE_FORMAT, $timestamp);
+   return date(\Cntysoft\STD_DATE_FORMAT, $timestamp);
 }
+
 /**
  * 获取服务器相关信息
  * 
@@ -319,102 +329,103 @@ function format_timestamp($timestamp)
  */
 function get_server_env($key)
 {
-    if (!is_string($key)) {
-        throw new Exception(
-        'env key must be the type of string'
-        );
-    }
-    if ('HTTPS' == $key) {
-        if (isset($_SERVER['HTTPS'])) {
-            return (!empty($_SERVER['HTTPS']) && 'off' != $_SERVER['HTTPS']);
-        }
-        return (0 === strrpos(get_server_env('SCRIPT_URI'), 'https://'));
-    }
-    if ('SCRIPT_NAME' == $key) {
-        if (get_server_env('CGI_MODE') && isset($_ENV['SCRIPT_URL'])) {
-            $key = 'SCRIPT_URL';
-        }
-    }
-    $value = null;
-    if (isset($_SERVER[$key])) {
-        $value = $_SERVER[$key];
-    } elseif (isset($_ENV[$key])) {
-        $value = $_ENV[$key];
-    } elseif (getenv($key) !== false) {
-        $value = getenv($key);
-    }
-    if ($key === 'REMOTE_ADDR' && $value === get_server_env('SERVER_ADDR')) {
-        $addr = get_server_env('HTTP_PC_REMOTE_ADDR');
-        if ($addr !== null) {
-            $value = $addr;
-        }
-    }
+   if (!is_string($key)) {
+      throw new Exception(
+      'env key must be the type of string'
+      );
+   }
+   if ('HTTPS' == $key) {
+      if (isset($_SERVER['HTTPS'])) {
+         return (!empty($_SERVER['HTTPS']) && 'off' != $_SERVER['HTTPS']);
+      }
+      return (0 === strrpos(get_server_env('SCRIPT_URI'), 'https://'));
+   }
+   if ('SCRIPT_NAME' == $key) {
+      if (get_server_env('CGI_MODE') && isset($_ENV['SCRIPT_URL'])) {
+         $key = 'SCRIPT_URL';
+      }
+   }
+   $value = null;
+   if (isset($_SERVER[$key])) {
+      $value = $_SERVER[$key];
+   } elseif (isset($_ENV[$key])) {
+      $value = $_ENV[$key];
+   } elseif (getenv($key) !== false) {
+      $value = getenv($key);
+   }
+   if ($key === 'REMOTE_ADDR' && $value === get_server_env('SERVER_ADDR')) {
+      $addr = get_server_env('HTTP_PC_REMOTE_ADDR');
+      if ($addr !== null) {
+         $value = $addr;
+      }
+   }
 
-    if (null !== $value) {
-        return $value;
-    }
-    switch ($key) {
-        case 'SCRIPT_FILENAME':
-            if (defined('SERVER_IIS') && SERVER_IIS === true) {
-                return str_replace('\\\\', '\\', get_server_env('PATH_TRANSLATED'));
+   if (null !== $value) {
+      return $value;
+   }
+   switch ($key) {
+      case 'SCRIPT_FILENAME':
+         if (defined('SERVER_IIS') && SERVER_IIS === true) {
+            return str_replace('\\\\', '\\', get_server_env('PATH_TRANSLATED'));
+         }
+         break;
+      case 'DOCUMENT_ROOT':
+         $name = get_server_env('SCRIPT_NAME');
+         $filename = get_server_env('SCRIPT_FILENAME');
+         $offset = 0;
+         if (!strpos($name, '.php')) {
+            $offset = 4;
+         }
+         return substr($filename, 0, -(strlen($name) + $offset));
+         break;
+      case 'PHP_SELF':
+         return str_replace(get_server_env('DOCUMENT_ROOT'), '',
+            get_server_env('SCRIPT_FILENAME'));
+         break;
+      case 'CGI_MODE':
+         return (PHP_SAPI === 'cgi');
+         break;
+      case 'HTTP_BASE':
+         $host = get_server_env('HTTP_HOST');
+         $parts = explode('.', $host);
+         $count = count($parts);
+         if ($count === 1) {
+            return '.' . $host;
+         } elseif ($count === 2) {
+            return '.' . $host;
+         } elseif ($count === 3) {
+            $gTLD = array(
+               'aero',
+               'asia',
+               'biz',
+               'cat',
+               'com',
+               'coop',
+               'edu',
+               'gov',
+               'info',
+               'int',
+               'jobs',
+               'mil',
+               'mobi',
+               'museum',
+               'name',
+               'net',
+               'org',
+               'pro',
+               'tel',
+               'travel',
+               'xxx'
+            );
+            if (in_array($parts[1], $gTLD)) {
+               return '.' . $host;
             }
-            break;
-        case 'DOCUMENT_ROOT':
-            $name = get_server_env('SCRIPT_NAME');
-            $filename = get_server_env('SCRIPT_FILENAME');
-            $offset = 0;
-            if (!strpos($name, '.php')) {
-                $offset = 4;
-            }
-            return substr($filename, 0, -(strlen($name) + $offset));
-            break;
-        case 'PHP_SELF':
-            return str_replace(get_server_env('DOCUMENT_ROOT'), '', get_server_env('SCRIPT_FILENAME'));
-            break;
-        case 'CGI_MODE':
-            return (PHP_SAPI === 'cgi');
-            break;
-        case 'HTTP_BASE':
-            $host = get_server_env('HTTP_HOST');
-            $parts = explode('.', $host);
-            $count = count($parts);
-            if ($count === 1) {
-                return '.'.$host;
-            } elseif ($count === 2) {
-                return '.'.$host;
-            } elseif ($count === 3) {
-                $gTLD = array(
-                   'aero',
-                   'asia',
-                   'biz',
-                   'cat',
-                   'com',
-                   'coop',
-                   'edu',
-                   'gov',
-                   'info',
-                   'int',
-                   'jobs',
-                   'mil',
-                   'mobi',
-                   'museum',
-                   'name',
-                   'net',
-                   'org',
-                   'pro',
-                   'tel',
-                   'travel',
-                   'xxx'
-                );
-                if (in_array($parts[1], $gTLD)) {
-                    return '.'.$host;
-                }
-            }
-            array_shift($parts);
-            return '.'.implode('.', $parts);
-            break;
-    }
-    return null;
+         }
+         array_shift($parts);
+         return '.' . implode('.', $parts);
+         break;
+   }
+   return null;
 }
 
 /**
@@ -425,56 +436,58 @@ function get_server_env($key)
  */
 function remove_xss($val)
 {
-    // remove all non-printable characters. CR(0a) and LF(0b) and TAB(9) are allowed  
-    // this prevents some character re-spacing such as <java\0script>  
-    // note that you have to handle splits with \n, \r, and \t later since they *are* allowed in some inputs  
-    $val = preg_replace('/([\x00-\x08,\x0b-\x0c,\x0e-\x19])/', '', $val);
+   // remove all non-printable characters. CR(0a) and LF(0b) and TAB(9) are allowed  
+   // this prevents some character re-spacing such as <java\0script>  
+   // note that you have to handle splits with \n, \r, and \t later since they *are* allowed in some inputs  
+   $val = preg_replace('/([\x00-\x08,\x0b-\x0c,\x0e-\x19])/', '', $val);
 
-    // straight replacements, the user should never need these since they're normal characters  
-    // this prevents like <IMG SRC=@avascript:alert('XSS')>  
-    $search = 'abcdefghijklmnopqrstuvwxyz';
-    $search .= 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    $search .= '1234567890!@#$%^&*()';
-    $search .= '~`";:?+/={}[]-_|\'\\';
-    for ($i = 0; $i < strlen($search); $i++) {
-        // ;? matches the ;, which is optional 
-        // 0{0,7} matches any padded zeros, which are optional and go up to 8 chars 
-        // @ @ search for the hex values 
-        $val = preg_replace('/(&#[xX]0{0,8}'.dechex(ord($search[$i])).';?)/i', $search[$i], $val); // with a ;
-        // @ @ 0{0,7} matches '0' zero to seven times  
-        $val = preg_replace('/(�{0,8}'.ord($search[$i]).';?)/', $search[$i], $val); // with a ;
-    }
+   // straight replacements, the user should never need these since they're normal characters  
+   // this prevents like <IMG SRC=@avascript:alert('XSS')>  
+   $search = 'abcdefghijklmnopqrstuvwxyz';
+   $search .= 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+   $search .= '1234567890!@#$%^&*()';
+   $search .= '~`";:?+/={}[]-_|\'\\';
+   for ($i = 0; $i < strlen($search); $i++) {
+      // ;? matches the ;, which is optional 
+      // 0{0,7} matches any padded zeros, which are optional and go up to 8 chars 
+      // @ @ search for the hex values 
+      $val = preg_replace('/(&#[xX]0{0,8}' . dechex(ord($search[$i])) . ';?)/i',
+         $search[$i], $val); // with a ;
+      // @ @ 0{0,7} matches '0' zero to seven times  
+      $val = preg_replace('/(�{0,8}' . ord($search[$i]) . ';?)/', $search[$i],
+         $val); // with a ;
+   }
 
-    // now the only remaining whitespace attacks are \t, \n, and \r 
-    $ra1 = Array('javascript', 'vbscript', 'expression', 'applet', 'meta', 'xml', 'blink', 'link', /* 'style', */ 'script', 'embed', 'object', 'iframe', 'frame', 'frameset', 'ilayer', 'layer', 'bgsound', 'title', 'base');
-    $ra2 = Array('onabort', 'onactivate', 'onafterprint', 'onafterupdate', 'onbeforeactivate', 'onbeforecopy', 'onbeforecut', 'onbeforedeactivate', 'onbeforeeditfocus', 'onbeforepaste', 'onbeforeprint', 'onbeforeunload', 'onbeforeupdate', 'onblur', 'onbounce', 'oncellchange', 'onchange', 'onclick', 'oncontextmenu', 'oncontrolselect', 'oncopy', 'oncut', 'ondataavailable', 'ondatasetchanged', 'ondatasetcomplete', 'ondblclick', 'ondeactivate', 'ondrag', 'ondragend', 'ondragenter', 'ondragleave', 'ondragover', 'ondragstart', 'ondrop', 'onerror', 'onerrorupdate', 'onfilterchange', 'onfinish', 'onfocus', 'onfocusin', 'onfocusout', 'onhelp', 'onkeydown', 'onkeypress', 'onkeyup', 'onlayoutcomplete', 'onload', 'onlosecapture', 'onmousedown', 'onmouseenter', 'onmouseleave', 'onmousemove', 'onmouseout', 'onmouseover', 'onmouseup', 'onmousewheel', 'onmove', 'onmoveend', 'onmovestart', 'onpaste', 'onpropertychange', 'onreadystatechange', 'onreset', 'onresize', 'onresizeend', 'onresizestart', 'onrowenter', 'onrowexit', 'onrowsdelete', 'onrowsinserted', 'onscroll', 'onselect', 'onselectionchange', 'onselectstart', 'onstart', 'onstop', 'onsubmit', 'onunload');
-    $ra = array_merge($ra1, $ra2);
+   // now the only remaining whitespace attacks are \t, \n, and \r 
+   $ra1 = Array('javascript', 'vbscript', 'expression', 'applet', 'meta', 'xml', 'blink', 'link', /* 'style', */ 'script', 'embed', 'object', 'iframe', 'frame', 'frameset', 'ilayer', 'layer', 'bgsound', 'title', 'base');
+   $ra2 = Array('onabort', 'onactivate', 'onafterprint', 'onafterupdate', 'onbeforeactivate', 'onbeforecopy', 'onbeforecut', 'onbeforedeactivate', 'onbeforeeditfocus', 'onbeforepaste', 'onbeforeprint', 'onbeforeunload', 'onbeforeupdate', 'onblur', 'onbounce', 'oncellchange', 'onchange', 'onclick', 'oncontextmenu', 'oncontrolselect', 'oncopy', 'oncut', 'ondataavailable', 'ondatasetchanged', 'ondatasetcomplete', 'ondblclick', 'ondeactivate', 'ondrag', 'ondragend', 'ondragenter', 'ondragleave', 'ondragover', 'ondragstart', 'ondrop', 'onerror', 'onerrorupdate', 'onfilterchange', 'onfinish', 'onfocus', 'onfocusin', 'onfocusout', 'onhelp', 'onkeydown', 'onkeypress', 'onkeyup', 'onlayoutcomplete', 'onload', 'onlosecapture', 'onmousedown', 'onmouseenter', 'onmouseleave', 'onmousemove', 'onmouseout', 'onmouseover', 'onmouseup', 'onmousewheel', 'onmove', 'onmoveend', 'onmovestart', 'onpaste', 'onpropertychange', 'onreadystatechange', 'onreset', 'onresize', 'onresizeend', 'onresizestart', 'onrowenter', 'onrowexit', 'onrowsdelete', 'onrowsinserted', 'onscroll', 'onselect', 'onselectionchange', 'onselectstart', 'onstart', 'onstop', 'onsubmit', 'onunload');
+   $ra = array_merge($ra1, $ra2);
 
-    $found = true; // keep replacing as long as the previous round replaced something 
-    while ($found == true) {
-        $val_before = $val;
-        for ($i = 0; $i < sizeof($ra); $i++) {
-            $pattern = '/';
-            for ($j = 0; $j < strlen($ra[$i]); $j++) {
-                if ($j > 0) {
-                    $pattern .= '(';
-                    $pattern .= '(&#[xX]0{0,8}([9ab]);)';
-                    $pattern .= '|';
-                    $pattern .= '|(�{0,8}([9|10|13]);)';
-                    $pattern .= ')*';
-                }
-                $pattern .= $ra[$i][$j];
+   $found = true; // keep replacing as long as the previous round replaced something 
+   while ($found == true) {
+      $val_before = $val;
+      for ($i = 0; $i < sizeof($ra); $i++) {
+         $pattern = '/';
+         for ($j = 0; $j < strlen($ra[$i]); $j++) {
+            if ($j > 0) {
+               $pattern .= '(';
+               $pattern .= '(&#[xX]0{0,8}([9ab]);)';
+               $pattern .= '|';
+               $pattern .= '|(�{0,8}([9|10|13]);)';
+               $pattern .= ')*';
             }
-            $pattern .= '/i';
-            $replacement = substr($ra[$i], 0, 2).'<x>'.substr($ra[$i], 2); // add in <> to nerf the tag
-            $val = preg_replace($pattern, $replacement, $val); // filter out the hex tags  
-            if ($val_before == $val) {
-                // no replacements were made, so exit the loop  
-                $found = false;
-            }
-        }
-    }
-    return $val;
+            $pattern .= $ra[$i][$j];
+         }
+         $pattern .= '/i';
+         $replacement = substr($ra[$i], 0, 2) . '<x>' . substr($ra[$i], 2); // add in <> to nerf the tag
+         $val = preg_replace($pattern, $replacement, $val); // filter out the hex tags  
+         if ($val_before == $val) {
+            // no replacements were made, so exit the loop  
+            $found = false;
+         }
+      }
+   }
+   return $val;
 }
 
 /**
@@ -487,9 +500,9 @@ function remove_xss($val)
  */
 function set_page_var(&$orderBy, &$limit, &$offset, &$params)
 {
-    $orderBy = array_key_exists('orderBy', $params) ? $params['orderBy'] : null;
-    $limit = array_key_exists('limit', $params) ? (int) $params['limit'] : \Cntysoft\STD_PAGE_SIZE;
-    $offset = array_key_exists('start', $params) ? (int) $params['start'] : 0;
+   $orderBy = array_key_exists('orderBy', $params) ? $params['orderBy'] : null;
+   $limit = array_key_exists('limit', $params) ? (int) $params['limit'] : \Cntysoft\STD_PAGE_SIZE;
+   $offset = array_key_exists('start', $params) ? (int) $params['start'] : 0;
 }
 
 /**
@@ -500,11 +513,11 @@ function set_page_var(&$orderBy, &$limit, &$offset, &$params)
  */
 function convert_2_utf8($string)
 {
-    if (PHP_OS == \Cntysoft\WINDOWS && !is_utf8($string)) { //加了判断，这个判断不是很好
-        $string = iconv('GBK', 'UTF-8', $string);
-    }
+   if (PHP_OS == \Cntysoft\WINDOWS && !is_utf8($string)) { //加了判断，这个判断不是很好
+      $string = iconv('GBK', 'UTF-8', $string);
+   }
 
-    return $string;
+   return $string;
 }
 
 /**
@@ -516,13 +529,13 @@ function convert_2_utf8($string)
  */
 function byte_format($size, $dec = 2)
 {
-    $a = array("B", "KB", "MB", "GB", "TB", "PB");
-    $pos = 0;
-    while ($size >= 1024) {
-        $size /= 1024;
-        $pos++;
-    }
-    return round($size, $dec)." ".$a[$pos];
+   $a = array("B", "KB", "MB", "GB", "TB", "PB");
+   $pos = 0;
+   while ($size >= 1024) {
+      $size /= 1024;
+      $pos++;
+   }
+   return round($size, $dec) . " " . $a[$pos];
 }
 
 /**
@@ -534,24 +547,24 @@ function byte_format($size, $dec = 2)
  */
 function get_config_item_by_path($config, $path)
 {
-    $path = trim($path);
-    if ('' == $path) {
-        return $config;
-    }
-    $parts = explode('.', $path);
-    $root = $config;
-    foreach ($parts as $key) {
-        if(isset($root->{$key})){
-            $root = $root->{$key};
-            if(!$root instanceof \Phalcon\Config){
-                return $root;
-            }
-            continue;
-        }else{
-            return null;
-        }
-    }
-    return $root;
+   $path = trim($path);
+   if ('' == $path) {
+      return $config;
+   }
+   $parts = explode('.', $path);
+   $root = $config;
+   foreach ($parts as $key) {
+      if (isset($root->{$key})) {
+         $root = $root->{$key};
+         if (!$root instanceof \Phalcon\Config) {
+            return $root;
+         }
+         continue;
+      } else {
+         return null;
+      }
+   }
+   return $root;
 }
 
 /**
@@ -564,24 +577,25 @@ function get_config_item_by_path($config, $path)
  */
 function set_config_item_by_path($config, $path, $value)
 {
-    $path = trim($path);
-    if ('' == $path) {
-        return $config;
-    }
-    $parts = explode('.', $path);
-    $setterKey = array_pop($parts);
-    $root = $config;
-    foreach ($parts as $key) {
-        if(isset($root->{$key})){
-            $root = $root->{$key};
-        }else{
-            //中途不存在直接返回 什么也不做
-            return $config;
-        }
-    }
-    $root->{$setterKey} = $value; 
-    return $config;
+   $path = trim($path);
+   if ('' == $path) {
+      return $config;
+   }
+   $parts = explode('.', $path);
+   $setterKey = array_pop($parts);
+   $root = $config;
+   foreach ($parts as $key) {
+      if (isset($root->{$key})) {
+         $root = $root->{$key};
+      } else {
+         //中途不存在直接返回 什么也不做
+         return $config;
+      }
+   }
+   $root->{$setterKey} = $value;
+   return $config;
 }
+
 /**
  * 将数组信息写入指定的文件
  * 
@@ -590,12 +604,13 @@ function set_config_item_by_path($config, $path, $value)
  */
 function write_array_to_file($fileame, array $data)
 {
-    if (empty($data)) {
-        return 0;
-    }
-    $data = "<?php \nreturn ".var_export($data, true).';';
-    return Filesystem::save($fileame, $data);
+   if (empty($data)) {
+      return 0;
+   }
+   $data = "<?php \nreturn " . var_export($data, true) . ';';
+   return Filesystem::save($fileame, $data);
 }
+
 /**
  * 获取指定文件名称的扩展名称
  * pathinfo函数在处理 xxx.tar.gz这样的名称的时候有错误
@@ -605,12 +620,13 @@ function write_array_to_file($fileame, array $data)
  */
 function get_file_ext($filename)
 {
-    $pos = strpos($filename, '.');
-    if(!$pos){
-        return '';
-    }
-    return substr($filename, $pos + 1);
+   $pos = strpos($filename, '.');
+   if (!$pos) {
+      return '';
+   }
+   return substr($filename, $pos + 1);
 }
+
 /**
  * 生成加密密码
  * 
@@ -619,8 +635,8 @@ function get_file_ext($filename)
  */
 function generate_password($password)
 {
-    $encrypt = get_global_di()->getShared('security');
-    return $encrypt->hash(hash('sha256', $password));
+   $encrypt = get_global_di()->getShared('security');
+   return $encrypt->hash(hash('sha256', $password));
 }
 
 /**
@@ -643,10 +659,25 @@ function get_server_root_domain()
  */
 function check_target_upload_is_valid($uploadDir, array $allowUploadDirs)
 {
-   foreach ($allowUploadDirs as $allowDir){
-      if(substr($uploadDir, 0, strlen($allowDir)) == $allowDir){
+   foreach ($allowUploadDirs as $allowDir) {
+      if (substr($uploadDir, 0, strlen($allowDir)) == $allowDir) {
          return true;
       }
    }
    return false;
+}
+
+/**
+ * @param string $prefix
+ * @return string
+ */
+function generate_uuid($prefix = "")
+{    //可以指定前缀
+   $str = md5(uniqid(mt_rand(), true));
+   $uuid = substr($str, 0, 8) . '-';
+   $uuid .= substr($str, 8, 4) . '-';
+   $uuid .= substr($str, 12, 4) . '-';
+   $uuid .= substr($str, 16, 4) . '-';
+   $uuid .= substr($str, 20, 12);
+   return $prefix . $uuid;
 }
