@@ -11,10 +11,12 @@ use Cntysoft\Kernel;
  */
 class Document
 {
+
    const API_ENTRY = 'index/doc';
    const DOC_ADD = 'add';
    const DOC_REMOVE = 'delete';
    const DOC_UPDATE = 'update';
+
    /**
     * push数据时API返回的正确的状态值。
     * @var string
@@ -30,6 +32,7 @@ class Document
     * @var int
     */
    const SIGN_MODE = 1;
+
    /**
     * @var \Cntysoft\Framework\Cloud\Ali\OpenSearch\ApiCaller $apiCaller
     */
@@ -41,21 +44,39 @@ class Document
    {
       $this->apiCaller = $appCaller;
       $this->appName = $appName;
-      $this->apiEntry = self::API_ENTRY.'/'.$this->appName;
+      $this->apiEntry = self::API_ENTRY . '/' . $this->appName;
    }
 
+   /**
+    * @param string $tableName
+    * @param array $docs
+    * @return array
+    * @throws \Cntysoft\Framework\Cloud\Ali\OpenSearch\Exception
+    */
    public function add($tableName, array $docs)
    {
       $docs = $this->generate($docs, self::DOC_ADD);
       return $this->upload($tableName, $docs);
    }
 
+   /**
+    * @param string $tableName
+    * @param array $docs
+    * @return array
+    * @throws \Cntysoft\Framework\Cloud\Ali\OpenSearch\Exception
+    */
    public function update($tableName, array $docs)
    {
       $docs = $this->generate($docs, self::DOC_UPDATE);
       return $this->upload($tableName, $docs);
    }
 
+   /**
+    * @param string $tableName
+    * @param array $docs
+    * @return array
+    * @throws \Cntysoft\Framework\Cloud\Ali\OpenSearch\Exception
+    */
    public function delete($tableName, array $docs)
    {
       $docs = $this->generate($docs, self::DOC_REMOVE);
@@ -80,8 +101,16 @@ class Document
       if ($signMode == self::SIGN_MODE) {
          $params['sign_mode'] = self::SIGN_MODE;
       }
-      return $this->apiCaller->call($this->apiEntry, $params, ApiCaller::M_POST);
+      $ret = $this->apiCaller->call($this->apiEntry, $params, ApiCaller::M_POST);
+      if ($ret['status'] == 'FAIL') {
+         $errorType = ErrorType::getInstance();
+         $errors = $ret['errors'][0];
+         Kernel\throw_exception(new Exception($errorType->msg('REQUEST_ERROR',
+               $errors['message']), $errorType->code('REQUEST_ERROR')));
+      }
+      return $ret;
    }
+
    /**
     * 重新生成doc文档。
     * @param array $docs doc文档

@@ -13,7 +13,7 @@ class ErrorType extends BaseErrorType
 {
    protected $map = array(
       'DOC_FORMAT_ERROR' => array(10001, 'Operation failed. The docs is not correct.'),
-      'REQUEST_ERROR' => array(10002, 'request aliyun network error : %s'),
+      'REQUEST_ERROR' => array(10002, 'request aliyun api error : %s'),
       'QUERY_ERROR' => array(10003, 'query error : %s')
    );
 }
