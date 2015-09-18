@@ -101,12 +101,13 @@ class Document
       if ($signMode == self::SIGN_MODE) {
          $params['sign_mode'] = self::SIGN_MODE;
       }
+      
       $ret = $this->apiCaller->call($this->apiEntry, $params, ApiCaller::M_POST);
       if ($ret['status'] == 'FAIL') {
          $errorType = ErrorType::getInstance();
          $errors = $ret['errors'][0];
          Kernel\throw_exception(new Exception($errorType->msg('REQUEST_ERROR',
-               $errors['message']), $errorType->code('REQUEST_ERROR')));
+               $errors['message']), $errors['code']));
       }
       return $ret;
    }
