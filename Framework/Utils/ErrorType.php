@@ -10,13 +10,16 @@ namespace Cntysoft\Framework\Utils;
 use Cntysoft\Stdlib\ErrorType as BaseErrorType;
 class ErrorType extends BaseErrorType
 {
-    /**
-     * @var array $map
-     */
-    protected $map = array(
-        'E_AREA_MAP_FILE_NOT_EXIST' => array(10001, 'China area map file : %s is not exist'),
-        'E_IMAGE_TO_DEAL_NOT_EXIT' => array(10002, 'The image you want to deal with is not exit.'),
-        'E_IMAGE_PATH_NOT_EXIT' => array(10003, 'The image path is not exit.'),
-        'E_IMAGE_TYPE_NOT_EXIT' => array(10004, 'Not an image file (jpeg/png/gif) at %s')
-    );
+
+   /**
+    * @var array $map
+    */
+   protected $map = array(
+      'E_AREA_MAP_FILE_NOT_EXIST' => array(10001, 'China area map file : %s is not exist'),
+      'E_IMAGE_TO_DEAL_NOT_EXIT' => array(10002, 'The image you want to deal with is not exit.'),
+      'E_IMAGE_PATH_NOT_EXIT' => array(10003, 'The image path is not exit.'),
+      'E_IMAGE_TYPE_NOT_EXIT' => array(10004, 'Not an image file (jpeg/png/gif) at %s'),
+      'E_WORK_ID_RANGE_ERROR' => array(10005, 'worker Id can\'t be greater than 15 or less than 0'),
+      'E_CLOCL_MOVE_BACKWARD' => array(10006, 'Clock moved backwards.  Refusing to generate id for %s milliseconds"')
+   );
 }

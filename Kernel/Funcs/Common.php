@@ -681,3 +681,16 @@ function generate_uuid($prefix = "")
    $uuid .= substr($str, 20, 12);
    return $prefix . $uuid;
 }
+/**
+ * 生成全局唯一的id
+ * 
+ * @return int
+ */
+function generate_global_id()
+{
+   static $generator = null;
+   if(null == $generator){
+      $generator = new \Cntysoft\Framework\Utils\SnowFlake(1);
+   }
+   return $generator->nextId();
+}
