@@ -160,7 +160,7 @@ class Filesystem
     * @param string $source
     * @param string $target
     */
-   public static function copyDir($source, $target)
+   public static function copyDir($source, $target, $mode = 0755)
    {
       $source = Kernel\real_path($source);
       $target = Kernel\real_path($target);
@@ -188,7 +188,6 @@ class Filesystem
             StdErrorType::msg('E_DEST_NAME_INVALID', $target, $source), StdErrorType::code('E_DEST_NAME_INVALID')
          ), \Cntysoft\STD_EXCEPTION_CONTEXT);
       }
-      $mode = fileperms($source);
       $old = umask(0);
       //递归复制
       //复制本身
