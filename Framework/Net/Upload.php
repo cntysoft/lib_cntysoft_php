@@ -189,11 +189,11 @@ abstract class Upload
       }
       //将分片复制到最终的文件中
       if ($done) {
-         if ($this->options->getRandomize()) {
-            //随机码加在前面
-            $filename = uniqid() . '_' . $filename;
-            $targetFile = $targetDir . DS . $filename;
-         }
+//         if ($this->options->getRandomize()) {
+//            //随机码加在前面
+//            $filename = uniqid() . '_' . $filename;
+//            $targetFile = $targetDir . DS . $filename;
+//         }
          $out = Filesystem::fopen($targetFile, "wb");
          if (flock($out, LOCK_EX)) {
             for ($index = 0; $index < $totalChunk; $index++) {
@@ -246,15 +246,15 @@ abstract class Upload
    {
       $uploadDir = CNTY_ROOT_DIR . DS . $this->options->getUploadDir();
       //首先探测是否上传的时候指定的目标的文件夹名称
-      $uploadFilename = $this->options->getTargetName();
-      if (!$uploadFilename) {
-         $uploadFilename = Kernel\real_path($uploadFile->getName()); //这个地方要将前台JS发来的文件名进行编码转换，中文文件名的文件上传问题解决
-      }
-      if(strpos($uploadFilename, '/')){
-         $uploadFilename = substr($uploadFilename, 1);
-      }
+//      $uploadFilename = $this->options->getTargetName();
+//      if (!$uploadFilename) {
+//         $uploadFilename = Kernel\real_path($uploadFile->getName()); //这个地方要将前台JS发来的文件名进行编码转换，中文文件名的文件上传问题解决
+//      }
+//      if(strpos($uploadFilename, '/')){
+//         $uploadFilename = substr($uploadFilename, 1);
+//      }
       //这里可能有文件名称不存在的情况吗？
-      return $uploadDir . DS . $uploadFilename;
+      return $uploadDir . DS . uniqid() . '.' . $uploadFile->getExtension();
    }
 
    /**
