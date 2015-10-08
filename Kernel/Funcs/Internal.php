@@ -7,7 +7,6 @@
  * @license    http://www.cntysoft.com/license/new-bsd     New BSD License
  */
 namespace Cntysoft\Kernel;
-
 use Phalcon\Http\Response;
 use Cntysoft\Phalcon\Mvc\Application;
 
@@ -133,7 +132,7 @@ function generate_error_response($msg, array $ext = array())
       'status' => false,
       'msg' => $msg
    );
-   if (! empty($ext)) {
+   if (!empty($ext)) {
       $error = array_merge($error, $ext);
    }
    $reponse = new Response();
@@ -149,7 +148,7 @@ function generate_error_response($msg, array $ext = array())
 function get_trait_token()
 {
    // 中间是否要加入一个随机串 然后加密呢？
-   return md5(get_client_ip().get_server_env('HTTP_USER_AGENT'));
+   return md5(get_client_ip() . get_server_env('HTTP_USER_AGENT'));
 }
 
 /**
@@ -177,6 +176,7 @@ function get_model_require_fields($model, array $skip = array())
    }
    return $ret;
 }
+
 /**
  * 获取随机的字符串
  * @param int       $length  要生成的随机字符串长度
@@ -186,9 +186,9 @@ function get_model_require_fields($model, array $skip = array())
 function get_random_str($length = 5, $specialSymbol = false)
 {
    $arr = array('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', "~@#$%^&*(){}[]|");
-   if($specialSymbol){
+   if ($specialSymbol) {
       $string = implode('', $arr);
-   }else{
+   } else {
       $string = $arr[0];
    }
    $count = strlen($string) - 1;
@@ -237,8 +237,10 @@ function get_mysql_meta_info()
  */
 function ensure_extension($extension)
 {
-   if (! extension_loaded($extension)) {
-      throw_exception(new Exception(StdErrorType::msg('E_EXTENSION_NOT_LOADED', $extension), StdErrorType::code('E_EXTENSION_NOT_LOADED')), \Cntysoft\STD_EXCEPTION_CONTEXT);
+   if (!extension_loaded($extension)) {
+      throw_exception(new Exception(StdErrorType::msg('E_EXTENSION_NOT_LOADED',
+            $extension), StdErrorType::code('E_EXTENSION_NOT_LOADED')),
+         \Cntysoft\STD_EXCEPTION_CONTEXT);
    }
 }
 
@@ -262,7 +264,8 @@ function rethrow_error_exception(\ErrorException $e)
    $msg = $e->getMessage();
    $pos = strripos($msg, ':');
    $msg = trim(substr($msg, $pos + 1));
-   throw new \ErrorException($msg, 0, $e->getSeverity(), $e->getFile(), $e->getLine());
+   throw new \ErrorException($msg, 0, $e->getSeverity(), $e->getFile(),
+   $e->getLine());
 }
 
 /**
@@ -271,7 +274,7 @@ function rethrow_error_exception(\ErrorException $e)
  */
 function get_orm_cache_dir()
 {
-   return real_path(StdDir::getCacheDir().DS.'Orm');
+   return real_path(StdDir::getCacheDir() . DS . 'Orm');
 }
 
 /**
@@ -280,9 +283,8 @@ function get_orm_cache_dir()
  */
 function get_common_cache_dir()
 {
-   return real_path(StdDir::getCacheDir().DS.'Common');
+   return real_path(StdDir::getCacheDir() . DS . 'Common');
 }
-
 
 /**
  * 清空一个数据表
@@ -293,4 +295,40 @@ function truncate_table($table)
 {
    $db = get_db_adapter();
    $db->execute(sprintf('TRUNCATE TABLE `%s`', $table));
+}
+
+/**
+ * 派发到新的控制器里面
+ * 
+ * @param string $module
+ * @param string $controller
+ * @param string $action
+ */
+function dispatch_action($module, $controller, $action)
+{
+   $di = get_global_di();
+   $dispatcher = $di->get('dispatcher');
+   $dispatcher->forward(array(
+      'module' => $module,
+      'controller' => $controller,
+      'action' => $action
+   ));
+}
+function dispath_404_page()
+{
+   dispatch_action('Front', 'Exception', 'pageNotExist');
+}
+/**
+ * 前往指定的地址
+ * 
+ * @param string $route
+ */
+function goto_route($route)
+{
+   header("location:$route");
+}
+
+function goto_404_page()
+{
+   goto_route('404.html');
 }
