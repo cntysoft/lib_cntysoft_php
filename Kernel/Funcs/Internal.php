@@ -325,7 +325,7 @@ function dispath_404_page()
  */
 function goto_route($route)
 {
-   header("location:$route");
+   header("location:/$route");
 }
 
 function goto_404_page()
