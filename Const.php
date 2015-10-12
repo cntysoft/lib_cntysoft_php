@@ -78,6 +78,4 @@ const JS = 'Js';
 const SITE_STATUS_RUNNING = 1;
 const SITE_STATUS_UPGRADING = 2;
 const SITE_STATUS_CLOSED = 3;
-//阿里的API服务器
-const ALI_SEARCH_API_PUB_ENTRY = 'http://opensearch-cn-beijing.aliyuncs.com';
-const ALI_SEARCH_INTERNAL_ENTRY = 'http://intranet.opensearch-cn-beijing.aliyuncs.com';
+
