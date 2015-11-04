@@ -26,7 +26,54 @@ class BaseClient
     const PARAM_SIGN_TYPE_RSA = 'RSA';
     //默认的字符集
     const INPUT_CHARSET = 'utf-8';
-
+    const DEFAULT_BUY_TYPE = 1;//默认购买类型为商品购买
+    //付款类型
+    const PAY_TYPE_ALIPAY = 1; //支付宝余额
+    const PAY_TYPE_BTC = 2; //个人网银支付
+    const PAY_TYPE_BTB = 3; //企业网银支付
+    /**
+     * 支付宝余额支付的代码
+     *
+     * @var string
+     */
+    protected $payAliPayCode = 'ALIPAY';
+    /**
+     * BTB网银支付的银行代码
+     *
+     * @var array
+     */
+    protected $payBankBTBCode = array(
+       'ICBCBTB', //中国工商银行（B2B）
+       'ABCBTB', //中国农业银行（B2B）
+       'CCBBTB', //中国建设银行（B2B）
+       'SPDBB2B', //上海浦东发展银行（B2B）
+       'BOCBTB', //中国银行（B2B）
+       'CMBBTB' //招商银行（B2B）
+    );
+    
+    /**
+     * BTC网银支付的银行代码
+     *
+     * @var array
+     */
+    protected $payBankBTCCode = array(
+       //对私账户转账
+       'BOCB2C', //中国银行
+       'ICBCB2C', //中国工商银行
+       'CMB', //招商银行
+       'CCB', //中国建设银行
+       'ABC', //中国农业银行
+       'SPDB', //上海浦东发展银行
+       'CIB', //兴业银行
+       'GDB', //广发银行
+       'FDB', //富滇银行
+       'HZCBB2C', //杭州银行
+       'SHBANK', //上海银行
+       'NBBANK', //宁波银行
+       'SPABANK', //平安银行
+       'POSTGC', //中国邮政储蓄银行
+       'COMM-DEBIT' //交通银行
+    );
     /**
      * Http调用类
      * 
@@ -252,7 +299,7 @@ class BaseClient
            'sign_type'       => self::PARAM_SIGN_TYPE_MD5,
            '__input_charset' => self::INPUT_CHARSET,
            'notify_url'      => $this->notifyUrl,
-           'seller_id'       => $this->partner
+           'seller_id'       => $this->partner,
         );
         //待请求参数数组
         $params = $this->buildRequestParam($params);
@@ -329,7 +376,7 @@ class BaseClient
      * 验证支付宝回调的源
      * 
      * @param string $notifyId
-     * @return boolean
+     * @return \Zend\Http\Response
      */
     public function verifyNotifySource($notifyId)
     {
@@ -357,6 +404,33 @@ class BaseClient
     protected function getSSLVerifyLocetion()
     {
         return StdDir::getFrameworkDataDir('Pay') . DS . 'AliPay' . DS . 'cacert.pem';
+    }
+
+    /**
+     * 验证订单支付的类型和银行代码
+     * 
+     * @param int $type
+     * @param string $bankCode
+     * @return boolean
+     */
+    public function checkPayType($type, $bankCode)
+    {
+        $ret = true;
+        switch($type) {
+            case self::PAY_TYPE_ALIPAY:
+                $ret = $bankCode !== $this->payAliPayCode ? false : true;
+                break;
+            case self::PAY_TYPE_BTB:
+                $ret = !in_array($bankCode, $this->payBankBTBCode) ? false : true;
+                break;
+            case self::PAY_TYPE_BTC:
+                $ret = !in_array($bankCode, $this->payBankBTCCode) ? false : true;
+                break;
+            default :
+                $ret = false;
+        }
+        
+        return $ret;
     }
 
 }
