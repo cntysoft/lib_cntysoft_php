@@ -99,6 +99,12 @@ class BaseClient
      */
     protected $notifyUrl;
     /**
+     * 同步通知的地址
+     *
+     * @var string
+     */
+    protected $returnUrl;
+    /**
      * 账户的安全检验码
      *
      * @var string
@@ -109,10 +115,11 @@ class BaseClient
      * 初始化参数
      * 
      * @param string $notifyUrl   回调通知的网址
+     * @param string $returnUrl 同步回跳的网址
      * @param string $serviceType 调用支付宝接口的service类型
      * @param string $partner 商家的识别码
      */
-    public function __construct($notifyUrl = null, $serviceType = null)
+    public function __construct($notifyUrl = null, $returnUrl = null, $serviceType = null)
     {
         $config = ConfigProxy::getFrameworkConfig('Pay');
         $this->key = $config->alipay->key;
@@ -358,6 +365,11 @@ class BaseClient
 
         return md5($string . $this->key);
     }
+    
+    protected function generateRSASign($params)
+    {
+        
+    }
 
     /**
      * 验证支付宝回调的签名
@@ -366,9 +378,17 @@ class BaseClient
      * @param string $notifySign
      * @return boolean
      */
-    public function verifyNotifySign($params, $notifySign)
+    public function verifyNotifySign($params, $notifySign, $signType = 'MD5')
     {
-        $sign = $this->generateMD5Sign($params);
+        switch(strtoupper(trim($signType))) {
+            case self::PARAM_SIGN_TYPE_MD5:
+                $sign = $this->generateMD5Sign($params);
+                break;
+            case self::PARAM_SIGN_TYPE_RSA:
+                $sign = $this->generateRSASign($params);
+                break;
+        }
+
         return $sign == $notifySign;
     }
 
