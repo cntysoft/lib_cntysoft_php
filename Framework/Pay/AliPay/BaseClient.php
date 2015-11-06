@@ -129,6 +129,8 @@ class BaseClient
         $this->partner = $config->alipay->partner;
 
         $this->notifyUrl = $notifyUrl;
+        
+        $this->returnUrl = $returnUrl;
     }
 
     /**
@@ -307,6 +309,7 @@ class BaseClient
            '__input_charset' => self::INPUT_CHARSET,
            'notify_url'      => $this->notifyUrl,
            'seller_id'       => $this->partner,
+           'return_url'    => $this->returnUrl
         );
         //待请求参数数组
         $params = $this->buildRequestParam($params);
