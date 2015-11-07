@@ -34,5 +34,19 @@ class NativePay
       
       return $ret;
 	}
+   
+   /**
+    * 关闭订单
+    * 
+    * @param integer $orderId
+    * @return array
+    */
+   public function closeOrder($orderId)
+   {
+      $native = new Utils();
+      $native->setValue('out_trade_no', $orderId);
+      
+      return WeChatPayApi::closeOrder($native);
+   }
 }
 

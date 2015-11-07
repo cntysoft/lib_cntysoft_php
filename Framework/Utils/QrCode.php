@@ -1241,9 +1241,13 @@ class QrCode
       $this->image = $output_image;
    }
 
+   /**
+    * 生成微信支付二维码
+    * @param type $data
+    */
    public function renderWeChat($data)
    {
-      $this->setPadding(10)->setSize(348)->setText($data)->setErrorCorrection('high')
+      $this->setPadding(9)->setSize(330)->setText($data)->setErrorCorrection('high')
          ->setForegroundColor(array('r' => 0, 'g' => 0, 'b' => 0, 'a' => 0))
          ->setBackgroundColor(array('r' => 255, 'g' => 255, 'b' => 255, 'a' => 0));
       $this->render();
