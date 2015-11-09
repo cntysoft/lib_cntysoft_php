@@ -84,7 +84,7 @@ class Label extends AbstractTag
          }
          ErrorHandler::stop();
       } catch (\Exception $ex) {
-         $this->renderError($ex->getMessage());
+            $this->renderError($ex);
       }
    }
 

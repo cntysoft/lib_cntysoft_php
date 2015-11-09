@@ -17,7 +17,6 @@ abstract class AbstractTag
 {
    const TAGLIB_BASE_NS = '\\TagLibrary';
    const META_FILENAME = 'Definition.php';
-
    const D_KEY_ID = 'id';
    const D_KEY_CATEGORY = 'category';
    const D_KEY_CLASS = 'class';
@@ -46,10 +45,17 @@ abstract class AbstractTag
 
    /**
     * 显示解析错误信息
+    * 
+    * @param \Exception $ex
+    * @throws \Exception
     */
-   public function renderError($msg)
+   public function renderError($ex)
    {
-      echo sprintf('<span style = "color:red">%s : %s</span>', $this->getTagSignature(), $msg);
+      if (SYS_RUNTIME_MODE_PRODUCT == SYS_RUNTIME_MODE) {
+         throw $ex;
+      } else {
+         echo sprintf('<span style = "color:red">%s : %s</span>', $this->getTagSignature(), $ex->getMessage());
+      }
    }
 
    /**
@@ -98,7 +104,7 @@ abstract class AbstractTag
    protected function getTagDir($type, $id)
    {
       $tagResolver = View::getTagResolver();
-      return $tagResolver->getTagBaseDir().DS.$type.DS.$id;
+      return $tagResolver->getTagBaseDir() . DS . $type . DS . $id;
    }
 
    /**
@@ -141,7 +147,7 @@ abstract class AbstractTag
       Kernel\array_has_requires($meta, $requires, $leak);
       if (!empty($leak)) {
          $errorType = ErrorType::getInstance();
-         throw new Exception($errorType->msg('E_TAG_META_ERROR', 'tag meta require fields : '.implode(',', $leak)));
+         throw new Exception($errorType->msg('E_TAG_META_ERROR', 'tag meta require fields : ' . implode(',', $leak)));
       }
 
       $requires = array(
@@ -166,7 +172,7 @@ abstract class AbstractTag
             }
             if (!empty($leak)) {
                $errorType = ErrorType::getInstance();
-               throw new Exception($errorType->msg('E_TAG_META_ERROR', 'tag attribue '.$name.' require fields : '.implode(',', $leak)));
+               throw new Exception($errorType->msg('E_TAG_META_ERROR', 'tag attribue ' . $name . ' require fields : ' . implode(',', $leak)));
             }
          }
       }

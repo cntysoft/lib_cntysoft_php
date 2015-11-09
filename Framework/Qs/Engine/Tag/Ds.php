@@ -50,7 +50,7 @@ class Ds extends AbstractTag
          $ds = new $cls($params, $this->engine);
          self::$dsPool[$group] = $ds->load();
       } catch (\Exception $ex) {
-         $this->renderError($ex->getMessage());
+            $this->renderError($ex);
       }
    }
    /**

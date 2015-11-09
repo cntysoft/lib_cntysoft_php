@@ -31,7 +31,7 @@ class PhpVar extends AbstractTag
          }
          echo $value;
       } catch (\Exception $ex) {
-         $this->renderError($ex->getMessage());
+            $this->renderError($ex);
       }
 
    }

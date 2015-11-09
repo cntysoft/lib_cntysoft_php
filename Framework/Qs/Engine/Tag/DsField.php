@@ -38,7 +38,7 @@ class DsField extends AbstractTag
          }
          echo $pool[$group][$key];
       } catch (\Exception $ex) {
-         $this->renderError($ex->getMessage());
+            $this->renderError($ex);
       }
    }
 
