@@ -19,7 +19,7 @@ class NativePay
     * @param string $feeType 货币类型
     * @return array
     */
-	public function GetPayUrl($body, $price, $orderId, $feeType = 'CNY')
+	public function getPayUrl($body, $price, $orderId, $feeType = 'CNY')
 	{
       $native = new Utils();
 //      $native->setValue('device_info', 'WEB');

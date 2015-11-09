@@ -15,7 +15,7 @@ class Notify extends Utils
     * 
     * @param bool $needSign  是否需要签名输出
     */
-   final public function Handle($needSign = true)
+   final public function handle($needSign = true)
    {
       $msg = "OK";
       //当返回false的时候，表示notify中调用notifyCallBack回调失败获取签名校验失败，此时直接回复失败

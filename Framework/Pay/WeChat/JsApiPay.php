@@ -42,7 +42,7 @@ class JsApiPay
 	 * 
 	 * @return json数据，可直接填入js函数作为参数
 	 */
-	public function GetJsApiParameters($UnifiedOrderResult)
+	public function getJsApiParameters($UnifiedOrderResult)
 	{
 		if(!array_key_exists("appid", $UnifiedOrderResult)
 		|| !array_key_exists("prepay_id", $UnifiedOrderResult)
@@ -71,7 +71,7 @@ class JsApiPay
 	 * 
 	 * @return 获取共享收货地址js函数需要的参数，json格式可以直接做参数使用
 	 */
-	public function GetEditAddressParameters()
+	public function getEditAddressParameters()
 	{	
       $utils = new Utils();
 		$getData = $this->data;

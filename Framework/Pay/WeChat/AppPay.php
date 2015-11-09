@@ -20,7 +20,7 @@ class AppPay
     * @param string $feeType 货币类型
     * @return array
     */
-	public function GetPayUrl($body, $price, $orderId, $feeType = 'CNY')
+	public function getPayUrl($body, $price, $orderId, $feeType = 'CNY')
 	{
       $app = new Utils();
 //      $app->setValue('device_info', 'WEB');
