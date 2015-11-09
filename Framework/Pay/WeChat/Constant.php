@@ -30,7 +30,7 @@ class Constant
    /**
     * 支付回调地址，用来通知商户是否已经支付成功
     */
-   const NOTIFY_URL = 'http://notify.huaifufeng.com:6000/notify.html';
+   const NOTIFY_URL = 'http://www.fhzc.com/notify/wechat.html';
    
    /**
     * 设置商户证书路径,注意应该填写绝对路径（仅退款、撤销订单时需要，可登录商户平台下载，
