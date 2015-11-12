@@ -98,7 +98,7 @@ class CookieManager
     * @param boolean $httponly
     * @return \Cntysoft\KernelCookieManager
     */
-   public function setCookie($key, $value = '', $life = null, $prefix = null, $httponly = null)
+   public function setCookie($key, $value = '', $life = null, $domain = null, $prefix = null, $httponly = null)
    {
       $prefix = null == $prefix ? $this->prefix : $prefix;
       $httponly = null == $httponly ? $this->httponly : $httponly;
@@ -110,7 +110,7 @@ class CookieManager
          $value = $encrypter->encrypt($value);
       }
       $key = $prefix.$key;
-      setcookie($key, $value, $expire, $this->path, null, $this->secure, $httponly);
+      setcookie($key, $value, $expire, $this->path, $domain, $this->secure, $httponly);
       $_COOKIE[$key] = $value;
       return $this;
    }
@@ -121,7 +121,7 @@ class CookieManager
     * @param string $key
     * @param string $prefix
     */
-   public function deleteCookie($key, $prefix = null, $httponly = null)
+   public function deleteCookie($key, $domain = null, $prefix = null, $httponly = null)
    {
       if (null == $prefix) {
          $prefix = $this->prefix;
@@ -129,7 +129,7 @@ class CookieManager
       $key = $prefix.$key;
       $httponly = null == $httponly ? $this->httponly : $httponly;
       setcookie(
-         $key, '', time() - 3600, $this->path, $this->domain, $this->secure, $httponly
+         $key, '', time() - 3600, $this->path, $domain, $this->secure, $httponly
       );
       unset($_COOKIE[$key]);
    }
@@ -137,12 +137,12 @@ class CookieManager
    /**
     * 清除所有的COOKIE
     */
-   public function clearCookie()
+   public function clearCookie($domain)
    {
       if (!empty($_COOKIE)) {
          foreach ($_COOKIE as $key => $v) {
             setcookie(
-               $key, '', time() - 3600, $this->path, $this->domain, $this->secure, $this->httponly
+               $key, '', time() - 3600, $this->path, $domain, $this->secure, $this->httponly
             );
             unset($_COOKIE[$key]);
          }

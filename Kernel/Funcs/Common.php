@@ -647,7 +647,13 @@ function generate_password($password)
 function get_server_root_domain()
 {
    $url = $_SERVER['SERVER_NAME'];
-   return substr($url, strpos($url, '.') + 1);
+   $parts = explode('.', $url);
+   $count = count($parts);
+   if(3 > $count) {
+      return $url;
+   }else {
+      return $parts[$count - 2] . '.' . $parts[$count - 1];
+   }
 }
 
 /**
