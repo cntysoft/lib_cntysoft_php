@@ -59,12 +59,12 @@ class WeChatPayApi
             $errorType->msg('E_PAY_WECHAT_UNIFIED_ORDER_NEED_OPEN_ID'), $errorType->code('E_PAY_WECHAT_UNIFIED_ORDER_NEED_OPEN_ID')
          ), $errorType);
 		}
-//		if($inputObj->getValue('trade_type') == "NATIVE" && !$inputObj->isValueExist('product_id')){
-//         $errorType = ErrorType::getInstance();
-//         Kernel\throw_exception(new Exception(
-//            $errorType->msg('E_PAY_WECHAT_UNIFIED_ORDER_NEED_PRODUCT_ID'), $errorType->code('E_PAY_WECHAT_UNIFIED_ORDER_NEED_PRODUCT_ID')
-//         ), $errorType);
-//		}
+		if($inputObj->getValue('trade_type') == "NATIVE" && !$inputObj->isValueExist('product_id')){
+         $errorType = ErrorType::getInstance();
+         Kernel\throw_exception(new Exception(
+            $errorType->msg('E_PAY_WECHAT_UNIFIED_ORDER_NEED_PRODUCT_ID'), $errorType->code('E_PAY_WECHAT_UNIFIED_ORDER_NEED_PRODUCT_ID')
+         ), $errorType);
+		}
 		
 		//异步通知url未设置，则使用配置文件中的url
 		if(!$inputObj->isValueExist('notify_url')){

@@ -222,14 +222,13 @@ class Utils
 	public static function initFromXml($xml)
 	{	
 		$obj = new self();
-		$obj->arrayFromXml($xml);
-      $values = $obj->getValues();
+		$values = $obj->arrayFromXml($xml);
       if($obj->isValueExist('return_code') && 'SUCCESS' != $values['return_code']){
-         return $obj->getValues();
+         return $values;
       }
       
       $obj->checkSign();
-      return $obj->getValues();
+      return $values;
 	}
    
 }
