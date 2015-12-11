@@ -111,12 +111,14 @@ class Tree
     *
     * @param string $childrenKey 存放字节点的键名称
     * @param \Closure $nodeCallback 每个数组节点生成函数， 参数是节点树引用和当前的节点ID， 一定要返回适配的节点数组
+    * @param integer $pid 父节点id
+    * @param integer $id 节点id
     * @return array
     */
-   public function toArray($childrenKey, $nodeCallback)
+   public function toArray($childrenKey, $nodeCallback, $pid = -1, $id = 0)
    {
       $ret = array();
-      $this->doToArray(-1, 0, $ret, $nodeCallback, $childrenKey);
+      $this->doToArray($pid, $id, $ret, $nodeCallback, $childrenKey);
       return $ret;
    }
 
