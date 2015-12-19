@@ -80,20 +80,19 @@ class BaseClient
     * @var string $rsaPrivateKey
     */
    protected $rsaPrivateKey = '-----BEGIN RSA PRIVATE KEY-----
-MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAOpCo1MmWQZ+dGi
-G4EFkKabqDbcFzIl459t/2R5az8kvEwLNLK80a7bIvnpsyH1Hc4hvIn43U3/avp
-eBE2QvVz2hpQTbCCYubkrly3G78A5k1p4Cj4LbyPyLh7SGOn0+2zEMk5JpKw6ag
-aHEAdN0cbEjEKzF4FLQhMDkSUKoe1Q3AgMBAAECgYEAhfxPRgOs75XsJszd/wi2
-+gzsgz4B2q8Yjeb12/K83ajbCsMnR56H7SesKoGFuoHfhq1p4R7r1zjZwfXFjYu
-2LSXVF4TlsRcShLzdBfv4oE8ByZMwZAuijsJraJrLW3A9/0FVvkZpJtau4VINws
-AZbvAcgpZCiSSpaw/eutB1jkECQQD5YWIPejnQCneoeeHiZ98Y0eYzIn1U9qSYp
-3AWOFt2mEF2GKzWms2hDvRkaf/5CKMMSVGnP0Rwkg3Zz8l8wwzfAkEA8HqCWs2r
-s3Y9Lyfaze5hdLVas+cjxJITEpPrVmJN9W+oz4OPMOCIqKfrrhy5aF5FV+jNbYt
-Jmz0WzHMd/N3LqQJAahLGBxdSJ++L3hmZvxe3iXMem3l8HfubH2N5BbqLDPLORV
-FRkybdeDhIM73ypxbJY5x8IsuCbO9y/MapSWwduQJAeXWXE1/gAjONMZ0SoYJuT
-LEwj78FzMnuwipd6fKa54UvISiUkR5HR9AQdI9jgfhjU8RsxZBdbAAN3NOj6Mzp
-iQJBANJjY1LVr/hV2QIQZUq+3ZqQDaiOPABI/ARb1nEiUXO2Q3Z5pmOsc4HNzco
-YK3Pf4QtJvLmQlht6X2lazvHOgAI=
+MIICXAIBAAKBgQCmH60BuKJ2f8fDdj0laJHDPqv6qUL8VTYrkyRB3MHSjpeqRbzr
+UY75iIj6F0SijiKM3d6vAktlbI7tWp/haPo/AkAYvF4dlAfw+BMOJUwMbx5Ger/g
+sbJmVg+ZjbX2/gxG69apWoSbzt+umT6cc5i5KLDkYWLcwEbs3o6ZjO3GPQIDAQAB
+AoGARTfPk3cGIo/tgXED21Ft4sd7Sy85nQA4WQGvSs4b6IrHgQgbxoUuKKUORf5p
+9713gfB0d8Fh/vmzuAxZr8dY9To0A5vfFQlDv9QKrL5kHpEyvCPQ6SQUeowQLT7B
+XQGUrsy52LLkBijDdQJhlUwJrJSjSYUQv/9QkWw+rX8iO9UCQQDPuLGZYKI651A4
+qqknuV/vhH/EePBw0OVayttIxE01FrS3juAX+pUlROdtQOWrm3kkGD33BE7ZC3KE
+29Djwi4/AkEAzLvxBgi2vBwIifwncZtwkjnLACQvqk4WVk0fGmeJMGUxvgA0dtW6
+TlpiUX6TJpw5PKsxLeOyIva7/r4G2KDkgwJBAKMPQys5tmAy8MBrB7qNRIgLJRkg
+Lu8ArOqmz5jBsDH6jwaA+90W8jl9a4ZSKXia5W+2L/5WvWaYG9+7hrEj35UCQEB8
+1n+DESQRZHMqNLZpMr0sbQ/fVhA7xndqlWh4wlK3HULux5fC3Is/lwZ6axlXTgQZ
+HEWLGho/Q5oK+xcTHscCQBqNvDQ2MOdP5YEjWQJAs+95LFBIZYtUSE9wZaeGROJF
+8FbjQvkD0Kn8zZpdTiZOlhIQ6Y8Se6uEE94gUBcsyFs=
 -----END RSA PRIVATE KEY-----
 ';
    /**
@@ -102,10 +101,10 @@ YK3Pf4QtJvLmQlht6X2lazvHOgAI=
     * @var type 
     */
    protected $rsaPublicKey = '-----BEGIN PUBLIC KEY-----
-MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDDI6d306Q8fIfCOaTXyiUeJHk
-rIvYISRcc73s3vF1ZT7XN8RNPwJxo8pWaJMmvyTn9N4HQ632qJBVHf8sxHi/fEs
-raprwCtzvzQETrNRwVxLO5jVmRGi60j8Ue1efIlzPXV9je9mkjzOmdssymZkh2Q
-hUrCmZYI/FCEa3/cNMW0QIDAQAB
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCnxj/9qwVfgoUh/y2W89L6BkRA
+FljhNhgPdyPuBV64bfQNN1PjbCzkIM6qRdKBoLPXmKKMiFYnkd6rAoprih3/PrQE
+B/VsW8OoM8fxn67UDYuyBTqA23MML9q1+ilIZwBC2AQ2UBVOrFXfFl75p6/B5Ks
+iNG9zpgmLCUYuLkxpLQIDAQAB
 -----END PUBLIC KEY-----
 ';
    /**
@@ -339,7 +338,7 @@ hUrCmZYI/FCEa3/cNMW0QIDAQAB
       $params = $params + array(
          'service'         => $this->serviceType,
          'partner'         => $this->partner,
-         'sign_type'       => self::PARAM_SIGN_TYPE_MD5,
+         'sign_type'       => self::PARAM_SIGN_TYPE_RSA,
          '__input_charset' => self::INPUT_CHARSET,
          'notify_url'      => $this->notifyUrl,
          'seller_id'       => $this->partner,
