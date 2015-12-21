@@ -79,34 +79,13 @@ class BaseClient
     *
     * @var string $rsaPrivateKey
     */
-   protected $rsaPrivateKey = '-----BEGIN RSA PRIVATE KEY-----
-MIICXAIBAAKBgQCmH60BuKJ2f8fDdj0laJHDPqv6qUL8VTYrkyRB3MHSjpeqRbzr
-UY75iIj6F0SijiKM3d6vAktlbI7tWp/haPo/AkAYvF4dlAfw+BMOJUwMbx5Ger/g
-sbJmVg+ZjbX2/gxG69apWoSbzt+umT6cc5i5KLDkYWLcwEbs3o6ZjO3GPQIDAQAB
-AoGARTfPk3cGIo/tgXED21Ft4sd7Sy85nQA4WQGvSs4b6IrHgQgbxoUuKKUORf5p
-9713gfB0d8Fh/vmzuAxZr8dY9To0A5vfFQlDv9QKrL5kHpEyvCPQ6SQUeowQLT7B
-XQGUrsy52LLkBijDdQJhlUwJrJSjSYUQv/9QkWw+rX8iO9UCQQDPuLGZYKI651A4
-qqknuV/vhH/EePBw0OVayttIxE01FrS3juAX+pUlROdtQOWrm3kkGD33BE7ZC3KE
-29Djwi4/AkEAzLvxBgi2vBwIifwncZtwkjnLACQvqk4WVk0fGmeJMGUxvgA0dtW6
-TlpiUX6TJpw5PKsxLeOyIva7/r4G2KDkgwJBAKMPQys5tmAy8MBrB7qNRIgLJRkg
-Lu8ArOqmz5jBsDH6jwaA+90W8jl9a4ZSKXia5W+2L/5WvWaYG9+7hrEj35UCQEB8
-1n+DESQRZHMqNLZpMr0sbQ/fVhA7xndqlWh4wlK3HULux5fC3Is/lwZ6axlXTgQZ
-HEWLGho/Q5oK+xcTHscCQBqNvDQ2MOdP5YEjWQJAs+95LFBIZYtUSE9wZaeGROJF
-8FbjQvkD0Kn8zZpdTiZOlhIQ6Y8Se6uEE94gUBcsyFs=
------END RSA PRIVATE KEY-----
-';
+   protected $rsaPrivateKey = '';
    /**
     * 支付宝接口RSA认证公钥
     *
     * @var type 
     */
-   protected $rsaPublicKey = '-----BEGIN PUBLIC KEY-----
-MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCnxj/9qwVfgoUh/y2W89L6BkRA
-FljhNhgPdyPuBV64bfQNN1PjbCzkIM6qRdKBoLPXmKKMiFYnkd6rAoprih3/PrQE
-B/VsW8OoM8fxn67UDYuyBTqA23MML9q1+ilIZwBC2AQ2UBVOrFXfFl75p6/B5Ks
-iNG9zpgmLCUYuLkxpLQIDAQAB
------END PUBLIC KEY-----
-';
+   protected $rsaPublicKey = '';
    /**
     * Http调用类
     * 
@@ -145,6 +124,12 @@ iNG9zpgmLCUYuLkxpLQIDAQAB
    protected $key;
 
    /**
+    * 全局配置
+    *
+    * @var \Phalcon\Config
+    */
+   protected $gConfig;
+   /**
     * 初始化参数
     * 
     * @param string $notifyUrl   回调通知的网址
@@ -155,6 +140,9 @@ iNG9zpgmLCUYuLkxpLQIDAQAB
    public function __construct($notifyUrl = null, $returnUrl = null, $serviceType = null)
    {
       $config = ConfigProxy::getFrameworkConfig('Pay');
+      
+      $this->gConfig = $config;
+      
       $this->key = $config->alipay->key;
 
       $this->serviceType = $serviceType ? $serviceType : self::SERVICE_TYPE_DIRECT_PAY;
@@ -417,8 +405,9 @@ iNG9zpgmLCUYuLkxpLQIDAQAB
       //首先进行排序，组装
       $string = $this->getParamsSign($params);
 
+      $rsaPrivateKey = $this->getRsaPrivateKey();
       //RSA加密
-      $res = openssl_get_privatekey($this->rsaPrivateKey);
+      $res = openssl_get_privatekey($rsaPrivateKey);
       openssl_sign($string, $sign, $res);
       openssl_free_key($res);
       $sign = base64_encode($sign);
@@ -469,8 +458,9 @@ iNG9zpgmLCUYuLkxpLQIDAQAB
    protected function verifyRSASign($params, $notifySign)
    {
       $string = $this->getParamsSign($params);
+      $publicKey = $this->getRsaPublicKey();
       //验证RSA
-      $res = openssl_get_publickey($this->rsaPublicKey);
+      $res = openssl_get_publickey($publicKey);
       //调用openssl内置方法验签，返回bool值
       $result = (bool) openssl_verify($string, base64_decode($notifySign), $res);
       //释放资源
@@ -495,6 +485,34 @@ iNG9zpgmLCUYuLkxpLQIDAQAB
       return $string;
    }
 
+   /**
+    * 获取RSA认证的私钥
+    * 
+    * @return string
+    */
+   protected function getRsaPrivateKey()
+   {
+      if(empty($this->rsaPrivateKey)) {
+         $this->rsaPrivateKey = $this->gConfig->alipay->RSA->privateKey;
+      }
+      
+      return $this->rsaPrivateKey;
+   }
+
+   /**
+    * 获取RSA认证的公钥
+    * 
+    * @return string
+    */
+   protected function getRsaPublicKey()
+   {
+      if(empty($this->rsaPublicKey)) {
+         $this->rsaPublicKey = $this->gConfig->alipay->RSA->publicKey;
+      }
+      
+      return $this->rsaPublicKey;
+   }
+   
    /**
     * 验证支付宝回调的源
     * 
