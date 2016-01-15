@@ -9,7 +9,6 @@
 namespace Cntysoft\Framework\Utils;
 use Zend\Http\Client as HttpClient;
 use Zend\Http\Request;
-
 class Express
 {
    //zend的http请求对象
@@ -36,10 +35,9 @@ class Express
    const EXPRESS_SEARCH_URL = 'http://www.kuaidi100.com/query?';
    const EXPRESS_SEARCH_API_URL = 'http://api.kuaidi100.com/api?';
 
-   
    public function __construct($apiKey = null)
    {
-      if($apiKey){
+      if ($apiKey) {
          $this->apiKey = $apiKey;
       }
    }
@@ -95,7 +93,7 @@ class Express
       $data = json_decode($response->getBody());
 
       if (!property_exists($data, 'message') || !in_array($data->message, array('ok')) || !property_exists($data, 'data')) {
-         if($this->apiKey){
+         if ($this->apiKey) {
             $url = self::EXPRESS_SEARCH_API_URL . 'id=' . $this->apiKey . '&com=' . $expressCode . '&nu=' . $expressNumber;
             $httpClient->setUri($url);
             $request->setUri($url);
@@ -104,14 +102,20 @@ class Express
             $data = json_decode($response->getBody());
             if (!property_exists($data, 'message') || !in_array($data->message, array('ok')) || !property_exists($data, 'data')) {
                return array(
-                  'code' => 400,
-                  'state'  => 0,
-                  'data'   => array()
+                  'code'  => 400,
+                  'state' => 0,
+                  'data'  => array()
                );
             }
+         } else {
+            return array(
+               'code'  => 400,
+               'state' => 0,
+               'data'  => array()
+            );
          }
       }
-      
+
       $ret = array();
       foreach ($data->data as $val) {
          $item = array('time' => '', 'context' => '');
@@ -126,9 +130,9 @@ class Express
       }
 
       return array(
-         'code'   => 200,
-         'state'  => (int)$data->state,
-         'data'   => $ret
+         'code'  => 200,
+         'state' => (int) $data->state,
+         'data'  => $ret
       );
    }
 
