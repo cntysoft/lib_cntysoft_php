@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * Cntysoft Cloud Software Team
+ * 
+ * @author ZhiHui <liuyan2526@qq.com>
+ * @copyright Copyright (c) 2010-2015 Cntysoft Technologies China Inc. <http://www.cntysoft.com>
+ * @license http://www.cntysoft.com/license/new-bsd     New BSD License
+*/
 namespace Cntysoft\Framework\Pay\WeChatPay;
 use Cntysoft\Stdlib\ErrorType as BaseErrorType;
 class ErrorType extends BaseErrorType
@@ -17,7 +23,8 @@ class ErrorType extends BaseErrorType
       'E_WECHATPAY_ASKFORREFUND_NO_PARAMS_REFUNDID'   => array(10010, '缺少退款单号'),
       'E_WECHATPAY_ASKFORREFUND_NO_PARAMS_TOTALFEE'   => array(10011, '缺少总金额数'),
       'E_WECHATPAY_ASKFORREFUND_NO_PARAMS_REFUNDFEE'  => array(10012, '缺少退款金额数'),
-      'E_WECHATPAY_ASKFORREFUND_NO_PARAMS_OPUSERID'   => array(10013, '缺少操作员工号')
+      'E_WECHATPAY_ASKFORREFUND_NO_PARAMS_OPUSERID'   => array(10013, '缺少操作员工号'),
+      'E_NO_CONFIG_WECHATPAY_ERROR'                   => array(10014, 'config文件缺少微信配置信息')
    );
 
 }

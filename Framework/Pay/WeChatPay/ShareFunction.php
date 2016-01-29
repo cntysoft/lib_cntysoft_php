@@ -7,6 +7,7 @@
  * @license http://www.cntysoft.com/license/new-bsd     New BSD License
 */
 namespace Cntysoft\Framework\Pay\WeChatPay;
+use Cntysoft\Kernel\ConfigProxy;
 /**
  * 本类是一些公用的方法
  */
@@ -32,12 +33,20 @@ class ShareFunction
    public static function createSign(array $params)
    {
       $sign = '';
+      unset($params['sign']);
       ksort($params);
       foreach ($params as $key => $value) {
          $sign .= '&'.$key.'='.$value;
       }
       $sign = substr($sign, 1);
-      $sign .= '&key='.Constant::API_KEY;
+      $config = ConfigProxy::getFrameworkConfig('Pay');
+      if(!isset($config['wechatpay']) || !isset($config['wechatpay']['API_KEY'])){
+         $errorType = ErrorType::getInstance();
+         Kernel\throw_exception(new Exception(
+                 $errorType->msg('E_NO_CONFIG_WECHATPAY_ERROR'), $errorType->code('E_NO_CONFIG_WECHATPAY_ERROR')
+                 ), $errorType);
+      }
+      $sign .= '&key='.  $config['wechatpay']['API_KEY'];
       $sign = strtoupper(md5($sign));
       return $sign;
    }

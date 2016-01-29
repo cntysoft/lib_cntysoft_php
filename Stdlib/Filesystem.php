@@ -25,7 +25,7 @@ class Filesystem
     * @param string $data
     * @return int | FALSE
     */
-   public static function filePutContents($filename, $data)
+   public static function filePutContents($filename, $data, $recursive = false)
    {
       ErrorHandler::start();
       $filename = Kernel\real_path($filename);
@@ -36,7 +36,7 @@ class Filesystem
       }
       $dir = dirname($filename);
       if(!file_exists($dir)) {
-         self::createDir($dir, 0755);
+         self::createDir($dir, 0755, $recursive);
       }
       $ret = file_put_contents($filename, $data, LOCK_EX);
       ErrorHandler::stop(true);

@@ -23,8 +23,11 @@ class NativePay
    {
       $api = new Api();
       $res = $api->unifiedOrder($order);
-      return array(
-         'code_url' => $res['code_url']
-      );
+      if ($res['sign'] == ShareFunction::createSign($res)) {
+         return array(
+            'code_url' => $res['code_url']
+         );
+      }
    }
+
 }

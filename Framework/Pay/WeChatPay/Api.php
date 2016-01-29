@@ -10,6 +10,7 @@ namespace Cntysoft\Framework\Pay\WeChatPay;
 use Zend\Http\Client as HttpClient;
 use Zend\Http\Request as HttpRequest;
 use Zend\Http\Client\Adapter\Curl as CurlAdapter;
+use Cntysoft\Kernel\ConfigProxy;
 use Cntysoft\Kernel;
 class Api
 {
@@ -21,6 +22,30 @@ class Api
     * @var  \Zend\Http\Client\Adapter\Curl
     */
    protected $adapter = null;
+   /**
+    * @var string 微信appid
+    */
+   protected $appid = null;
+   /**
+    * @var string 微信商家id
+    */
+   protected $mchid = null;
+   /**
+    * @var string 微信回调地址
+    */
+   protected $notify = null;
+   /**
+    * 构造函数
+    */
+   public function __construct()
+   {
+      if(null == $this->appid || null == $this->mchid || null == $this->notify){
+         $meta = self::getWechatPayConfig();
+         $this->appid = $meta->APPID;
+         $this->mchid = $meta->MCH_ID;
+         $this->notify = $meta->NOTIFY_URL;
+      }
+   }
    /**
     * 统一下单
     * 
@@ -56,14 +81,14 @@ class Api
                  ), $errorType);
       }
       $unified = array(
-         'appid'            => Constant::APPID,
-         'mch_id'           => Constant::MCH_ID,
+         'appid'            => $this->appid,
+         'mch_id'           => $this->mchid,
          'nonce_str'        => ShareFunction::createRandStr(),
          'body'             => $orderParams['body'],
          'out_trade_no'     => $orderParams['out_trade_no'],
          'total_fee'        => $orderParams['total_fee'],
          'spbill_create_ip' => $orderParams['spbill_create_ip'],
-         'notify_url'       => Constant::NOTIFY_URL,
+         'notify_url'       => $this->notify,
          'trade_type'       => $orderParams['trade_type']
       );
       if (array_key_exists('device_info', $orderParams)) {
@@ -116,8 +141,8 @@ class Api
    public function selectOrder(array $orderParams)
    {
       $select = array(
-         'appid'     => Constant::APPID,
-         'mch_id'    => Constant::MCH_ID,
+         'appid'     => $this->appid,
+         'mch_id'    => $this->mchid,
          'nonce_str' => ShareFunction::createRandStr()
       );
       if (array_key_exists('out_trade_no', $orderParams)) {
@@ -146,8 +171,8 @@ class Api
    public function closeOrder(array $orderParams)
    {
       $select = array(
-         'appid'     => Constant::APPID,
-         'mch_id'    => Constant::MCH_ID,
+         'appid'     => $this->appid,
+         'mch_id'    => $this->mchid,
          'nonce_str' => ShareFunction::createRandStr()
       );
       if (array_key_exists('out_trade_no', $orderParams)) {
@@ -174,8 +199,8 @@ class Api
    public function askForRefund(array $orderParams)
    {
       $select = array(
-         'appid'     => Constant::APPID,
-         'mch_id'    => Constant::MCH_ID,
+         'appid'     => $this->appid,
+         'mch_id'    => $this->mchid,
          'nonce_str' => ShareFunction::createRandStr()
       );
       if (array_key_exists('out_trade_no', $orderParams)) {
@@ -242,8 +267,8 @@ class Api
    public function selectRefund(array $orderParams)
    {
       $select = array(
-         'appid'     => Constant::APPID,
-         'mch_id'    => Constant::MCH_ID,
+         'appid'     => $this->appid,
+         'mch_id'    => $this->mchid,
          'nonce_str' => ShareFunction::createRandStr()
       );
       if (array_key_exists('out_trade_no', $orderParams)) {
@@ -279,8 +304,8 @@ class Api
    public function downloadBill(array $orderParams)
    {
       $select = array(
-         'appid'     => Constant::APPID,
-         'mch_id'    => Constant::MCH_ID,
+         'appid'     => $this->appid,
+         'mch_id'    => $this->mchid,
          'nonce_str' => ShareFunction::createRandStr(),
          'bill_date' => time()
       );
@@ -306,8 +331,8 @@ class Api
    public function longlinkToShortlink(array $orderParams)
    {
       $select = array(
-         'appid'     => Constant::APPID,
-         'mch_id'    => Constant::MCH_ID,
+         'appid'     => $this->appid,
+         'mch_id'    => $this->mchid,
          'nonce_str' => ShareFunction::createRandStr()
       );
       if (array_key_exists('long_url', $orderParams)) {
@@ -392,6 +417,21 @@ class Api
          $this->adapter = new CurlAdapter();
       }
       return $this->adapter;
+   }
+   /**
+    * 获取微信的配置信息
+    * @return object 
+    */
+   public function getWechatPayConfig()
+   {
+      $config = ConfigProxy::getFrameworkConfig('Pay');
+      if(!isset($config['wechatpay']) || !isset($config['wechatpay']['APPID']) || !isset($config['wechatpay']['MCH_ID']) || !isset($config['wechatpay']['NOTIFY_URL'])){
+         $errorType = ErrorType::getInstance();
+         Kernel\throw_exception(new Exception(
+                 $errorType->msg('E_NO_CONFIG_WECHATPAY_ERROR'), $errorType->code('E_NO_CONFIG_WECHATPAY_ERROR')
+                 ), $errorType);
+      }
+      return $config->wechatpay;
    }
 
 }
