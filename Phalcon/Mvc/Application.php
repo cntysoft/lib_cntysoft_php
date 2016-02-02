@@ -44,7 +44,7 @@ class Application extends \Phalcon\Mvc\Application
       }
       self::$globalDi = $dependencyInjector;
       parent::__construct($dependencyInjector);
-      $this->loadCoreFiles();
+//      $this->loadCoreFiles();
       $this->beforeInitialized();
       //初始化数据库连接信息
       $this->initApplicationEventManager();
