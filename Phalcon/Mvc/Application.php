@@ -29,22 +29,25 @@ class Application extends \Phalcon\Mvc\Application
     */
    protected static $globalDi = null;
 
+   protected $gcfg = null;
+   
    public function __construct($dependencyInjector = null)
    {
-      $globalConfig = ConfigProxy::getGlobalConfig();
+      $this->loadCoreFiles();
+      $this->gcfg = ConfigProxy::getGlobalConfig();
       //设置当前系统的运行模式常量
-      if(!isset($globalConfig->systemMode)){
+      if(!isset($this->gcfg->systemMode)){
          define('SYS_RUNTIME_MODE', SYS_RUNTIME_MODE_PRODUCT);
       }else{
-         $mode = $globalConfig->systemMode;
+         $mode = $this->gcfg->systemMode;
          if ($mode !== SYS_RUNTIME_MODE_DEBUG && $mode !== SYS_RUNTIME_MODE_PRODUCT) {
             die(sprintf('sys run mode : %x is not support, SYS_RUNTIME_MODE_PRODUCT : %x and SYS_RUNTIME_MODE_DEBUG : %x', $mode, SYS_RUNTIME_MODE_PRODUCT, SYS_RUNTIME_MODE_DEBUG));
          }
          define('SYS_RUNTIME_MODE', $mode);
       }
       self::$globalDi = $dependencyInjector;
+
       parent::__construct($dependencyInjector);
-//      $this->loadCoreFiles();
       $this->beforeInitialized();
       //初始化数据库连接信息
       $this->initApplicationEventManager();

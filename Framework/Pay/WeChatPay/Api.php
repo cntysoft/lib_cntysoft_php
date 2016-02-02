@@ -43,7 +43,7 @@ class Api
          $meta = self::getWechatPayConfig();
          $this->appid = $meta->APPID;
          $this->mchid = $meta->MCH_ID;
-         $this->notify = $meta->NOTIFY_URL;
+         $this->notify = sprintf($meta->NOTIFY_URL, SHOP_DEFAULT_URL);
       }
    }
    /**

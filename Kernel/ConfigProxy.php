@@ -21,36 +21,7 @@ class ConfigProxy
    const C_TYPE_FRAMEWORK_SYS = 4;
    const C_TYPE_FRAMEWORK_VENDER = 5;
 
-   /**
-    * 缓存处理对象
-    * @var  
-    */
-   protected static $cacher = null;
-   /**
-    * 全局配置文件里面的配置信息
-    * 
-    * @var array $global
-    */
-   protected static $global = null;
-   /**
-    * 模块相关的配置信息
-    * 
-    * @var array $modules
-    */
-   protected static $modules = array();
-   /**
-    * APP相关的配置信息
-    * 
-    * @var array $apps
-    */
-   protected static $apps = array();
-   /**
-    * 框架一些配置
-    * 
-    * @var array $framework
-    */
-   protected static $frameworks = array();
-
+   protected static $cacher = array();
    /**
     * 获取全局配置信息
     * 
@@ -58,18 +29,27 @@ class ConfigProxy
     */
    public static function getGlobalConfig()
    {
-      $cache = self::getCacher(array('Config'));
-      $cachekey = md5('Application.json');
-      if (!$cache->exists($cachekey)) {
-         if (file_exists(CNTY_CFG_DIR . DS . 'Application.config.php')) {
-            return new Config(include CNTY_CFG_DIR . DS . 'Application.config.php');
+      $name = 'Application.config';
+      $path = CNTY_CFG_DIR . DS . 'Application.config';
+      $key = md5($name);
+      $cacher = self::getCacher('');
+      
+      if($cacher->exists($key)){
+         $config = $cacher->get($key);
+      }else{
+         if(file_exists($path . '.json')){
+            $config = json_decode(Filesystem::fileGetContents($path . '.json'), true);
+            $cacher->save($key, $config);
+         }else if(file_exists($path . '.php')){
+            $config = include $path . '.php';
+            Filesystem::filePutContents($path . '.json', json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+            $cacher->save($key, $config);
+         }else {
+            $config = array();
          }
-         $data = Filesystem::fileGetContents(CNTY_CFG_DIR . DS . 'Application.json');
-         $cache->save($cachekey, $data);
-      } else {
-         $data = $cache->get($cachekey);
       }
-      return new Config(json_decode($data, true));
+      
+      return new Config($config);
    }
 
    /**
@@ -80,37 +60,34 @@ class ConfigProxy
     */
    public static function getModuleConfig($module)
    {
-      if (!array_key_exists($module, self::$modules)) {
-         $g = self::getGlobalConfig();
-         $modules = $g->modules;
-         if (!$modules->offsetExists($module)) {
-            throw_exception(new Exception(
-                    StdErrorType::msg('E_MODULE_NOT_SUPPORT', $module), StdErrorType::code('E_MODULE_NOT_SUPPORT')), \Cntysoft\STD_EXCEPTION_CONTEXT);
-         }
-         $filename = CNTY_CFG_DIR . DS . 'Module' . DS . $module . '.json';
-         $cache = self::getCacher(array('Config', 'Module'));
-         $cachekey = md5('Module' . DS . $module . '.json');
-         if (!$cache->exists($cachekey)) {
-            if (!file_exists(CNTY_CFG_DIR . DS . 'Module' . DS . $module . '.config.php')) {
-               if (file_exists($filename)) {
-                  $data = Filesystem::fileGetContents($filename);
-                  $cache->save($cachekey, $data);
-               }
-            }
-         } else {
-            $data = $cache->get($cachekey);
-         }
-         if (!file_exists($filename)) {
-            self::$modules[$module] = new Config;
-         } else {
-            if (file_exists(CNTY_CFG_DIR . DS . 'Module' . DS . $module . '.config.php')) {
-               self::$modules[$module] = new Config(include CNTY_CFG_DIR . DS . 'Module' . DS . $module . '.config.php');
-            } else {
-               self::$modules[$module] = new Config(json_decode($data, true));
-            }
+      $g = self::getGlobalConfig();
+      $modules = $g->modules;
+      if (!$modules->offsetExists($module)) {
+         throw_exception(new Exception(
+                 StdErrorType::msg('E_MODULE_NOT_SUPPORT', $module), StdErrorType::code('E_MODULE_NOT_SUPPORT')), \Cntysoft\STD_EXCEPTION_CONTEXT);
+      }
+      $name = $module . '.config';
+      $path = CNTY_CFG_DIR . DS . 'Module' . DS . $module . '.config';
+
+      $key = md5($name);
+      $cacher = self::getCacher('Module');
+
+      if($cacher->exists($key)){
+         $config = $cacher->get($key);
+      }else{
+         if(file_exists($path . '.json')){
+            $config = json_decode(Filesystem::fileGetContents($path . '.json'), true);
+            $cacher->save($key, $config);
+         }else if(file_exists($path . '.php')){
+            $config = include $path . '.php';
+            Filesystem::filePutContents($path . '.json', json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+            $cacher->save($key, $config);
+         }else {
+            $config = array();
          }
       }
-      return self::$modules[$module];
+
+      return new Config($config);
    }
 
    /**
@@ -120,7 +97,13 @@ class ConfigProxy
     */
    public static function getModuleConfigs()
    {
-      return self::$modules;
+      $g = self::getGlobalConfig();
+      $modules = $g->modules;
+      $ret = array();
+      foreach($modules as $name => $module){
+         $ret[$name] = self::getModuleConfig($name);
+      }
+      return $ret;
    }
 
    /**
@@ -136,32 +119,29 @@ class ConfigProxy
        * 不判断module中是否存在某个APP 直接构造配置文件名称
        * @todo 以后加上 配置文件的后缀信息怎么来 暂时硬编码
        */
-      $key = $module . '\\' . $app;
-      if (!array_key_exists($key, self::$apps)) {
-         $filename = self::getAppConfigFilename($module, $app);
-         $cache = self::getCacher(array('Config', 'App', $module));
-         $cachekey = md5('App' . DS . $module . DS . $app . '.json');
-         if (!$cache->exists($cachekey)) {
-            if (!file_exists(CNTY_CFG_DIR . DS . 'Module' . DS . $module . '.config.php')) {
-               if (file_exists($filename)) {
-                  $data = Filesystem::fileGetContents($filename);
-                  $cache->save($cachekey, $data);
-               }
-            }
-         } else {
-            $data = $cache->get($cachekey);
-         }
-         if (!file_exists($filename)) {
+      $appKey = $module . '\\' . $app;
+      $path = self::getAppConfigFilename($module, $app);
+      $name = $app.'.config';
+      $key = md5($name);
+      $cacher = self::getCacher('App' . DS . $module . DS . $app);
+
+      if($cacher->exists($key)){
+         $config = $cacher->get($key);
+      }else{
+         if(file_exists($path . '.json')){
+            $config = json_decode(Filesystem::fileGetContents($path . '.json'), true);
+            $cacher->save($key, $config);
+         }else if(file_exists($path . '.php')){
+            $config = include $path . '.php';
+            Filesystem::filePutContents($path . '.json', json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+            $cacher->save($key, $config);
+         }else {
             throw_exception(new Exception(
-                    StdErrorType::msg('E_CONFIG_FILE_NOT_EXIST', str_replace(CNTY_ROOT_DIR, '', $filename)), StdErrorType::code('E_CONFIG_FILE_NOT_EXIST')), \Cntysoft\STD_EXCEPTION_CONTEXT);
-         }
-         if (!file_exists(CNTY_CFG_DIR . DS . 'Module' . DS . $module . '.config.php')) {
-            self::$apps[$key] = new Config(json_decode($data, true));
-         } else {
-            self::$apps[$key] = new Config(include $filename);
+                 StdErrorType::msg('E_CONFIG_FILE_NOT_EXIST', str_replace(CNTY_ROOT_DIR, '', $name)), StdErrorType::code('E_CONFIG_FILE_NOT_EXIST')), \Cntysoft\STD_EXCEPTION_CONTEXT);
          }
       }
-      return self::$apps[$key];
+
+      return new Config($config);
    }
 
    /**
@@ -175,31 +155,29 @@ class ConfigProxy
    {
       //获取特定的路径
       $fileNameInfo = self::getFrameworkConfigFilename($name, $type);
-      $key = $fileNameInfo[0];
-      if (!array_key_exists($key, self::$frameworks)) {
-         $filename = $fileNameInfo[1]; //后缀暂时硬编码
-         $frame = $type == self::C_TYPE_FRAMEWORK_SYS ? 'Framework' : 'Vender';
-         $cache = self::getCacher(array('Config', $frame));
-         $cachekey = md5($frame . DS . $name . '.json');
-         if (!$cache->exists($cachekey)) {
-            if (strpos($filename, '.json') && file_exists($filename)) {
-               $data = Filesystem::fileGetContents($filename);
-               $cache->save($cachekey, $data);
-            }
-         } else {
-            $data = $cache->get($cachekey);
-         }
-         if (!file_exists($filename)) {
-            self::$frameworks[$key] = new Config;
-         } else {
-            if (strpos($filename, '.json')) {
-               self::$frameworks[$key] = new Config(json_decode($data, true));
-            } else {
-               self::$frameworks[$key] = new Config(include $filename);
-            }
+
+      $frameworkKey = $fileNameInfo[0];
+      $path = $fileNameInfo[1];
+      $name = $name.'.config';
+      $key = md5($name);
+      $cacher = self::getCacher($fileNameInfo[2]);
+
+      if($cacher->exists($key)){
+         $config = $cacher->get($key);
+      }else{
+         if(file_exists($path . '.json')){
+            $config = json_decode(Filesystem::fileGetContents($path . '.json'), true);
+            $cacher->save($key, $config);
+         }else if(file_exists($path . '.php')){
+            $config = include $path . '.php';
+            Filesystem::filePutContents($path . '.json', json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+            $cacher->save($key, $config);
+         }else {
+            $config = array();
          }
       }
-      return self::$frameworks[$key];
+ 
+      return new Config($config);
    }
 
    /**
@@ -213,15 +191,12 @@ class ConfigProxy
    {
       $config = self::getGlobalConfig();
       set_config_item_by_path($config, $key, $data);
-      $filename = self::getGlobalConfigFilename();
-      if (!strpos($filename, '.json')) {
-         self::writeBackToFile($filename, $config->toArray());
-      } else {
-         self::writeBackToFile($filename, json_encode($config->toArray(), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
-         $cache = self::getCacher(array('Config'));
-         $cache->delete(md5('Application.json'));
-      }
-      self::$global = $config;
+      $path = self::getGlobalConfigFilename() . '.json';
+      $name = 'Application.config';
+      $cacheKey = md5($name);
+      $cacher = self::getCacher('');
+      $cacher->delete($cacheKey);
+      self::writeBackToFile($path, json_encode($config->toArray(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
    }
 
    /**
@@ -235,22 +210,15 @@ class ConfigProxy
     */
    public static function setFrameworkConfig($name, $key, $data, $type = self::C_TYPE_FRAMEWORK_SYS)
    {
+      $config = self::getFrameworkConfig($name, $type);
       $filename = self::getFrameworkConfigFilename($name, $type);
-      if (file_exists($filename[1])) {
-         $config = self::getFrameworkConfig($name, $type);
-      } else {
-         $config = new Config();
-      }
+      $path = $filename[1] . '.json';
+      $cacheName = $name . '.config';
+      $cacheKey = md5($cacheName);
+      $cacher = self::getCacher($filename[2]);
+      $cacher->delete($cacheKey);
       set_config_item_by_path($config, $key, $data);
-      if (!strpos($filename, '.json')) {
-         self::writeBackToFile($filename[1], $config->toArray());
-      } else {
-         self::writeBackToFile($filename[1], json_encode($config->toArray(), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
-         $frame = $type == self::C_TYPE_FRAMEWORK_SYS ? 'Framework' : 'Vender';
-         $cache = self::getCacher(array('Config', $frame));
-         $cache->delete(md5($frame . DS . $name . '.json'));
-      }
-      self::$frameworks[$filename[0]] = $config;
+      self::writeBackToFile($path, json_encode($config->toArray(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
    }
 
    /**
@@ -262,24 +230,17 @@ class ConfigProxy
     */
    public static function setModuleConfig($name, $key, $data)
    {
-
-      $filename = self::getModuleConfigFilename($name);
-      if (file_exists($filename)) {
-         $config = self::getModuleConfig($name);
-      } else {
-         $config = new Config();
-      }
+      $config = self::getModuleConfig($name);
+      $path = self::getModuleConfigFilename($name) . '.json';
+      $cacheName = $name . '.config';
+      $cacheKey = md5($cacheName);
+      $cacher = self::getCacher('Module');
+      $cacher->delete($cacheKey);
       $map = get_config_item_by_path($config, $key);
       foreach ($data as $key => $value) {
          $map[$key] = $value;
       }
-      if (!strpos($filename, '.json')) {
-         self::writeBackToFile($filename, $config->toArray());
-      } else {
-         self::writeBackToFile($filename, json_encode($config->toArray(), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
-         $cache = self::getCacher(array('Config', 'Module'));
-         $cache->delete(md5('Module' . DS . $name . '.json'));
-      }
+      self::writeBackToFile($path, json_encode($config->toArray(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
    }
 
    /**
@@ -290,15 +251,13 @@ class ConfigProxy
     */
    public static function setModuleConfigs($name, array $config)
    {
-      $filename = self::getModuleConfigFilename($name);
-      if (!strpos($filename, '.json')) {
-         self::writeBackToFile($filename, $config);
-      } else {
-         self::writeBackToFile($filename, json_encode($config, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
-         $cache = self::getCacher(array('Config', 'Module'));
-         $cache->delete(md5('Module' . DS . $name . '.json'));
-      }
-      self::$modules[$name] = $config;
+      $config = self::getModuleConfig($name);
+      $path = self::getModuleConfigFilename($name) . '.json';
+      $cacheName = $name . '.config';
+      $cacheKey = md5($cacheName);
+      $cacher = self::getCacher('Module');
+      $cacher->delete($cacheKey);
+      self::writeBackToFile($path, json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
    }
 
    /**
@@ -311,21 +270,14 @@ class ConfigProxy
     */
    public static function setAppConfig($module, $name, $key, $data)
    {
-      $filename = self::getAppConfigFilename($module, $name);
-      if (file_exists($filename)) {
-         $config = self::getAppConfig($module, $name)->toArray();
-      } else {
-         $config = array();
-      }
+      $config = self::getAppConfig($module, $name)->toArray();
+      $path = self::getAppConfigFilename($module, $name) . '.json';
+      $cacheName = $name.'.config';
+      $cacheKey = md5($cacheName);
+      $cacher = self::getCacher('App' . DS . $module . DS . $name);
+      $cacher->delete($cacheKey);
       ArrayUtils::set($config, $key, $data);
-      if (!strpos($filename, '.json')) {
-         self::writeBackToFile($filename, $config);
-      } else {
-         self::writeBackToFile($filename, json_encode($config, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
-         $cache = self::getCacher(array('Config', 'App', $module));
-         $cache->delete(md5('App' . DS . $module . DS . $name . '.json'));
-      }
-      self::$apps[$module . '\\' . $name] = $config;
+      self::writeBackToFile($path, json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
    }
 
    /**
@@ -337,15 +289,13 @@ class ConfigProxy
     */
    public static function setAppConfigs($module, $name, array $config)
    {
-      $filename = self::getAppConfigFilename($module, $name);
-      if (!strpos($filename, '.json')) {
-         self::writeBackToFile($filename, $config);
-      } else {
-         self::writeBackToFile($filename, json_encode($config, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
-         $cache = self::getCacher(array('Config', 'App', $module));
-         $cache->delete(md5('App' . DS . $module . DS . $name . '.json'));
-      }
-      self::$apps[$module . '\\' . $name] = $config;
+      $config = self::getAppConfig($module, $name)->toArray();
+      $path = self::getAppConfigFilename($module, $name) . '.json';
+      $cacheName = $name.'.config';
+      $cacheKey = md5($cacheName);
+      $cacher = self::getCacher('App' . DS . $module . DS . $name);
+      $cacher->delete($cacheKey);
+      self::writeBackToFile($path, json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
    }
 
    /**
@@ -355,11 +305,7 @@ class ConfigProxy
     */
    protected static function getGlobalConfigFilename()
    {
-      if (file_exists(CNTY_CFG_DIR . DS . 'Application.config.php')) {
-         return CNTY_CFG_DIR . DS . 'Application.config.php';
-      } else {
-         return CNTY_CFG_DIR . DS . 'Application.json';
-      }
+      return CNTY_CFG_DIR . DS . 'Application.config';
    }
 
    /**
@@ -375,19 +321,16 @@ class ConfigProxy
       if ($type == self::C_TYPE_FRAMEWORK_SYS) {
          $key = 'Sys\\' . $name;
          $path = CNTY_CFG_DIR . DS . 'Framework';
+         $dir = 'Framework';
       } elseif ($type == self::C_TYPE_FRAMEWORK_VENDER) {
          $key = 'Vender\\' . $name;
          $path = CNTY_CFG_DIR . DS . 'Vender';
+         $dir = 'Vender';
       } else {
          throw_exception(new Exception(
                  StdErrorType::msg('E_FRAMEWORK_TYPE_NOT_SUPPORTED', $type), StdErrorType::code('E_FRAMEWORK_TYPE_NOT_SUPPORTED')), \Cntysoft\STD_EXCEPTION_CONTEXT);
       }
-      if (file_exists($path . DS . $name . '.config.php')) {
-         $filenamesuffix = '.config.php';
-      } else {
-         $filenamesuffix = '.json';
-      }
-      return array($key, $path . DS . $name . $filenamesuffix); //后缀暂时硬编码
+      return array($key, $path . DS . $name . '.config', $dir); //后缀暂时硬编码
    }
 
    /**
@@ -398,11 +341,7 @@ class ConfigProxy
     */
    protected static function getModuleConfigFilename($name)
    {
-      if (file_exists(CNTY_CFG_DIR . DS . 'Module' . DS . $name . '.config.php')) {
-         return CNTY_CFG_DIR . DS . 'Module' . DS . $name . '.config.php';
-      } else {
-         return CNTY_CFG_DIR . DS . 'Module' . DS . $name . '.json';
-      }
+      return CNTY_CFG_DIR . DS . 'Module' . DS . $name . '.config';
    }
 
    /**
@@ -419,17 +358,16 @@ class ConfigProxy
          $module,
          $name
       ));
-      $suffix = file_exists($configPath . '.config.php') ? '.config.php' : '.json';
-      return $configPath . $suffix; //暂时硬编码
+      return $configPath . '.config'; //暂时硬编码
    }
 
    /**
     * 将保存之后的数据存入数据库里面
     * 
     * @param string $filename 写入配置信息的文件
-    * @param array $data 写入的数组
+    * @param string $data 写入的数组
     */
-   protected static function writeBackToFile($filename, array $data)
+   protected static function writeBackToFile($filename, $data)
    {
       //不存在就创建, 同时会创建文件夹
       if (!file_exists($filename)) {
@@ -439,25 +377,17 @@ class ConfigProxy
          }
       }
       //文可以保证存在
-      if (!strpos($filename, '.json')) {
-         $data = "<?php\nreturn " . var_export($data, true) . ';';
-      }
-
+//      $data = "<?php\nreturn " . var_export($data, true) . ';';
       Filesystem::filePutContents($filename, $data);
    }
-
-   /**
-    * @param array $configdir 
-    * 
-    * @return \Phalcon\Cache\Backend\File
-    */
-   protected static function getCacher($configdir)
+   
+   protected static function getCacher($dir)
    {
-      $key = md5(implode(DS, $configdir));
-      if (null == self::$cacher || !key_exists($key, self::$cacher)) {
-         self::$cacher[$key] = make_cache_object(implode(DS, $configdir), 7200);
+      $key = md5($dir);
+      if(!count(self::$cacher) || !array_key_exists($key, self::$cacher)){
+         self::$cacher[$key] = make_cache_object('Config'. DS . $dir, 18000);
       }
+      
       return self::$cacher[$key];
    }
-
 }
