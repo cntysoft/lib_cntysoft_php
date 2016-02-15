@@ -88,6 +88,12 @@ class Upload extends AbstractOption
     */
    protected $useOss = true;
    /**
+    * 是否需要裁剪图片
+    *
+    * @var boolean 
+    */
+   protected $needCrop = false;
+   /**
     * 上传组件配置信息
     *
     * @param array $options
@@ -272,15 +278,24 @@ class Upload extends AbstractOption
       return $this->enableFileRef;
    }
    
-   function getUseOss()
+   public function getUseOss()
    {
       return $this->useOss;
    }
 
-   function setUseOss($useOss)
+   public function setUseOss($useOss)
    {
       $this->useOss = (boolean)$useOss;
    }
 
+   public function getNeedCrop()
+   {
+      return $this->needCrop;
+   }
+   
+   public function setNeedCrop($needCrop)
+   {
+      $this->needCrop = (boolean) $needCrop;
+   }
 
 }
