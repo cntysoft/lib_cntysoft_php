@@ -1,12 +1,15 @@
 <?php
+/**
+ * Cntysoft Cloud Software Team
+ * 
+ * @author ZhiHui <liuyan2526@qq.com>
+ * @copyright Copyright (c) 2010-2015 Cntysoft Technologies China Inc. <http://www.cntysoft.com>
+ * @license http://www.cntysoft.com/license/new-bsd     New BSD License
+*/
 namespace Cntysoft\Framework\Pay\WeChatPay;
 
 class Constant
 {
-   const APPID = 'wx61a19cda5d4d8a9d';
-   const MCH_ID = '1273867401';
-   const API_KEY = '61851df3711f2567d6e53a3af15f8c24';
-   const NOTIFY_URL = '/';
    const WECHATPAY_UNIFIED_ORDER = 'https://api.mch.weixin.qq.com/pay/unifiedorder';
    const WECHATPAY_SELECT_ORDER = 'https://api.mch.weixin.qq.com/pay/orderquery';
    const WECHATPAY_CLOSE_ORDER = 'https://api.mch.weixin.qq.com/pay/closeorder';
