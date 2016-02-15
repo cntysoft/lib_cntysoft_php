@@ -104,7 +104,7 @@ class Image
     */
    public function cropMaximumImage($path, $filename)
    {
-      $size = max(array(
+      $size = min(array(
          $this->iwsImage->getHeight(),
          $this->iwsImage->getWidth()
       ));
