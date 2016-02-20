@@ -19,9 +19,9 @@ class NativePay
     * @param array $order 扫码支付订单信息
     * @return array
     */
-   public function getCodeUrl(array $order)
+   public function getCodeUrl(array $order,array $config)
    {
-      $api = new Api();
+      $api = new Api($config);
       $res = $api->unifiedOrder($order);
       if ($res['sign'] == ShareFunction::createSign($res)) {
          return array(

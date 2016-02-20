@@ -10,7 +10,6 @@ namespace Cntysoft\Framework\Pay\WeChatPay;
 use Zend\Http\Client as HttpClient;
 use Zend\Http\Request as HttpRequest;
 use Zend\Http\Client\Adapter\Curl as CurlAdapter;
-use Cntysoft\Kernel\ConfigProxy;
 use Cntysoft\Kernel;
 class Api
 {
@@ -37,13 +36,12 @@ class Api
    /**
     * 构造函数
     */
-   public function __construct()
+   public function __construct(array $config)
    {
       if(null == $this->appid || null == $this->mchid || null == $this->notify){
-         $meta = self::getWechatPayConfig();
-         $this->appid = $meta->APPID;
-         $this->mchid = $meta->MCH_ID;
-         $this->notify = sprintf($meta->NOTIFY_URL, SHOP_DEFAULT_URL);
+         $this->appid = $config['appid'];
+         $this->mchid = $config['mchid'];
+         $this->notify = $config['notify'];
       }
    }
    /**
@@ -417,21 +415,6 @@ class Api
          $this->adapter = new CurlAdapter();
       }
       return $this->adapter;
-   }
-   /**
-    * 获取微信的配置信息
-    * @return object 
-    */
-   public function getWechatPayConfig()
-   {
-      $config = ConfigProxy::getFrameworkConfig('Pay');
-      if(!isset($config['wechatpay']) || !isset($config['wechatpay']['APPID']) || !isset($config['wechatpay']['MCH_ID']) || !isset($config['wechatpay']['NOTIFY_URL'])){
-         $errorType = ErrorType::getInstance();
-         Kernel\throw_exception(new Exception(
-                 $errorType->msg('E_NO_CONFIG_WECHATPAY_ERROR'), $errorType->code('E_NO_CONFIG_WECHATPAY_ERROR')
-                 ), $errorType);
-      }
-      return $config->wechatpay;
    }
 
 }
