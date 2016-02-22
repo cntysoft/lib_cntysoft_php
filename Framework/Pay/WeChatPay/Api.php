@@ -89,6 +89,9 @@ class Api
          'notify_url'       => $this->notify,
          'trade_type'       => $orderParams['trade_type']
       );
+      if($orderParams['trade_type'] == 'JSAPI'){
+         $unified['openid'] = $orderParams['openid'];
+      }
       if (array_key_exists('device_info', $orderParams)) {
          $unified['device_info'] = $orderParams['device_info'];
       }

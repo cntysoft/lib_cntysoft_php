@@ -13,6 +13,7 @@ use App\Shop\Setting\Model\SiteBaseInfo as BaseInfoModel;
 use Zend\Http\Client as HttpClient;
 use Zend\Http\Request as HttpRequest;
 use Zend\Http\Client\Adapter\Curl as CurlAdapter;
+use Cntysoft\Kernel\ConfigProxy;
 /**
  * 此类用来封装微信公众号接口
  * 
@@ -46,9 +47,9 @@ class Sdk
    public function __construct()
    {
       if(!$this->appId || !$this->appSecret){
-         $data = $this->getWechatAppIdAndAppSecret();
-         $this->appId = $data['appId'];
-         $this->appSecret = $data['appSecret'];
+         $meta = $this->getWechatAppIdAndAppSecret();
+         $this->appId = $meta->APPID;
+         $this->appSecret = $meta->APPSECRET;
       }
    }
    public function test()
@@ -483,24 +484,14 @@ class Sdk
     */
    public function getWechatAppIdAndAppSecret()
    {
-      if ($info = BaseInfoModel::findFirst(array(
-                 'name = ?1',
-                 'bind' => array(
-                    1 => Constant::WECHAT_APP_APPID_APPSECRET_KEY
-                 )
-              ))) {
-         $data = unserialize($info->getData());
-         return $ret = array(
-            'appId' => $data['appid'],
-            'appSecret' => $data['appsecret']
-         );
-      } else {
+      $config = ConfigProxy::getFrameworkConfig('Pay');
+      if(!isset($config['wechatpay']) || !isset($config['wechatpay']['APPID']) || !isset($config['wechatpay']['MCH_ID']) || !isset($config['wechatpay']['NOTIFY_URL'])){
          $errorType = ErrorType::getInstance();
          Kernel\throw_exception(new Exception(
-            $errorType->msg('E_NOT_HAVE_WECHAT_APPID_APPSECRET'),
-            $errorType->code('E_NOT_HAVE_WECHAT_APPID_APPSECRET')
-         ));
+                 $errorType->msg('E_NO_CONFIG_WECHATPAY_ERROR'), $errorType->code('E_NO_CONFIG_WECHATPAY_ERROR')
+                 ), $errorType);
       }
+      return $config->wechatpay;
    }
    
    public function getCacher()
