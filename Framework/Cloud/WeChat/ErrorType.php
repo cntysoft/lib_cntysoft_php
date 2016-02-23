@@ -12,7 +12,8 @@ class ErrorType extends BaseErrorType
 {
    protected $map = array(
       'E_NOT_HAVE_WECHAT_APPID_APPSECRET' => array(10001, '没有微信AppId和AppSecret'),
-      'E_REQUEST_ERROR'                   => array(10002, 'request错误 ')
+      'E_REQUEST_ERROR'                   => array(10002, 'request错误 '),
+      'E_CONSTRUCT_PARAMS_ERROR'          => array(10003, 'config params error')
    );
 
 }

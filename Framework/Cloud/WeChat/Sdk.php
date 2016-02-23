@@ -13,7 +13,7 @@ use App\Shop\Setting\Model\SiteBaseInfo as BaseInfoModel;
 use Zend\Http\Client as HttpClient;
 use Zend\Http\Request as HttpRequest;
 use Zend\Http\Client\Adapter\Curl as CurlAdapter;
-use Cntysoft\Kernel\ConfigProxy;
+
 /**
  * 此类用来封装微信公众号接口
  * 
@@ -44,53 +44,16 @@ class Sdk
     */
    protected $cacher = null;
 
-   public function __construct()
+   public function __construct(array $config)
    {
-      if(!$this->appId || !$this->appSecret){
-         $meta = $this->getWechatAppIdAndAppSecret();
-         $this->appId = $meta->APPID;
-         $this->appSecret = $meta->APPSECRET;
+      if(!array_key_exists('appId', $config) || !array_key_exists('appSecret', $config)){
+         $errorType = ErrorType::getInstance();
+         Kernel\throw_exception(new Exception(
+                 $errorType->msg('E_CONSTRUCT_PARAMS_ERROR'), $errorType->code('E_CONSTRUCT_PARAMS_ERROR')
+                 ), $errorType);
       }
-   }
-   public function test()
-   {
-      $openIds = $this->getUserList();
-//      $this->getUsreDetail($openIds['data']['openid'][0]);
-//      $this->setUserRemarkName($openIds['data']['openid'][0], 'hello');
-//      $this->createUserGroups("jasdas");
-//      $ret = $this->getAllUserGroups();
-//      $ret = $this->getGroupByUserOpenId($openIds['data']['openid'][0]);
-//      $ret = $this->modifyGroupName(100, 'kkkkkkk');
-//      $ret = $this->moveSingleUserToGroup($openIds['data']['openid'][0], 100);
-//      $ret = $this->moveMulitUserToGroup(array($openIds['data']['openid'][0]), 1);
-//      $ret = $this->deleteUserGroup(100);
-//      $menu = array(
-//         'button' => array(
-//            0 => array(
-//               'name' => '11111',
-//               'type' => 'scancode_push',
-//               'key' => 'V1'
-//            ),
-//            1 => array(
-//               'name'       => '22222',
-//               'sub_button' => array(
-//                  0 => array(
-//                     'name' => '33333',
-//                     'type' => 'pic_sysphoto',
-//                     'key' => 'V2'
-//                  )
-//               )
-//            )
-//         )
-//      );
-//      $ret = json_encode($menu);
-//      $ret = $this->createMenu($menu);
-//      $ret = $this->getMenu();
-//      $ret = json_encode($ret);
-//      $ret = $this->deleteMenu();
-//      $ret = $this->getMenuConfig();
-//      $ret = json_encode($ret);
-      var_dump($ret);
+      $this->appId = $config['appId'];
+      $this->appSecret = $config['appSecret'];
    }
    /**
     * 存储access_token
@@ -476,22 +439,6 @@ class Sdk
          $this->adapter = new CurlAdapter();
       }
       return $this->adapter;
-   }
-   /**
-    * 获取appId和appSecret
-    * 
-    * @return type
-    */
-   public function getWechatAppIdAndAppSecret()
-   {
-      $config = ConfigProxy::getFrameworkConfig('Pay');
-      if(!isset($config['wechatpay']) || !isset($config['wechatpay']['APPID']) || !isset($config['wechatpay']['MCH_ID']) || !isset($config['wechatpay']['NOTIFY_URL'])){
-         $errorType = ErrorType::getInstance();
-         Kernel\throw_exception(new Exception(
-                 $errorType->msg('E_NO_CONFIG_WECHATPAY_ERROR'), $errorType->code('E_NO_CONFIG_WECHATPAY_ERROR')
-                 ), $errorType);
-      }
-      return $config->wechatpay;
    }
    
    public function getCacher()
