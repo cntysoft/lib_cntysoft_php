@@ -122,4 +122,16 @@ final class Utils
       }
    }
 
+   /**
+    * 生成一个requirejs格式的js标签
+    * 
+    * @param string $data
+    * @param string $app
+    * @param string $src
+    * @return string
+    */
+   public static function generateRequireJsScriptTag($data, $app, $src)
+   {
+      return '<script data-main="'.$data.'" app="'.$app.'" id="require" src="'.$src.'"></script>';
+   }
 }

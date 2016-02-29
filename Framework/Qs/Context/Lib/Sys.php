@@ -83,12 +83,13 @@ class Sys
     * 加载指定路径的图片
     * 
     * @param array $file
+    * @param string $basePath
     * @return string
     */
-   public static function loadImage($file)
+   public static function loadImage($file, $basePath = null)
    {
       $assetResolver = View::getAssetResolver();
-      $basePath = $assetResolver->getImageBasePath();
+      $basePath = $basePath ? $basePath : $assetResolver->getImageBasePath();
       if(!is_array($file)) {
          $file = array($file);
       }
@@ -113,6 +114,25 @@ class Sys
       return Utils::generateCssLinkTag($basePath, $file);
    }
 
+   /**
+    * 加载requirejs格式的js文件
+    * 
+    * 调用方式
+    * <code>Qs::Sys('loadRequireJs', 'mall/mall_index', 'requireenter', 'lib/require.js');</code>
+    * 
+    * @param string $app
+    * @param string $data
+    * @param string $src
+    * @return string
+    */
+   public static function loadRequireJs($app, $data = 'requireenter', $src = 'lib/require.js')
+   {
+      $assetResolver = View::getAssetResolver();
+      $basePath = $assetResolver->getJsBasePath();
+      $data = $basePath.'/'.$data;
+      $src = $basePath.'/'.$src;
+      return Utils::generateRequireJsScriptTag($data, $app, $src);
+   }
 
    /**
     * 加载软件版本信息
