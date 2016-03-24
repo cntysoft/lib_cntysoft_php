@@ -51,11 +51,11 @@ abstract class AbstractTag
     */
    public function renderError($ex)
    {
-      if (SYS_RUNTIME_MODE_PRODUCT == SYS_RUNTIME_MODE) {
-         throw $ex;
-      } else {
+//      if (SYS_RUNTIME_MODE_PRODUCT == SYS_RUNTIME_MODE) {
+//         throw $ex;
+//      } else {
          echo sprintf('<span style = "color:red">%s : %s</span>', $this->getTagSignature(), $ex->getMessage());
-      }
+//   }
    }
 
    /**
