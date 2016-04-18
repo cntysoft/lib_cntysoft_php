@@ -272,7 +272,7 @@ class Excel
    {
 
       if (is_numeric($item)):
-         $type = 'Number';
+         $type = 'String';
          if ($item{0} == '0' && strlen($item) > 1 && $item{1} != '.'):
             $type = 'String';
          endif;
